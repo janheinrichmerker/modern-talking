@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+
+jobs:
+  build-latex:
+    name: "🏗️ LaTeX build"
+    runs-on: ubuntu-20.04
+    steps:
+      - name: "📥 Check-out"
+        uses: actions/checkout@v2
+      - name: "🏗️ Compile paper"
+        uses: xu-cheng/latex-action@v2
+        with:
+          working_directory: paper
+          root_file: emnlp2021.tex
+      - name: "📤 Upload paper"
+        uses: actions/upload-artifact@v2
+        with:
+          path: paper/emnlp2021.pdf
+          name: Paper
+  build-python:
+    name: "🏗️ Python build"
+    runs-on: ubuntu-20.04
+    steps:
+      - name: "📥 Check-out"
+        uses: actions/checkout@v2
+  test-python:
+    name: "🧪 Python test"
+    runs-on: ubuntu-20.04
+    needs:
+      - build-python
+    steps:
+      - name: "📥 Check-out"
+        uses: actions/checkout@v2
+ 

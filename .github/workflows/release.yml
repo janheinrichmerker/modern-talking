@@ -1,0 +1,56 @@
+name: Create release
+
+on:
+  push:
+    tags: # Push events to new versions, e.g., 1.0, 20.15.10
+      - "v[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+-*"
+      - "v[0-9]+.[0-9]+.[0-9]+-*"
+
+jobs:
+  build-latex:
+    name: "🏗️ LaTeX build"
+    runs-on: ubuntu-20.04
+    steps:
+      - name: "📥 Check-out"
+        uses: actions/checkout@v2
+      - name: "🏗️ Compile paper"
+        uses: xu-cheng/latex-action@v2
+        with:
+          working_directory: paper
+          root_file: paper.tex
+      - name: "📤 Upload paper"
+        uses: actions/upload-artifact@v2
+        with:
+          path: paper/emnlp2021.pdf
+          name: Paper
+  release:
+    name: "🚀 Release"
+    runs-on: ubuntu-20.04
+    needs:
+      - build-latex
+    steps:
+      - name: "📥 Check-out"
+        uses: actions/checkout@v2
+      - name: "🏷️ Get version tag"
+        id: get-version
+        run: echo ::set-output name=tag::${GITHUB_REF/refs\/tags\//}
+      - name: "🚀 Create GitHub release"
+        id: create-github-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ steps.get-version.outputs.tag }}
+          prerelease: false
+      - name: "📤 Upload paper"
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-github-release.outputs.upload_url }}
+          asset_path: paper/emnlp2021.pdf
+          asset_name: emnlp2021.pdf
+          asset_content_type: application/pdf
