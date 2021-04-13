@@ -7,4 +7,5 @@ dependencies:
   - rope
   - pylint
   - pytest
+  - pytest-cov
   - pip
