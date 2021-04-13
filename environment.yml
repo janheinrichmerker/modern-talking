@@ -1,0 +1,10 @@
+name: modern-talking
+channels:
+  - defaults
+dependencies:
+  - python=3.8
+  - autopep8
+  - rope
+  - pylint
+  - pytest
+  - pip
