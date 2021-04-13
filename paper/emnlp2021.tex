@@ -1,0 +1,48 @@
+\pdfoutput=1 % Tell arXiv to use pdfLaTeX. Do not remove this line.
+
+\documentclass[11pt]{article}
+
+% Remove the "review" option to generate the final version.
+% \usepackage[review]{emnlp2021}
+\usepackage{emnlp2021}
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+
+\title{Modern Talking: Key-Point Analysis using Modern Natural Language Processing}
+\author{%
+  Max Henze \and Hanh Luu \and Jan Heinrich Reimer \\
+  Martin Luther University Halle-Wittenberg, Germany \\ 
+  \texttt{\{max.henze,thi.luu,jan.reimer\}@student.uni-halle.de}%
+}
+
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+
+\newcommand{\Bert}{\textsc{Bert}\xspace}
+\newcommand{\ArgKP}{\mbox{ArgKP}\xspace}
+\newcommand{\ArgQ}{\mbox{IBM-ArgQ-Rank-30kArgs}\xspace}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+  \input{00-abstract.tex}
+\end{abstract}
+
+\input{01-introduction.tex}
+\input{02-related-work.tex}
+\input{04-conclusion-future-work.tex}
+
+% Entries for the entire Anthology, followed by custom entries
+\bibliography{anthology,custom}
+\bibliographystyle{acl_natbib}
+
+\appendix
+
+\input{05-appendix.tex}
+
+\end{document}
