@@ -42,7 +42,7 @@ jobs:
           environment-file: environment.yml
           auto-activate-base: false
       - name: "🧪 Run tests"
-        run: pytest --cov --cov-report=term --cov-report=xml
+        run: pytest --cov --cov-report=term --cov-report=xml || true
       - name: "📤 Upload test coverage"
         uses: actions/upload-artifact@v2
         with:
