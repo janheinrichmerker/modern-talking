@@ -20,18 +20,34 @@ jobs:
         with:
           path: paper/emnlp2021.pdf
           name: Paper
-  build-python:
-    name: "🏗️ Python build"
-    runs-on: ubuntu-20.04
-    steps:
-      - name: "📥 Check-out"
-        uses: actions/checkout@v2
   test-python:
     name: "🧪 Python test"
     runs-on: ubuntu-20.04
-    needs:
-      - build-python
     steps:
       - name: "📥 Check-out"
         uses: actions/checkout@v2
+      - name: "💾 Cache Conda"
+        uses: actions/cache@v2
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{hashFiles('environment.yml') }}
+      - name: "🧰 Install Conda"
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: modern-talking
+          environment-file: environment.yml
+          auto-activate-base: false
+      - name: "🧪 Run tests"
+        run: pytest --cov --cov-report=term --cov-report=xml
+      - name: "📤 Upload test coverage"
+        uses: actions/upload-artifact@v2
+        with:
+          path: coverage.xml
+          name: Python test coverage
+      - name: "📤 Publish test coverage"
+        uses: codecov/codecov-action@v1
+        with:
+          fail_ci_if_error: true
+        
  
