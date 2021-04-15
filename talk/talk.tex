@@ -24,21 +24,30 @@
 \newcommand{\BiLSTM}{\mbox{BiLSTM}\xspace}
 \newcommand{\BertBase}{\textsc{Bert}-Base\xspace}
 \newcommand{\BertLarge}{\textsc{Bert}-Large\xspace}
+\newcommand{\TF}{\mbox{TF}\xspace}
+\newcommand{\TFIDF}{\mbox{TF/IDF}\xspace}
 
 \begin{document}
 
 \titleframe
 
-\begin{frame}{Stance Classification}
+\begin{frame}{Stance Classification} % Max
+  % Example topics and arguments: nuclear energy
+  % Use same example throughout all approaches.
   TODO: motivation and problem description.
 \end{frame}
 
-\begin{frame}{Approaches}
+\begin{frame}{Approaches} % Hanh
+  % Mathematical framework
   TODO: general framework and basic approaches.
 \end{frame}
 
 \begin{frame}{Fake News Challenge Stance Detection~\cite{HanselowskiSSCC2018}}
-   Challenge:
+  \begin{example}
+    % Sample document for different stances
+    % Sample headline
+  \end{example}
+  Challenge: % Try to use blocks \begin{block}{Title} ... \end{block}
   \begin{itemize}
       \item Stance $s$: argee, disgree, discuss, unrelated
       \item Predict a label stance for a document with regard to a headline: $f: (d,h) \rightarrow s$
@@ -50,6 +59,7 @@
     \item (?) Imbalanced Learning, in-domain and cross-domain (transfer)
   \end{itemize}
 \end{frame}
+% Try to continue slide with frame breaks
 
 \begin{frame}{Fake News Challenge Stance Detection~\cite{HanselowskiSSCC2018}}
     \begin{table}[]
@@ -68,8 +78,10 @@
           \begin{tabular}[c]{@{}l@{}}Unigrams\\ Similarity (Noun, Verbs)\\ Topic Models\end{tabular} &
           \begin{tabular}[c]{@{}l@{}}TF of unigrams\\ TFIDF \\ Similarity\end{tabular} \\ \hline
         \end{tabular}
+        % Maybe swap columns / rows?
     \end{table}
 \end{frame}
+% Try to continue slide with frame breaks
 
 \begin{frame}{Fake News Challenge Stance Detection~\cite{HanselowskiSSCC2018}}
    Which features and models help improving performance?
@@ -88,7 +100,8 @@
   \end{block}
 
   \begin{example}
-    Test
+    % Add topic for sample
+    % Example structure: topic and sample arguments (claim, premise)
     \begin{align}
       p_1 &= \text{"Renewable energy can soon replace fossil/nuclear energy"} \\
       p_2 &= \text{"Nuclear energy is a cheap alternative to fossil fuels"} \\
@@ -112,7 +125,7 @@
       \item \Bert classifier outperforms SVM baseline
       \item \BertLarge slightly better than \BertBase
       \item Longer sequences (i.e., less truncated) do not perform much better \\ (most sequences are short anyways)
-      \item classifier with \Bert can learn from partial sentences (due to truncation)
+      \item Classifier with \Bert can learn from partially truncated sentences
     \end{itemize}
   \end{block}
 
@@ -130,11 +143,14 @@
     \item New corpus including 27,520 sentences for 8 controversial topics
     \item Contextual BiLSTM leads to better generalization to unknown topics
     \item Multi-task learning setup further improved this approach 
+    % Topic information during training improves prediction?
+    % Problems?
   \end{itemize}
 \end{frame}
+% Try to continue slide with frame breaks
 
 \begin{frame}{Cross-topic Argument Mining~\cite{StabMSRG2018}}
-  How did they achieve this ?\\
+  How did they achieve this ?\\ % Try to use blocks \begin{block}{Title} ... \end{block}
   $\rightarrow$ two major approaches for identifying arguments
   \begin{itemize}
     \item Integrating topic information
@@ -160,24 +176,26 @@
       \end{itemize}
     \end{itemize}
   \end{itemize}
+  % Maybe "flatten" the key points a bit
 \end{frame}
 
-\begin{frame}{Comparison}
+\begin{frame}{Comparison} % Hanh
   TODO: compare approaches
 \end{frame}
 
-\begin{frame}{Stance in Key Point Matching}
+\begin{frame}{Stance Classification in Key Point Matching} % Heini
   TODO: how can we use stance classification for matching key points?
-\end{frame}
-
-\begin{frame}{Conclusion}
-  TODO: what to do next?
-\end{frame}
-
-\begin{frame}{Future Work}
-  TODO: do we need future work?
   \thankyou
 \end{frame}
+
+% \begin{frame}{Conclusion}
+%   TODO: what to do next?
+% \end{frame}
+
+% \begin{frame}{Future Work}
+%   TODO: do we need future work?
+%   \thankyou
+% \end{frame}
 
 \appendix
 \section{\appendixname}
