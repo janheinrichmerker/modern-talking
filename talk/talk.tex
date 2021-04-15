@@ -21,6 +21,9 @@
 \newcommand{\Bert}{\textsc{Bert}\xspace}
 \newcommand{\ArgKP}{\mbox{ArgKP}\xspace}
 \newcommand{\ArgQ}{\mbox{IBM-ArgQ-Rank-30kArgs}\xspace}
+\newcommand{\BiLSTM}{\mbox{BiLSTM}\xspace}
+\newcommand{\BertBase}{\textsc{Bert}-Base\xspace}
+\newcommand{\BertLarge}{\textsc{Bert}-Large\xspace}
 
 \begin{document}
 
@@ -73,8 +76,44 @@
    ...
 \end{frame}
 
-\begin{frame}{Argument Stance Classification Using \Bert~\cite{OllingerDSBS2020}}
-  TODO
+\begin{frame}[allowframebreaks]{\Bert Same Side Stance Classification~\cite{OllingerDSBS2020}}
+  
+  \begin{block}{Problem}
+    Same side  Stance Classification
+    \begin{itemize}
+      \item Are both arguments pro or both con?
+      \item Simplification of general stance classification
+      \item 
+    \end{itemize}
+  \end{block}
+
+  \begin{example}
+    \begin{align}
+      p_1 &= \text{"Renewable energy will soon be able to replace fossil and nuclear energy"} \\
+      p_2 &= \text{"Nuclear energy is a cheap alternative to fossil fuels"} \\
+      p_3 &= \text{"The danger from radioactive contamination should be avoided"}
+    \end{align}
+  \end{example}
+  
+  \framebreak
+  
+  \begin{block}{Approach}
+    \begin{itemize}
+      \item \Bert architecture for classification
+      \item Fine-tune \BertBase and \BertLarge models for 3~epochs
+      \item Sequences limited to 512 tokens (due to position embedding length limit)
+    \end{itemize}
+  \end{block}
+
+  \begin{block}{Results}
+    \begin{itemize}
+      \item \Bert classifier outperforms SVM baseline
+      \item \BertLarge slightly better than \BertBase
+      \item Longer sequences (i.e., less truncated) do not perform much better \\ (most sequences are short anyways)
+      \item classifier with \Bert can learn from partial sentences (due to truncation)
+    \end{itemize}
+  \end{block}
+
 \end{frame}
 
 \begin{frame}{Cross-topic Argument Mining~\cite{StabMSRG2018}}
