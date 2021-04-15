@@ -35,7 +35,42 @@
 \end{frame}
 
 \begin{frame}{Fake News Challenge Stance Detection~\cite{HanselowskiSSCC2018}}
-  TODO
+   Challenge:
+  \begin{itemize}
+      \item Stance $s$: argee, disgree, discuss, unrelated
+      \item Predict a label stance for a document with regard to a headline: $f: (d,h) \rightarrow s$
+  \end{itemize}
+  Topic of this paper:
+  \begin{itemize}
+    \item Reproduction and Analysis for the top-performing systems of the challenge: \textit{Tablos, Athene, UCL}
+    \item Question: Which features and architectures used help improving performance?
+    \item (?) Imbalanced Learning, in-domain and cross-domain (transfer)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Fake News Challenge Stance Detection~\cite{HanselowskiSSCC2018}}
+    \begin{table}[]
+    \caption{The best approaches}
+        \label{tab:comparison}
+        \begin{tabular}{|l|l|l|l|}
+        \hline
+        \multicolumn{2}{|l|}{Talos} &
+          Athene &
+          UCL \\ \hline
+        \multicolumn{2}{|l|}{\begin{tabular}[c]{@{}l@{}}weighted model\\ (CNN un GBD Tree)\end{tabular}} &
+          \begin{tabular}[c]{@{}l@{}}MLP \\ (6 h-layers+ Softmax)\end{tabular} &
+          MLP (1 h-layer) \\ \hline
+        word2vec &
+          \begin{tabular}[c]{@{}l@{}}TF\\ TFIDF\\ Sentiment \\ word2vec\end{tabular} &
+          \begin{tabular}[c]{@{}l@{}}Unigrams\\ Similarity (Noun, Verbs)\\ Topic Models\end{tabular} &
+          \begin{tabular}[c]{@{}l@{}}TF of unigrams\\ TFIDF \\ Similarity\end{tabular} \\ \hline
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+\begin{frame}{Fake News Challenge Stance Detection~\cite{HanselowskiSSCC2018}}
+   Which features and models help improving performance?
+   ...
 \end{frame}
 
 \begin{frame}{Argument Stance Classification Using \Bert~\cite{OllingerDSBS2020}}
