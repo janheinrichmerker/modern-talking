@@ -17,6 +17,8 @@
 \usepackage{listings}
 \usepackage{xspace}
 \usepackage{biblatex}
+\usepackage{tabularx}
+\usepackage{booktabs}
 
 \newcommand{\Bert}{\textsc{Bert}\xspace}
 \newcommand{\ArgKP}{\mbox{ArgKP}\xspace}
@@ -31,98 +33,136 @@
 
 \titleframe
 
-\begin{frame}{Stance Classification} 
+\begin{frame}{Stance Classification}
+
   \begin{block}{Motivation}
-    \begin{itemize}
-      \item Given an argument A and a topic T: Can A be classified as pro, con or something else to T.
-    \end{itemize}
+    Is an argument \(A\) pro, con or something else to a topic \(T\)?
   \end{block}
-  \begin{block}{Problem}
-    \begin{itemize}
-      \item What makes an argument pro, con or else ? 
-      \item Can an argument be classified pro by looking at other pro-like arguments ?
-    \end{itemize}
-  \end{block}
+
   \begin{example}
-    \begin{tabular}{l|l}
-      T & \multicolumn{1}{c}{Nuclear Energy}\\
-      \hline
-      $A_1$ & "Nuclear energy is a cheap alternative to fossil fuels."\\
-      $A_2$ & "Failures in nuclear power plants resolve in catastrophic events."\\
-      $A_3$ & "The CDU decided on a nuclear phase-out in 2021/22."\\
-      $A_4$ & "I don't like nuclear energy because my mom also doesn't like it."
+    \footnotesize\centering\vspace*{1ex}
+    \begin{tabular}{llc}
+      \toprule
+      \(T\) & Nuclear energy & \\
+      \midrule
+      \(A_1\) & Nuclear energy is a cheap alternative to fossil fuels. & pro \\
+      \(A_2\) & Failures in nuclear power plants resolve in catastrophic events. & con \\
+      \(A_3\) & The CDU decided on a nuclear phase-out in 2021/22. & non-arg \\
+      \(A_4\) & I don't like nuclear energy because my mom also doesn't like it. & discuss \\
+      \bottomrule
     \end{tabular}
   \end{example}
+
+  \begin{block}{Problem}
+    \begin{itemize}
+      \item What makes an argument pro or con?
+      \item Can it always be decided?
+      \item Can an argument be classified pro by looking at other pro-like arguments?
+    \end{itemize}
+  \end{block}
+
 \end{frame}
 
-\begin{frame}{Approaches} % Hanh
-  % Mathematical framework
-   \begin{align*}
-       f: (d,h) \rightarrow s \in \mathbb{S}
-   \end{align*}
+\begin{frame}{Stance Classification} % Heini
+  \framesubtitle{For Key Point Matching}
+  
+  \begin{itemize}
+    \item Key points have a stance like arguments
+    \item It's unlikely that key points and argument of different stance match
+    \item Key points generation / summarization benefits from stance information~\cite{SanchanAB2017}
+    \item Stance can be used to balance generated key points~\cite{ChowandaSSS2017}
+  \end{itemize}
+
+  \begin{example}
+    \footnotesize\centering\vspace*{1ex}
+    \begin{tabular}{llc}
+      \toprule
+      \(A_1\) & Nuclear energy is a cheap alternative to fossil fuels. & pro \\
+      \(K_1\) & Nuclear energy is cheap. & pro \\
+      \midrule
+      \(A_2\) & Failures in nuclear power plants resolve in catastrophic events. & con \\
+      \(K_2\) & Nuclear power plants pose a security risk. & con \\
+      \bottomrule
+    \end{tabular}
+  \end{example}
+
+\end{frame}
+
+\begin{frame}{Framework} % Hanh
+  
+  \begin{align*}
+    f: (A,T) \rightarrow S \in \mathbb{S}
+  \end{align*}
+  
+  \begin{itemize}
+    \item Stance~\(\mathbb{S}\) often includes pro and con, \\ can include task-specific stances
+    \item \(A\) can be argument or key point (basically any sentence)
+    \item Topic~\(T\) may be unknown
+  \end{itemize}
+
 \end{frame}
 
 \begin{frame}[allowframebreaks]{Fake News Challenge Stance Detection~\cite{HanselowskiSSCC2018}}
-  \begin{example}
-    % Sample document for different stances
-    % Sample headline
-  \end{example}
+
   \begin{block}{Challenge}
     \begin{itemize}
-      \item Stance $s$: argee, disgree, discuss, unrelated
-      \item Predict a label stance for a document with regard to a headline
+      \item Stance $S$\,: argee, disagree, discuss, or unrelated
+      \item Predict stance for a document's headline
     \end{itemize}
-  \end{block} % Try to use blocks \begin{block}{Title} ... \end{block}
-  \begin{block}{Topic of this paper}
+  \end{block}
+
+  \begin{block}{Contributions}
+    \begin{itemize}
+      \item Reproduction and analysis of the challenge's top-performing systems
       \begin{itemize}
-        \item Reproduction and Analysis for the top-performing systems of the challenge: \textit{Tablos, Athene, UCL}
-        \item Which features and architectures used help improving performance?
-        \item Evaluation metrices
+        \item Tablos
+        \item Athene
+        \item UCL
       \end{itemize}
+      \item What features/architectures improve performance most?
+      \item Evaluation metrics
+    \end{itemize}
   \end{block}
   
   \framebreak
-  \begin{block}{Three best approaches}
-    \begin{table}[]
-        \caption{architectures and features used by the three best approaches}
-        \label{tab:comparison_approaches}
-        \begin{tabular}{|l|l|l|}
-        \hline
-                 & Modell            & Features                                                                                      \\ \hline
-        Talos &
-          \begin{tabular}[c]{@{}l@{}}weighted model\\ (CNN and GDB Tree)\end{tabular} &
-          \begin{tabular}[c]{@{}l@{}}CNN: word2vec\\ GDBT: TFIDF, Sentiment, word2vec\end{tabular} \\ \hline
-        Athene &
-          \begin{tabular}[c]{@{}l@{}}MLP (Softmax, \\ 6 h-layers)\end{tabular} &
-          \begin{tabular}[c]{@{}l@{}}BoW, Unigrams\\ Similarity (Nouns, Verbs)\\ Topic Models, Latent Semantic\end{tabular} \\ \hline
-        UCL      & MLP (1h-layers)   & \begin{tabular}[c]{@{}l@{}}TF of unigrams\\ TFIDF\\ Similarity\end{tabular}                   \\ \hline
-        Baseline & Gradient-Boosting & \begin{tabular}[c]{@{}l@{}}cooccurrence $(h, d)$\\ counts refuting and polarity words\end{tabular} \\ \hline
-        \end{tabular}
-    \end{table}
-    \end{block}
+
+  \begin{block}{Architectures and Features}
+    \footnotesize\centering\vspace*{1ex}
+    \begin{tabularx}{\linewidth}{llX}
+      \toprule
+      & \textbf{Model} & \textbf{Features} \\
+      \midrule
+      \textbf{Talos} & weighted model~(CNN~+~GDB tree) & Word2Vec, \TFIDF, sentiment \\
+      \textbf{Athene} & MLP (softmax, 6 h-layers) & BoW, unigrams, similarity, topic models, latent semantic \\
+      \textbf{UCL} & MLP (1 h-layer) & unigram term frequency, \TFIDF, similarity \\
+      \textbf{baseline} & gradient boosting & co-occurrence, refuting word count, polarity word count \\
+      \bottomrule
+    \end{tabularx}
+  \end{block}
     
-    \framebreak
-    \begin{block}{Features Analysis}
-      \begin{itemize}
-          \item Fails in the following cases:
-            \begin{itemize}
-                \item lexical overlap between headline and document (classified as related, but unrelated)
-                \item document-headline pair contains synonyms, not same tokens (classified as unrelated)
-                \item if \textit{reports, said, allegedly}, then stance: DSC
-                \item few lexical indicators available for DSG class
-                \item semantic relations, complex negation, understanding of content
-            \end{itemize}
-          \item Helpful features:
+  \framebreak
+
+  \begin{block}{Feature Analysis}
+    \begin{itemize}
+        \item Helpful features:
+        \begin{itemize}
+            \item Cooccurrence of words and n-grams
+            \item Bag of Words, Bag-of-character 3-grams
+            \item Topic model features based on negative matrix factorization
+            \item Latent Semantic Indexing
+            \item Latent Dirichlet Allocation
+            \item 
+        \end{itemize}
+        \item Fails in the following cases:
           \begin{itemize}
-              \item Cooccurrence of words and n-grams
-              \item Bag of Words, Bag-of-character 3-grams
-              \item Topic model features based on negative matrix factorization
-              \item Latent Semantic Indexing
-              \item Latent Dirichlet Allocation
-              \item 
+              \item lexical overlap between headline and document (classified as related, but unrelated)
+              \item document-headline pair contains synonyms, not same tokens (classified as unrelated)
+              \item if \textit{reports, said, allegedly}, then stance: DSC
+              \item few lexical indicators available for DSG class
+              \item semantic relations, complex negation, understanding of content
           \end{itemize}
-      \end{itemize}
-    \end{block}
+    \end{itemize}
+  \end{block}
     
     \framebreak
     \begin{block}[]
@@ -184,7 +224,7 @@
 
 \end{frame}
 
-\begin{frame}{Cross-topic Argument Mining~\cite{StabMSRG2018}}
+\begin{frame}[allowframebreaks]{Cross-topic Argument Mining~\cite{StabMSRG2018}}
   Topic of this paper:
   \begin{itemize}
     \item To search for arguments, relevant to a certain topic 
@@ -199,10 +239,9 @@
     % Topic information during training improves prediction?
     % Problems?
   \end{itemize}
-\end{frame}
-% Try to continue slide with frame breaks
+  
+  \framebreak
 
-\begin{frame}{Cross-topic Argument Mining~\cite{StabMSRG2018}}
   How did they achieve this ?\\ % Try to use blocks \begin{block}{Title} ... \end{block}
   $\rightarrow$ two major approaches for identifying arguments
   \begin{itemize}
@@ -234,10 +273,6 @@
 
 \begin{frame}{Comparison} % Hanh
   TODO: compare approaches
-\end{frame}
-
-\begin{frame}{Stance Classification in Key Point Matching} % Heini
-  TODO: how can we use stance classification for matching key points?
   \thankyou
 \end{frame}
 
