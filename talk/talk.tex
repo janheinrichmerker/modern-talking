@@ -63,7 +63,7 @@
 
 \end{frame}
 
-\begin{frame}{Stance Classification} % Heini
+\begin{frame}{Stance Classification}
   \framesubtitle{For Key Point Matching}
   
   \begin{itemize}
@@ -88,17 +88,27 @@
 
 \end{frame}
 
-\begin{frame}{Framework} % Hanh
-  
-  \begin{align*}
-    f: (A,T) \rightarrow S \in \mathbb{S}
-  \end{align*}
-  
-  \begin{itemize}
-    \item Stance~\(\mathbb{S}\) often includes pro and con, \\ can include task-specific stances
-    \item \(A\) can be argument or key point (basically any sentence)
-    \item Topic~\(T\) may be unknown
-  \end{itemize}
+\begin{frame}{Stance Classification}
+
+  \begin{block}{Framework}
+    \begin{equation*}
+      f: (D,T) \rightarrow S \in \mathbb{S}
+    \end{equation*}  
+    \begin{itemize}
+      \item Known stances~\(\mathbb{S}\) often includes pro and con, \\ can include task-specific stances
+      \item Document~\(D\) can be argument or key point (or any sentence)
+      \item Topic~\(T\) may be unknown
+    \end{itemize}
+  \end{block}
+
+  \begin{block}{Machine Learning Pipeline}
+    \begin{enumerate}
+        \item Extract features from documents and topic
+        \item Build machine learning model for \(f\)
+        \item Train model
+        \item Test model
+      \end{enumerate}
+  \end{block}
 
 \end{frame}
 
@@ -127,59 +137,53 @@
   \framebreak
 
   \begin{block}{Architectures and Features}
-    \footnotesize\centering\vspace*{1ex}
-    \begin{tabularx}{\linewidth}{llX}
+    \footnotesize\centering\vspace*{1.5ex}
+    \begin{tabularx}{\linewidth}{lp{0.25\linewidth}X}
       \toprule
       & \textbf{Model} & \textbf{Features} \\
       \midrule
-      \textbf{Talos} & weighted model~(CNN~+~GDB tree) & Word2Vec, \TFIDF, sentiment \\
-      \textbf{Athene} & MLP (softmax, 6 h-layers) & BoW, unigrams, similarity, topic models, latent semantic \\
-      \textbf{UCL} & MLP (1 h-layer) & unigram term frequency, \TFIDF, similarity \\
+      \textbf{Talos} & weighted model~(CNN, GDB~tree) & Word2Vec, \TFIDF, sentiment \\
+      \textbf{Athene} & MLP (softmax, 6~hidden layers) & BoW, unigrams, similarity, topic models, latent semantic \\
+      \textbf{UCL} & MLP (1~hidden layer) & unigram term frequency, \TFIDF, similarity \\
       \textbf{baseline} & gradient boosting & co-occurrence, refuting word count, polarity word count \\
       \bottomrule
     \end{tabularx}
   \end{block}
-    
-  \framebreak
 
-  \begin{block}{Feature Analysis}
+  \begin{block}{Helpful Features}
     \begin{itemize}
-        \item Helpful features:
-        \begin{itemize}
-            \item Cooccurrence of words and n-grams
-            \item Bag of Words, Bag-of-character 3-grams
-            \item Topic model features based on negative matrix factorization
-            \item Latent Semantic Indexing
-            \item Latent Dirichlet Allocation
-            \item 
-        \end{itemize}
-        \item Fails in the following cases:
-          \begin{itemize}
-              \item lexical overlap between headline and document (classified as related, but unrelated)
-              \item document-headline pair contains synonyms, not same tokens (classified as unrelated)
-              \item if \textit{reports, said, allegedly}, then stance: DSC
-              \item few lexical indicators available for DSG class
-              \item semantic relations, complex negation, understanding of content
-          \end{itemize}
+      \item Co-occurrence of words and \(n\)-grams
+      \item Bag of words, bag of character 3-grams
+      % \item Topic model features (negative matrix factorization)
+      \item Latent semantic indexing / latent Dirichlet allocation
+      \item GloVe embeddings
     \end{itemize}
   \end{block}
     
-    \framebreak
-    \begin{block}[]
-      
-    \end{block}
-    \begin{block}{Evaluation metrics}
+  \framebreak
+
+  \begin{block}{Difficulties}
+    \begin{itemize}
+      \item lexical overlap between headline and document
+      \item synonyms treated as unrelated
+      \item few lexical indicators for disagree stance
+      \item semantic relations / content understanding
+    \end{itemize}
+  \end{block}
+  
+  \begin{block}{Evaluation metrics}
+    \begin{itemize}
+      \item Hiearchical evaluation in the task
       \begin{itemize}
-          \item Hiearchical evaluation in this task
-            \begin{itemize}
-                \item $\{ REL=\{AGR, DSG, DSG\}, UNR\}$: 0.25 points
-                \item $\{AGR, DSG, DSG\}$: 0.75 points
-            \end{itemize}
-          \item Suggested metric: macro-averaged $F_1$ Score 
+        % TODO Define labels or use descriptive names.
+        \item $\{ REL=\{AGR, DSG, DSG\}, UNR\}$: 0.25 points
+        \item $\{AGR, DSG, DSG\}$: 0.75 points
+        \item Imbalanced labels: UNR dominates
       \end{itemize}
-    \end{block}
+      \item Suggested metric: macro-averaged $F_1$ score 
+    \end{itemize}
+  \end{block}
 \end{frame}
-% Try to continue slide with frame breaks
 
 \begin{frame}[allowframebreaks]{\Bert Same Side Stance Classification~\cite{OllingerDSBS2020}}
   
@@ -275,15 +279,6 @@
   TODO: compare approaches
   \thankyou
 \end{frame}
-
-% \begin{frame}{Conclusion}
-%   TODO: what to do next?
-% \end{frame}
-
-% \begin{frame}{Future Work}
-%   TODO: do we need future work?
-%   \thankyou
-% \end{frame}
 
 \appendix
 \section{\appendixname}
