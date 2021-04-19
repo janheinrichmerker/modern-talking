@@ -231,50 +231,42 @@
 \end{frame}
 
 \begin{frame}[allowframebreaks]{Cross-topic Argument Mining~\cite{StabMSRG2018}}
-  Topic of this paper:
-  \begin{itemize}
-    \item To search for arguments, relevant to a certain topic 
-    \item Given a heterogeneous document collection
-  \end{itemize}
-  Key Achievements found in this paper:
-  \begin{itemize}
-    \item Non, supporting and opposing styled annotation scheme
-    \item New corpus including 27,520 sentences for 8 controversial topics
-    \item Contextual BiLSTM leads to better generalization to unknown topics
-    \item Multi-task learning setup further improved this approach 
-    % Topic information during training improves prediction?
-    % Problems?
-  \end{itemize}
-  
+
+  \begin{block}{Approach}
+    \begin{itemize}
+      \item \BiLSTM model
+      \item Integrate topic information
+      \begin{itemize}
+        \item Outer-attention \BiLSTM: input token weight using \BiLSTM given the topic
+        \item Custom contextual \BiLSTM: Add topic information as additional input terms
+      \end{itemize}
+      \item Leverage additional corpora
+      \begin{itemize}
+        \item Transfer learning: train model twice, with auxiliary corpus first
+        \item Multi-task learning: use RNN for separate learning, combine afterwards
+      \end{itemize}
+    \end{itemize}
+  \end{block}
+
   \framebreak
 
-  How did they achieve this ?\\ % Try to use blocks \begin{block}{Title} ... \end{block}
-  $\rightarrow$ two major approaches for identifying arguments
-  \begin{itemize}
-    \item Integrating topic information
+  \begin{block}{Contributions}
     \begin{itemize}
-      \item Outer-attention BiLSTM 
-      \begin{itemize}
-        \item Model learning how to weight input words given the topic combined with BiLSTM
-      \end{itemize}
-      \item Custom contextual BiLSTM
-      \begin{itemize}
-        \item Adding topic information as additional input term 
-      \end{itemize}
+      \item New corpus: 27\,520~sentences for 8~controversial topics
+      \item Heterogeneous document collection
+      \item Stances: supporting~(pro), opposing~(con), non-argument
     \end{itemize}
-    \item Leveraging additional data (two additional corpora)
+  \end{block}
+
+  \begin{block}{Results}
     \begin{itemize}
-      \item Transfer learning
-      \begin{itemize}
-        \item train model twice with auxiliary corpus first 
-      \end{itemize}
-      \item Multi-task learning
-      \begin{itemize}
-        \item using RNN for separate learning and combination afterwards
-      \end{itemize}
+      \item Better generalization to unknown topics with contextual \BiLSTM
+      \item Multi-task learning setup improves performance
+      % Topic information during training improves prediction?
+      % Problems?
     \end{itemize}
-  \end{itemize}
-  % Maybe "flatten" the key points a bit
+  \end{block}
+  
 \end{frame}
 
 \begin{frame}{Comparison}
