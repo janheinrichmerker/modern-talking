@@ -57,16 +57,36 @@
 
 \begin{frame}{Approaches} % Hanh
   % Mathematical framework
-   \begin{align*}
-       f: (d,h) \rightarrow s \in \mathbb{S}
-   \end{align*}
+  
+  \begin{block}{Features Extraction from training dataset}
+    \begin{itemize}
+        \item extract Features from documents and headlines  
+    \end{itemize}
+  \end{block}
+  \begin{block}{Machine Learning Methods}
+    \begin{itemize}
+        \item machine learning methods to learn $f$
+    \end{itemize}
+  \end{block}
+  
+  \begin{block}{Input}
+  \begin{itemize}
+      \item  Document $d$ and a headling $h$
+      \item  $s$ class, $\mathbb{S}$ known classes set
+  \end{itemize}
+  \end{block}
+  \begin{block}{Output}
+    
+    \[f: (d,h) \rightarrow s \in \mathbb{S}\]
+   
+  \end{block}
 \end{frame}
 
 \begin{frame}[allowframebreaks]{Fake News Challenge Stance Detection~\cite{HanselowskiSSCC2018}}
-  \begin{example}
+  %\begin{example}
     % Sample document for different stances
     % Sample headline
-  \end{example}
+  %\end{example}
   \begin{block}{Challenge}
     \begin{itemize}
       \item Stance $s$: argee, disgree, discuss, unrelated
@@ -119,21 +139,20 @@
               \item Topic model features based on negative matrix factorization
               \item Latent Semantic Indexing
               \item Latent Dirichlet Allocation
-              \item 
+              \item DSG class improved with semantic based on wordembedding GloVe
           \end{itemize}
       \end{itemize}
     \end{block}
     
     \framebreak
-    \begin{block}[]
-      
-    \end{block}
+  
     \begin{block}{Evaluation metrics}
       \begin{itemize}
           \item Hiearchical evaluation in this task
             \begin{itemize}
                 \item $\{ REL=\{AGR, DSG, DSG\}, UNR\}$: 0.25 points
                 \item $\{AGR, DSG, DSG\}$: 0.75 points
+                \item Imbalanced Problem (class UNR)
             \end{itemize}
           \item Suggested metric: macro-averaged $F_1$ Score 
       \end{itemize}
