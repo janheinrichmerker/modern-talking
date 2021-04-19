@@ -187,33 +187,35 @@
 
 \begin{frame}[allowframebreaks]{\Bert Same Side Stance Classification~\cite{OllingerDSBS2020}}
   
-  \begin{block}{Problem}
-    Same side  Stance Classification
+  \begin{block}{Problem: Same Side Stance Classification}
     \begin{itemize}
       \item Are both arguments pro or both con?
       \item Simplification of general stance classification
-      \item 
+      \item Idea: use language model for semantics
     \end{itemize}
   \end{block}
 
   \begin{example}
-    % Add topic for sample
-    % Example structure: topic and sample arguments (claim, premise)
-    \begin{align}
-      p_1 &= \text{"Renewable energy can soon replace fossil/nuclear energy"} \\
-      p_2 &= \text{"Nuclear energy is a cheap alternative to fossil fuels"} \\
-      p_3 &= \text{"The danger from radioactive contamination should be avoided"}
-    \end{align}
-    Sentences \(p_1\) and \(p_2\) have different stances, \(p_1\) and \(p_3\) have the same.
+    \footnotesize\centering\vspace*{1ex}
+    \begin{tabular}{llc}
+      \toprule
+      \(A_1\) & Nuclear energy is a cheap alternative to fossil fuels. & pro \\
+      \(A_2\) & Failures in nuclear power plants resolve in catastrophic events. & con \\
+      \(A_3\) & Nuclear waste is a burden on many future generations. & con \\
+      \bottomrule
+    \end{tabular}
+
+    \normalfont\raggedright\vspace*{1.5ex}
+    Arguments \(A_1\) and \(A_2\) have different stances, \(A_2\) and \(A_3\) have the same.
   \end{example}
   
   \framebreak
   
   \begin{block}{Approach}
     \begin{itemize}
-      \item \Bert architecture for classification
+      \item \Bert architecture to infer semantic similarity
       \item Fine-tune \BertBase and \BertLarge models for 3~epochs
-      \item Sequences limited to 512 tokens (due to position embedding length limit)
+      \item Sequences limited to 512 tokens (position embedding length limit)
     \end{itemize}
   \end{block}
 
@@ -221,7 +223,7 @@
     \begin{itemize}
       \item \Bert classifier outperforms SVM baseline
       \item \BertLarge slightly better than \BertBase
-      \item Longer sequences (i.e., less truncated) do not perform much better \\ (most sequences are short anyways)
+      \item Longer sequences (i.e., less truncated) do not perform much better %\\ (most sequences are short anyways)
       \item Classifier with \Bert can learn from partially truncated sentences
     \end{itemize}
   \end{block}
@@ -275,8 +277,14 @@
   % Maybe "flatten" the key points a bit
 \end{frame}
 
-\begin{frame}{Comparison} % Hanh
-  TODO: compare approaches
+\begin{frame}{Comparison}
+  \begin{itemize}
+    \item What stances to consider in key point matching?
+    \item Fake News Challenge can give hints on feature selection
+    \item Same side stance classification is necessary condition to key point matching
+    \item Simpler architectures work reasonably well
+    \item Pretrain classifier on additional datasets
+  \end{itemize}
   \thankyou
 \end{frame}
 
