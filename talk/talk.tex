@@ -57,54 +57,89 @@
 
 \begin{frame}{Approaches} % Hanh
   % Mathematical framework
-  TODO: general framework and basic approaches.
+   \begin{align*}
+       f: (d,h) \rightarrow s \in \mathbb{S}
+   \end{align*}
 \end{frame}
 
-\begin{frame}{Fake News Challenge Stance Detection~\cite{HanselowskiSSCC2018}}
+\begin{frame}[allowframebreaks]{Fake News Challenge Stance Detection~\cite{HanselowskiSSCC2018}}
   \begin{example}
     % Sample document for different stances
     % Sample headline
   \end{example}
-  Challenge: % Try to use blocks \begin{block}{Title} ... \end{block}
-  \begin{itemize}
+  \begin{block}{Challenge}
+    \begin{itemize}
       \item Stance $s$: argee, disgree, discuss, unrelated
-      \item Predict a label stance for a document with regard to a headline: $f: (d,h) \rightarrow s$
-  \end{itemize}
-  Topic of this paper:
-  \begin{itemize}
-    \item Reproduction and Analysis for the top-performing systems of the challenge: \textit{Tablos, Athene, UCL}
-    \item Question: Which features and architectures used help improving performance?
-    \item (?) Imbalanced Learning, in-domain and cross-domain (transfer)
-  \end{itemize}
-\end{frame}
-% Try to continue slide with frame breaks
-
-\begin{frame}{Fake News Challenge Stance Detection~\cite{HanselowskiSSCC2018}}
+      \item Predict a label stance for a document with regard to a headline
+    \end{itemize}
+  \end{block} % Try to use blocks \begin{block}{Title} ... \end{block}
+  \begin{block}{Topic of this paper}
+      \begin{itemize}
+        \item Reproduction and Analysis for the top-performing systems of the challenge: \textit{Tablos, Athene, UCL}
+        \item Which features and architectures used help improving performance?
+        \item Evaluation metrices
+      \end{itemize}
+  \end{block}
+  
+  \framebreak
+  \begin{block}{Three best approaches}
     \begin{table}[]
-    \caption{The best approaches}
-        \label{tab:comparison}
-        \begin{tabular}{|l|l|l|l|}
+        \caption{architectures and features used by the three best approaches}
+        \label{tab:comparison_approaches}
+        \begin{tabular}{|l|l|l|}
         \hline
-        \multicolumn{2}{|l|}{Talos} &
-          Athene &
-          UCL \\ \hline
-        \multicolumn{2}{|l|}{\begin{tabular}[c]{@{}l@{}}weighted model\\ (CNN un GBD Tree)\end{tabular}} &
-          \begin{tabular}[c]{@{}l@{}}MLP \\ (6 h-layers+ Softmax)\end{tabular} &
-          MLP (1 h-layer) \\ \hline
-        word2vec &
-          \begin{tabular}[c]{@{}l@{}}TF\\ TFIDF\\ Sentiment \\ word2vec\end{tabular} &
-          \begin{tabular}[c]{@{}l@{}}Unigrams\\ Similarity (Noun, Verbs)\\ Topic Models\end{tabular} &
-          \begin{tabular}[c]{@{}l@{}}TF of unigrams\\ TFIDF \\ Similarity\end{tabular} \\ \hline
+                 & Modell            & Features                                                                                      \\ \hline
+        Talos &
+          \begin{tabular}[c]{@{}l@{}}weighted model\\ (CNN and GDB Tree)\end{tabular} &
+          \begin{tabular}[c]{@{}l@{}}CNN: word2vec\\ GDBT: TFIDF, Sentiment, word2vec\end{tabular} \\ \hline
+        Athene &
+          \begin{tabular}[c]{@{}l@{}}MLP (Softmax, \\ 6 h-layers)\end{tabular} &
+          \begin{tabular}[c]{@{}l@{}}BoW, Unigrams\\ Similarity (Nouns, Verbs)\\ Topic Models, Latent Semantic\end{tabular} \\ \hline
+        UCL      & MLP (1h-layers)   & \begin{tabular}[c]{@{}l@{}}TF of unigrams\\ TFIDF\\ Similarity\end{tabular}                   \\ \hline
+        Baseline & Gradient-Boosting & \begin{tabular}[c]{@{}l@{}}cooccurrence $(h, d)$\\ counts refuting and polarity words\end{tabular} \\ \hline
         \end{tabular}
-        % Maybe swap columns / rows?
     \end{table}
+    \end{block}
+    
+    \framebreak
+    \begin{block}{Features Analysis}
+      \begin{itemize}
+          \item Fails in the following cases:
+            \begin{itemize}
+                \item lexical overlap between headline and document (classified as related, but unrelated)
+                \item document-headline pair contains synonyms, not same tokens (classified as unrelated)
+                \item if \textit{reports, said, allegedly}, then stance: DSC
+                \item few lexical indicators available for DSG class
+                \item semantic relations, complex negation, understanding of content
+            \end{itemize}
+          \item Helpful features:
+          \begin{itemize}
+              \item Cooccurrence of words and n-grams
+              \item Bag of Words, Bag-of-character 3-grams
+              \item Topic model features based on negative matrix factorization
+              \item Latent Semantic Indexing
+              \item Latent Dirichlet Allocation
+              \item 
+          \end{itemize}
+      \end{itemize}
+    \end{block}
+    
+    \framebreak
+    \begin{block}[]
+      
+    \end{block}
+    \begin{block}{Evaluation metrics}
+      \begin{itemize}
+          \item Hiearchical evaluation in this task
+            \begin{itemize}
+                \item $\{ REL=\{AGR, DSG, DSG\}, UNR\}$: 0.25 points
+                \item $\{AGR, DSG, DSG\}$: 0.75 points
+            \end{itemize}
+          \item Suggested metric: macro-averaged $F_1$ Score 
+      \end{itemize}
+    \end{block}
 \end{frame}
 % Try to continue slide with frame breaks
-
-\begin{frame}{Fake News Challenge Stance Detection~\cite{HanselowskiSSCC2018}}
-   Which features and models help improving performance?
-   ...
-\end{frame}
 
 \begin{frame}[allowframebreaks]{\Bert Same Side Stance Classification~\cite{OllingerDSBS2020}}
   
