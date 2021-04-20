@@ -4,8 +4,10 @@ channels:
 dependencies:
   - python=3.8
   - autopep8
+  - jupyter
   - rope
+  - pip
   - pylint
   - pytest
   - pytest-cov
-  - pip
+  - rope
