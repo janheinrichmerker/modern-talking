@@ -27,6 +27,14 @@ Now activate the Conda environment:
 conda activate modern-talking
 ```
 
+### Datasets
+
+Download required datasets:
+
+```shell script
+python scripts/download_datasets.py
+```
+
 ### Testing
 
 Run all unit tests:
