@@ -1,0 +1,3 @@
+# Don't track datasets in Git.
+*
+!.gitignore
