@@ -6,6 +6,7 @@ dependencies:
   - autopep8
   - jupyter
   - rope
+  - pandas
   - pip
   - pylint
   - pytest
