@@ -2,14 +2,22 @@
 <module type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="Python" name="Python">
-      <configuration sdkName="Python 3.7 (benchmark)" />
+      <configuration sdkName="Python 3.8 (modern-talking)" />
     </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/literature/argument-clustering" />
+      <excludeFolder url="file://$MODULE_DIR$/literature/bert-siamese-neural-network" />
+      <excludeFolder url="file://$MODULE_DIR$/literature/key-point-analysis" />
+      <excludeFolder url="file://$MODULE_DIR$/literature/stance-classification" />
+    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Python 3.7 (benchmark) interpreter library" level="application" />
+    <orderEntry type="library" name="Python 3.8 (modern-talking) interpreter library" level="application" />
+  </component>
+  <component name="PackageRequirementsSettings">
+    <option name="removeUnused" value="true" />
   </component>
 </module>
