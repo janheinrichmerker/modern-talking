@@ -40,3 +40,4 @@ pipenv run pytest
 ## License
 
 This repository is licensed under the [MIT License](LICENSE).
+It includes [evaluation code](https://github.com/IBM/KPA_2021_shared_task/blob/771caa1519df4e26127ad37cffe8d5940af3b2da/code/track_1_kp_matching.py) from the shared tasks organizers, licensed under the [Apache License 2.0](https://github.com/IBM/KPA_2021_shared_task/blob/771caa1519df4e26127ad37cffe8d5940af3b2da/LICENSE).
