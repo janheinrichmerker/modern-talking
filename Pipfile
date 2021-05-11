@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+jupyter = "*"
+matplotlib = "*"
+nltk = "*"
+pandas = "*"
+scikit-learn = "*"
+autopep8 = "*"
+pylint = "*"
+pytest = "*"
+pytest-cov = "*"
+rope = "*"
+
+[requires]
+python_version = "3.8"

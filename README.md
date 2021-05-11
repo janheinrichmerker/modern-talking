@@ -14,17 +14,11 @@ Participation at the [Quantitative Summarization – Key Point Analysis Shared T
 
 ### Installation
 
-First, install [Python 3](https://python.org/downloads/) and [Conda](https://docs.conda.io/en/latest/miniconda.html).
-Then setup or update the Conda environment (may take a while):
+First, install [Python 3](https://python.org/downloads/), [pipx](https://pipxproject.github.io/pipx/installation/#install-pipx), and [Pipenv](https://pipenv.pypa.io/en/latest/install/#isolated-installation-of-pipenv-with-pipx).
+Then install dependencies (may take a while):
 
 ```shell script
-conda env update -f environment.yml
-```
-
-Now activate the Conda environment:
-
-```shell script
-conda activate modern-talking
+pipenv install
 ```
 
 ### Datasets
@@ -32,7 +26,7 @@ conda activate modern-talking
 Download required datasets:
 
 ```shell script
-python scripts/download_datasets.py
+pipenv run python modern_talking/download_datasets.py
 ```
 
 ### Testing
@@ -40,7 +34,7 @@ python scripts/download_datasets.py
 Run all unit tests:
 
 ```shell script
-pytest
+pipenv run pytest
 ```
 
 ## License

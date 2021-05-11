@@ -2,14 +2,3 @@ name: modern-talking
 channels:
   - defaults
 dependencies:
-  - python=3.8
-  - autopep8
-  - jupyter
-  - rope
-  - pandas
-  - pip
-  - pylint
-  - pytest
-  - pytest-cov
-  - rope
-  - ipykernel
