@@ -29,6 +29,18 @@ Download required datasets:
 pipenv run python modern_talking/download_datasets.py
 ```
 
+This will download train and dev datasets to the `data/` subdirectory.
+
+### Evaluation
+
+Evaluate predicted matches:
+
+```shell script
+pipenv run python modern_talking/evaluation/track_1_kp_matching.py data/ path/to/predictions.json
+```
+
+Replace `path/to/predictions.json` with the path to a file containing predicted matches in JSON format as described in the [shared task documentation](https://github.com/ibm/KPA_2021_shared_task#track-1---key-point-matching).
+
 ### Testing
 
 Run all unit tests:
