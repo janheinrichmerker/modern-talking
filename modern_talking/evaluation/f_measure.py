@@ -18,7 +18,7 @@ class FMeasure(Evaluation):
             self,
             predicted_labels: Labels,
             ground_truth_labels: Labels
-    ):
+    ) -> float:
         precision = self.precision.evaluate(predicted_labels, ground_truth_labels)
         recall = self.recall.evaluate(predicted_labels, ground_truth_labels)
         return (1 + self.alpha) / (1 / precision + self.alpha / recall)

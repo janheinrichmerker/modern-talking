@@ -14,7 +14,7 @@ class Recall(Evaluation):
             self,
             predicted_labels: Labels,
             ground_truth_labels: Labels
-    ):
+    ) -> float:
         ids = Evaluation.get_all_ids(predicted_labels, ground_truth_labels)
         true_positives = sum(
             1

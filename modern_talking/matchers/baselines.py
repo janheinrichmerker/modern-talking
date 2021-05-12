@@ -47,5 +47,5 @@ class RandomMatcher(Matcher):
 
 
 class TermOverlapMatcher(Matcher):
-    # TODO Match based on terms occuring in argument and key point.
+    # TODO Match based on terms occurring in argument and key point.
     pass
