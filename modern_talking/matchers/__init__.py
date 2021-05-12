@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Set
 
-from modern_talking.model import Argument, KeyPoint, Labels
+from modern_talking.model import Labels, Dataset, \
+    LabelledDataset
 
 
 class Matcher(ABC):
@@ -13,43 +13,24 @@ class Matcher(ABC):
     """
 
     @abstractmethod
-    def train(
-            self,
-            train_arguments: Set[Argument],
-            train_key_points: Set[KeyPoint],
-            train_labels: Labels,
-            dev_arguments: Set[Argument],
-            dev_key_points: Set[KeyPoint],
-            dev_labels: Labels,
-    ):
+    def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
         """
         Train the matcher given a training dataset and a development dataset
-        that can be used for evaluating hyper-parameters.
-        :param train_arguments: Arguments in the training dataset.
-        :param train_key_points: Key points in the training dataset.
-        :param train_labels: Ground-truth labels for argument key point pairs
-        in the training dataset.
-        :param dev_arguments: Arguments in the development dataset.
-        :param dev_key_points: Key points in the development dataset.
-        :param dev_labels: Ground-truth labels for argument key point pairs
-        in the development dataset.
+        that can be used for tuning hyper-parameters.
+        :param train_data: Dataset for training the matcher.
+        :param dev_data: Dataset for hyper-parameter tuning.
         """
         pass
 
     @abstractmethod
-    def predict(
-            self,
-            arguments: Set[Argument],
-            key_points: Set[KeyPoint],
-    ) -> Labels:
+    def predict(self, data: Dataset) -> Labels:
         """
         With the trained model, predict match labels
         for the given arguments and key points.
         Note that not necessarily all possible pairs
         of arguments and key points must have a label associated with.
         The interpretation of missing labels depends on the evaluation metric.
-        :param arguments: Arguments to consider for labelling matches.
-        :param key_points: Key points to consider for labelling matches.
+        :param data: Dataset to label matching arguments and key points.
         :return: Dictionary of match labels for argument key point pairs.
         """
         pass

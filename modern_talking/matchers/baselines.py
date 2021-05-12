@@ -1,20 +1,16 @@
 from random import Random
-from typing import Set
 
 from modern_talking.matchers import Matcher
-from modern_talking.model import Argument, KeyPoint, Labels
+from modern_talking.model import Labels, Dataset, \
+    LabelledDataset
 
 
 class TopicStanceMatcher(Matcher):
-    def train(self, train_arguments: Set[Argument],
-              train_key_points: Set[KeyPoint], train_labels: Labels,
-              dev_arguments: Set[Argument], dev_key_points: Set[KeyPoint],
-              dev_labels: Labels):
+    def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
         # Skip training.
         return
 
-    def predict(self, arguments: Set[Argument],
-                key_points: Set[KeyPoint]) -> Labels:
+    def predict(self, data: Dataset) -> Labels:
         """
         Match all argument key point pairs with equal topic and stance.
         """
@@ -22,8 +18,8 @@ class TopicStanceMatcher(Matcher):
             (arg.id, kp.id):
                 1 if arg.topic == kp.topic and arg.stance == kp.stance
                 else 0
-            for arg in arguments
-            for kp in key_points
+            for arg in data.arguments
+            for kp in data.key_points
         }
 
 
@@ -34,27 +30,20 @@ class RandomMatcher(Matcher):
     def __init__(self, seed=None):
         self.random = Random(seed) if seed is not None else Random()
 
-    def train(self, train_arguments: Set[Argument],
-              train_key_points: Set[KeyPoint], train_labels: Labels,
-              dev_arguments: Set[Argument], dev_key_points: Set[KeyPoint],
-              dev_labels: Labels):
+    def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
         # Skip training.
         return
 
-    def predict(self, arguments: Set[Argument],
-                key_points: Set[KeyPoint]) -> Labels:
+    def predict(self, data: Dataset) -> Labels:
         """
         Match argument key point pairs randomly if they share topic and stance.
         """
-        conditional_labels = self.conditional_matcher.predict(
-            arguments,
-            key_points
-        )
+        conditional_labels = self.conditional_matcher.predict(data)
         return {
             (arg.id, kp.id):
                 self.random.uniform(0, 1) * conditional_labels[arg.id, kp.id]
-            for arg in arguments
-            for kp in key_points
+            for arg in data.arguments
+            for kp in data.key_points
         }
 
 
