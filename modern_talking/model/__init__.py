@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from typing import Literal, Tuple, Dict
+from enum import Enum, auto, unique
+from typing import Literal, Tuple, Dict, Set
 
 # Type alias for argument ID.
 ArgumentId = str
@@ -52,3 +53,27 @@ Label = float
 # This data structure can directly be formatted as JSON
 # for shared task submission.
 Labels = Dict[ArgumentKeyPointIdPair, Label]
+
+
+@unique
+class DatasetType(Enum):
+    TRAIN = auto()
+    TEST = auto()
+    DEV = auto()
+
+
+@dataclass
+class Dataset:
+    """
+    Dataset with arguments and key points.
+    """
+    arguments: Set[Argument]
+    key_points: Set[KeyPoint]
+
+
+@dataclass
+class LabelledDataset(Dataset):
+    """
+    Annotated dataset with arguments, key points and match labels.
+    """
+    labels: Labels
