@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import final
 
 from modern_talking.model import Labels, Dataset, \
     LabelledDataset
@@ -11,6 +12,14 @@ class Matcher(ABC):
     can evaluate hyper-parameters on a development dataset.
     After training, the matcher can match arbitrary arguments and key points.
     """
+
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        """
+        Descriptive name for this matcher.
+        """
+        pass
 
     @abstractmethod
     def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
@@ -34,3 +43,15 @@ class Matcher(ABC):
         :return: Dictionary of match labels for argument key point pairs.
         """
         pass
+
+
+class UntrainedMatcher(Matcher, ABC):
+    """
+    Matcher that doesn't need training,
+    e.g., because its predictions are deterministic or heuristic.
+    """
+
+    @final
+    def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
+        # Skip training.
+        return

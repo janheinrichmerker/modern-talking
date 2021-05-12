@@ -6,6 +6,8 @@ from modern_talking.model import Labels, Dataset, \
 
 
 class TopicStanceMatcher(Matcher):
+    name = "all"
+
     def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
         # Skip training.
         return
@@ -24,6 +26,7 @@ class TopicStanceMatcher(Matcher):
 
 
 class RandomMatcher(Matcher):
+    name = "random"
     random: Random
     conditional_matcher = TopicStanceMatcher()
 
@@ -48,5 +51,12 @@ class RandomMatcher(Matcher):
 
 
 class TermOverlapMatcher(Matcher):
-    # TODO Match based on terms occurring in argument and key point.
-    pass
+    name = "term-overlap"
+
+    def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
+        # Skip training.
+        return
+
+    def predict(self, data: Dataset) -> Labels:
+        # TODO Match based on terms occurring in argument and key point.
+        pass

@@ -4,11 +4,19 @@ from typing import Tuple, Set
 from modern_talking.model import Labels, KeyPointId, ArgumentId
 
 
-class Evaluator(ABC):
+class Metric(ABC):
     """
     Evaluation metric for comparing predicted match labels
     with given ground-truth labels.
     """
+
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        """
+        Descriptive name for this metric.
+        """
+        pass
 
     @abstractmethod
     def evaluate(

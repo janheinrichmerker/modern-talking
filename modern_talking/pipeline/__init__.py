@@ -2,7 +2,7 @@ from csv import reader
 from pathlib import Path
 from typing import Set
 
-from modern_talking.evaluation import Evaluator
+from modern_talking.evaluation import Metric
 from modern_talking.matchers import Matcher
 from modern_talking.model import Argument, KeyPoint, Labels, LabelledDataset, \
     DatasetType
@@ -18,11 +18,11 @@ class Pipeline:
     """
 
     matcher: Matcher
-    evaluator: Evaluator
+    metric: Metric
 
-    def __init__(self, matcher: Matcher, evaluator: Evaluator):
+    def __init__(self, matcher: Matcher, evaluator: Metric):
         self.matcher = matcher
-        self.evaluator = evaluator
+        self.metric = evaluator
 
     @staticmethod
     def load_dataset(dataset_type: DatasetType) -> LabelledDataset:
@@ -121,4 +121,4 @@ class Pipeline:
         # Get ground-truth labels from test data.
         ground_truth_labels = test_data.labels
         # Evaluate labels.
-        return self.evaluator.evaluate(predicted_labels, ground_truth_labels)
+        return self.metric.evaluate(predicted_labels, ground_truth_labels)

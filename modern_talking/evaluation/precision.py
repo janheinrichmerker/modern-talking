@@ -1,8 +1,9 @@
-from modern_talking.evaluation import Evaluation
+from modern_talking.evaluation import Metric
 from modern_talking.model import Label, Labels
 
 
-class Precision(Evaluation):
+class Precision(Metric):
+    name = "precision"
     default: Label
     threshold: Label
 
@@ -15,7 +16,7 @@ class Precision(Evaluation):
             predicted_labels: Labels,
             ground_truth_labels: Labels
     ) -> float:
-        ids = Evaluation.get_all_ids(predicted_labels, ground_truth_labels)
+        ids = Metric.get_all_ids(predicted_labels, ground_truth_labels)
         true_positives = sum(
             1
             for arg, kp in ids

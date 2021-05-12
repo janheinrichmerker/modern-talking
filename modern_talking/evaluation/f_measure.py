@@ -1,16 +1,18 @@
-from modern_talking.evaluation import Evaluation
+from modern_talking.evaluation import Metric
 from modern_talking.evaluation.precision import Precision
 from modern_talking.evaluation.recall import Recall
 from modern_talking.model import Label, Labels
 
 
-class FMeasure(Evaluation):
+class FMeasure(Metric):
+    name: str
     alpha: float
-    precision: Evaluation
-    recall: Evaluation
+    precision: Metric
+    recall: Metric
 
     def __init__(self, alpha: float = 1, default: Label = 0,
                  threshold: Label = 0.5):
+        self.name = f"f{alpha}-measure"
         self.alpha = alpha
         self.precision = Precision(default, threshold)
         self.recall = Recall(default, threshold)
