@@ -1,9 +1,10 @@
 import sys
+import os
+import json
+
 import pandas as pd
 from sklearn.metrics import average_precision_score
 import numpy as np
-import os
-import json
 
 
 def get_ap(df, label_column, top_percentile=0.5):
@@ -64,13 +65,12 @@ def get_predictions(predictions_file, labels_df, arg_df):
     return merged_df
 
 
-"""
-this method chooses the best key point for each argument
-and generates a dataframe with the matches and scores
-"""
-
 
 def load_predictions(predictions_dir):
+    """
+    this method chooses the best key point for each argument
+    and generates a dataframe with the matches and scores
+    """
     arg = []
     kp = []
     scores = []
