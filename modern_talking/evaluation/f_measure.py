@@ -9,7 +9,8 @@ class FMeasure(Evaluation):
     precision: Evaluation
     recall: Evaluation
 
-    def __init__(self, alpha: float = 1, default: Label = 0, threshold: Label = 0.5):
+    def __init__(self, alpha: float = 1, default: Label = 0,
+                 threshold: Label = 0.5):
         self.alpha = alpha
         self.precision = Precision(default, threshold)
         self.recall = Recall(default, threshold)
@@ -19,6 +20,8 @@ class FMeasure(Evaluation):
             predicted_labels: Labels,
             ground_truth_labels: Labels
     ) -> float:
-        precision = self.precision.evaluate(predicted_labels, ground_truth_labels)
-        recall = self.recall.evaluate(predicted_labels, ground_truth_labels)
+        precision = self.precision.evaluate(
+            predicted_labels, ground_truth_labels)
+        recall = self.recall.evaluate(
+            predicted_labels, ground_truth_labels)
         return (1 + self.alpha) / (1 / precision + self.alpha / recall)

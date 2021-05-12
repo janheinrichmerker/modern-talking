@@ -27,10 +27,12 @@ class Matcher(ABC):
         that can be used for evaluating hyper-parameters.
         :param train_arguments: Arguments in the training dataset.
         :param train_key_points: Key points in the training dataset.
-        :param train_labels: Ground-truth labels for argument key point pairs in the training dataset.
+        :param train_labels: Ground-truth labels for argument key point pairs
+        in the training dataset.
         :param dev_arguments: Arguments in the development dataset.
         :param dev_key_points: Key points in the development dataset.
-        :param dev_labels: Ground-truth labels for argument key point pairs in the development dataset.
+        :param dev_labels: Ground-truth labels for argument key point pairs
+        in the development dataset.
         """
         pass
 
@@ -41,8 +43,10 @@ class Matcher(ABC):
             key_points: Set[KeyPoint],
     ) -> Labels:
         """
-        With the trained model, predict match labels for the given arguments and key points.
-        Note that not necessarily all possible pairs of arguments and key points must have a label associated with.
+        With the trained model, predict match labels
+        for the given arguments and key points.
+        Note that not necessarily all possible pairs
+        of arguments and key points must have a label associated with.
         The interpretation of missing labels depends on the evaluation metric.
         :param arguments: Arguments to consider for labelling matches.
         :param key_points: Key points to consider for labelling matches.

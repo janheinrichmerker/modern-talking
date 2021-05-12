@@ -36,15 +36,19 @@ class KeyPoint:
     stance: Stance
 
 
-# Type alias for pair of argument and key point. Argument and key point may or may not match.
+# Type alias for pair of argument and key point.
+# Argument and key point may or may not match.
 ArgumentKeyPointPair = Tuple[Argument, KeyPoint]
 
-# Type alias for pair of argument and key point IDs. Argument and key point may or may not match.
+# Type alias for pair of argument and key point IDs.
+# Argument and key point may or may not match.
 ArgumentKeyPointIdPair = Tuple[ArgumentId, KeyPointId]
 
-# Type alias for match labels. A value of 1 indicates a match, 0 no match. Any value between 0 an 1 is allowed.
+# Type alias for match labels. A value of 1 indicates a match, 0 no match.
+# Any value between 0 an 1 is allowed.
 Label = float
 
 # Type alias for dictionary of labels for pairs of argument and key point ids.
-# This data structure can directly be formatted as JSON for shared task submission.
+# This data structure can directly be formatted as JSON
+# for shared task submission.
 Labels = Dict[ArgumentKeyPointIdPair, Label]

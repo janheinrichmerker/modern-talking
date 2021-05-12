@@ -19,12 +19,15 @@ class Precision(Evaluation):
         true_positives = sum(
             1
             for arg, kp in ids
-            if predicted_labels.get((arg, kp), default=self.default) >= self.threshold
-            and ground_truth_labels.get((arg, kp), default=self.default) >= self.threshold
+            if predicted_labels.get(
+                (arg, kp), self.default) >= self.threshold
+            and ground_truth_labels.get(
+                (arg, kp), self.default) >= self.threshold
         )
         predicted_positives = sum(
             1
             for arg, kp in ids
-            if predicted_labels.get((arg, kp), default=self.default) >= self.threshold
+            if predicted_labels.get(
+                (arg, kp), default=self.default) >= self.threshold
         )
         return true_positives / predicted_positives

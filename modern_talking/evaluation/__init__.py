@@ -6,7 +6,8 @@ from modern_talking.model import Labels, KeyPointId, ArgumentId
 
 class Evaluation(ABC):
     """
-    Evaluation metric for comparing predicted match labels with given ground-truth labels.
+    Evaluation metric for comparing predicted match labels
+    with given ground-truth labels.
     """
 
     @abstractmethod
@@ -16,7 +17,8 @@ class Evaluation(ABC):
             ground_truth_labels: Labels
     ) -> float:
         """
-        Evaluate a score for the predicted labels' quality with respect to the given ground-truth labels.
+        Evaluate a score for the predicted labels' quality
+        with respect to the given ground-truth labels.
         :param predicted_labels: Labels predicted by a matcher.
         :param ground_truth_labels: Annotated labels for comparison.
         :return: Score describing the predicted label quality.
