@@ -4,7 +4,7 @@ from typing import Tuple, Set
 from modern_talking.model import Labels, KeyPointId, ArgumentId
 
 
-class Evaluation(ABC):
+class Evaluator(ABC):
     """
     Evaluation metric for comparing predicted match labels
     with given ground-truth labels.
