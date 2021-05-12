@@ -65,7 +65,6 @@ def get_predictions(predictions_file, labels_df, arg_df):
     return merged_df
 
 
-
 def load_predictions(predictions_dir):
     """
     this method chooses the best key point for each argument
