@@ -1,23 +1,36 @@
 \section{Related Work} 
 
-    \subsection{Argument Clustering}
-
     \subsection{Key Point Analysis}
         Given the first track of the shared task analyzing key points is crucial. In their work \cite{Bar-HaimEFKLS2020} 
-        Bar-Haim et al. proposed an approach for summarising large argument collections to small sets of key points. Thus
-        covering a sufficient amount of all arguments. They showed that domain experts can very quickly
-        create pro and con key points, which are a able to capture the gist of the arguments on the given topic. All this
-        without being exposed to the arguments themself. Furthermore they developed the large-scale dataset ArgKP
+        Bar-Haim et al. propose an approach for summarising large argument collections to small sets of key points. Thus
+        covering a sufficient amount of all arguments. They show that domain experts can very quickly
+        create pro and con key points, which are able to "capture the gist" of the arguments on the given topic. All this
+        without being exposed to the arguments themself. Furthermore they develop the large-scale dataset ArgKP
         which is the foundation of this shared task. 
-        In a later work \cite{Bar-HaimKEFLS2020} Bar-Haim et al. constructed an automatic method for key point 
+        In a later work \cite{Bar-HaimKEFLS2020} Bar-Haim et al. construct an automatic method for key point 
         extraction which can compete with key points created by human domain experts. The method consists of two aspects. 
         Assuming that the key points can be found among the given comments 
         they first select short, high quality comments as key point candidates an then select the candidate with the highest
-        data coverage. Using the HuggingFace transformer framework they fine-tuned four different models from which 
-        ALBERT \cite{lan2019albert} had the best F1 score with $0.809$ but RoBERTa \cite{liu2019roberta} (F1 score of 
-        $0.773$) was choosen for key point extraction since it had a 6 times faster inference time. 
-        In the paper \cite{egan2016summarising}, Egan et al. proposed a summarising for informal arguments such as they
+        data coverage. Using the HuggingFace transformer framework they fine-tune four different models from which 
+        ALBERT \cite{lan2019albert} has the best F1 score with $0.809$ but RoBERTa \cite{liu2019roberta} (F1 score of 
+        $0.773$) is chosen for key point extraction since it has a 6 times faster inference time. 
+        In the paper \cite{egan2016summarising}, Egan et al. propose a summarising for informal arguments such as they
         occure in online political debates. By extracting verbs and their syntactic arguments they retrieve points which
         can make key content accessible. By grouping these points they propose to create discussion summaries.
+
+    \subsection{Argument Clustering}
+        Argument Clustering is a mighty tool that enables algorithms to assign multiple arguments, which adress a similar
+        key message to a given topic. In the paper \cite{reimers2019classification}, Reimers et al. make use of 
+        "contextualize word embeddings to classify and cluster topic-dependet arguments". Having performed argument
+        classification they then compute similar and dissimilar pairs of arguments. Two approaches one with clustering
+        and one without are being used. 
+        Clustering arguments is achieved by usage of agglomerative hierarchical clustering \cite{day1984efficient}. 
+        Without clustering a fine-tuned BERT-base-uncased model reached a F1 mean score for similar and dissimilar
+        arguments of $0.7401$. 
+        Agglomerative hierarchical clustering being a strict partitioning algorithm, results for clustering perform
+        worse by up to 7.64pp (Bert-large F1 mean score: $0.7135$). Hence they conclude that "strict partitioning 
+        clustering methods introduce a new source of errors".
+
+        
 
     \subsection{Stance Classification}
