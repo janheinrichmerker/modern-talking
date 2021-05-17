@@ -30,7 +30,19 @@
         Agglomerative hierarchical clustering being a strict partitioning algorithm, results for clustering perform
         worse by up to 7.64pp (Bert-large F1 mean score: $0.7135$). Hence they conclude that "strict partitioning 
         clustering methods introduce a new source of errors".
+        Another approach proposed in a paper \cite{ajjour2019modeling} by Ajjour et al. revolves around clustering 
+        arguments into so called frames which are "a set of arguments that focus on the same aspect". 
+        Thereby framing \cite{entman1993framing} only a specific information to present to the listeners and convince 
+        them of your stance.
+        They propose that an argument consists of two crucial parts. The topic and the frame.
+        Hence their approch splits into three steps: First, all arguments are clustered into $m$ topics. Second,
+        topical features are extracted from all arguments and therefore from its cluster. Third, the arguments are 
+        reclustered into $k$ non-overlapping frames. By utilizing k-means \cite{hartigan1979ak} for clustering
+        and \textit{Term Frequency-Inverse Document Frequency} (TF-IDF) for topic removal they achieved a F1 score of 
+        $0.28$.
 
-        
+        %TODO drittes paper aus dem StudIp (Argument Invention from First Principles), sehe es aber als vernachlässigbar
 
     \subsection{Stance Classification}
+        By knowing the stance of an argument it becomes nearly effortless for a human to classify it as pro or con 
+        to a given topic. 
