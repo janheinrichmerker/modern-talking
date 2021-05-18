@@ -9,9 +9,9 @@ from modern_talking.matchers import Matcher
 from modern_talking.model import Argument, KeyPoint, Labels, LabelledDataset, \
     DatasetType
 
-
 data_dir = Path(__file__).parent.parent.parent / "data"
 output_dir = data_dir / "out"
+
 
 class Pipeline:
     """
