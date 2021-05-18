@@ -21,6 +21,13 @@ class Matcher(ABC):
         """
         pass
 
+    def prepare(self):
+        """
+        Prepare and initialize matcher.
+        This method can be used, for example, to download additional data.
+        """
+        return
+
     @abstractmethod
     def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
         """

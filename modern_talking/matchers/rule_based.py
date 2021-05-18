@@ -1,14 +1,20 @@
+from nltk.downloader import Downloader
 from nltk.tokenize import word_tokenize
 
 from modern_talking.matchers import UntrainedMatcher
 from modern_talking.model import Dataset, Labels, Argument, KeyPoint, Label
 
+downloader = Downloader()
 
 class TermOverlapMatcher(UntrainedMatcher):
     """
     Match argument key point pairs if their terms overlap.
     """
     name = "term-overlap"
+
+    def prepare(self):
+        if not downloader.is_installed("punkt"):
+            downloader.download('punkt')
 
     @staticmethod
     def term_overlap(arg: Argument, kp: KeyPoint) -> Label:
