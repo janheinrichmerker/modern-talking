@@ -5,14 +5,16 @@ from modern_talking.model import Label, Labels
 
 
 class FMeasure(Metric):
-    name: str
     alpha: float
     precision: Metric
     recall: Metric
 
+    @property
+    def name(self) -> str:
+        return f"f{self.alpha}"
+
     def __init__(self, alpha: float = 1, default: Label = 0,
                  threshold: Label = 0.5):
-        self.name = f"f{alpha}-measure"
         self.alpha = alpha
         self.precision = Precision(default, threshold)
         self.recall = Recall(default, threshold)

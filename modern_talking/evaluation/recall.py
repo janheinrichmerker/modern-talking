@@ -21,14 +21,14 @@ class Recall(Metric):
             1
             for arg, kp in ids
             if predicted_labels.get(
-                (arg, kp), default=self.default) >= self.threshold
+                (arg, kp), self.default) >= self.threshold
             and ground_truth_labels.get(
-                (arg, kp), default=self.default) >= self.threshold
+                (arg, kp), self.default) >= self.threshold
         )
         ground_truth_positives = sum(
             1
             for arg, kp in ids
             if ground_truth_labels.get(
-                (arg, kp), default=self.default) >= self.threshold
+                (arg, kp), self.default) >= self.threshold
         )
         return true_positives / ground_truth_positives
