@@ -40,6 +40,6 @@ if __name__ == '__main__':
     metric: Metric = next(filter(lambda m: m.name == args.metric, metrics))
 
     pipeline = Pipeline(matcher, metric)
-    result = pipeline.train_evaluate(True, out)
+    result = pipeline.train_evaluate(True)
 
     print(f"Score: {result} ({metric.name})")

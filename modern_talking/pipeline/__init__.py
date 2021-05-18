@@ -10,6 +10,9 @@ from modern_talking.model import Argument, KeyPoint, Labels, LabelledDataset, \
     DatasetType
 
 
+data_dir = Path(__file__).parent.parent.parent / "data"
+output_dir = data_dir / "out"
+
 class Pipeline:
     """
     Pipeline for training, labelling and evaluation.
@@ -43,8 +46,6 @@ class Pipeline:
             suffix = "dev"
         else:
             raise Exception("Unknown dataset type")
-
-        data_dir = Path(__file__).parent.parent.parent / "data"
 
         arguments_file = data_dir / f"arguments_{suffix}.csv"
         key_points_file = data_dir / f"key_points_{suffix}.csv"
@@ -136,8 +137,7 @@ class Pipeline:
             }
             dump(json, file)
 
-    def train_evaluate(self, ignore_test: bool = False,
-                       out: Path = None) -> float:
+    def train_evaluate(self, ignore_test: bool = False) -> float:
         """
         Parse training, test, and development data, train the matcher,
         and evaluate label quality.
@@ -145,7 +145,6 @@ class Pipeline:
         instead of the test dataset for evaluation.
         This is useful for example when the test dataset is not available
         during model development, like in the shared task.
-        :param out: Optional file to save predictions to.
         :return: The evaluated score as returned by the evaluator.
         """
 
@@ -168,9 +167,11 @@ class Pipeline:
         predicted_labels = self.matcher.predict(test_data)
 
         print("Save predictions.")
-        if out is not None:
-            Pipeline.save_predictions(out, predicted_labels)
-            predicted_labels = Pipeline.load_predictions(out)
+        predictions_file = output_dir / f"predictions-{self.metric.name}-" \
+                                        f"with-{self.matcher.name}.json"
+        Pipeline.save_predictions(predictions_file, predicted_labels)
+        saved_predicted_labels = Pipeline.load_predictions(predictions_file)
+        assert predicted_labels == saved_predicted_labels
 
         # Get ground-truth labels from test data.
         ground_truth_labels = test_data.labels
