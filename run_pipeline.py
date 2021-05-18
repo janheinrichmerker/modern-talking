@@ -1,5 +1,4 @@
 from argparse import ArgumentParser, Namespace
-from pathlib import Path
 
 from modern_talking.evaluation import Metric
 from modern_talking.evaluation.f_measure import FMeasure
@@ -28,14 +27,12 @@ metrics = (
 )
 
 parser: ArgumentParser = ArgumentParser()
-parser.add_argument('out', type=Path)
 parser.add_argument('matcher')
 parser.add_argument('metric')
 
 if __name__ == '__main__':
     args: Namespace = parser.parse_args()
 
-    out: Path = args.out
     matcher: Matcher = next(filter(lambda m: m.name == args.matcher, matchers))
     metric: Metric = next(filter(lambda m: m.name == args.metric, metrics))
 
