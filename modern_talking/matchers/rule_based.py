@@ -1,10 +1,12 @@
 from nltk.downloader import Downloader
 from nltk.tokenize import word_tokenize
+from nltk.stem import PorterStemmer
 
 from modern_talking.matchers import UntrainedMatcher
 from modern_talking.model import Dataset, Labels, Argument, KeyPoint, Label
 
 downloader = Downloader()
+
 
 class TermOverlapMatcher(UntrainedMatcher):
     """
@@ -27,6 +29,45 @@ class TermOverlapMatcher(UntrainedMatcher):
         kp_terms = set(word_tokenize(kp.text))
         overlapping_terms = arg_terms.intersection(kp_terms)
         return len(overlapping_terms) / min(len(arg_terms), len(kp_terms))
+
+    def predict(self, data: Dataset) -> Labels:
+        return {
+            (arg.id, kp.id): self.term_overlap(arg, kp)
+            for arg in data.arguments
+            for kp in data.key_points
+            if arg.topic == kp.topic and arg.stance == kp.stance
+        }
+
+
+class StemmedTermOverlapMatcher(UntrainedMatcher):
+    """
+    Match argument key point pairs if their stemmed terms overlap.
+    """
+    name = "stemmed-term-overlap"
+    stemmer = PorterStemmer()
+
+    def prepare(self):
+        if not downloader.is_installed("punkt"):
+            downloader.download('punkt')
+
+    def term_overlap(self, arg: Argument, kp: KeyPoint) -> Label:
+        """
+        Calculate term overlap between an argument and key point
+        based on overlapping stemmed terms.
+        """
+        arg_terms = {
+            self.stemmer.stem(term)
+            for term in word_tokenize(arg.text)
+        }
+        kp_terms = {
+            self.stemmer.stem(term)
+            for term in word_tokenize(kp.text)
+        }
+        overlapping_terms = arg_terms.intersection(kp_terms)
+        return pow(
+            len(overlapping_terms) / min(len(arg_terms), len(kp_terms)),
+            0.25
+        )
 
     def predict(self, data: Dataset) -> Labels:
         return {
