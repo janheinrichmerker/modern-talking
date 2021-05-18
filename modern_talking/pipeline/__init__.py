@@ -1,4 +1,4 @@
-from csv import reader
+from csv import DictReader
 from itertools import groupby
 from json import load, dump
 from pathlib import Path
@@ -64,9 +64,10 @@ class Pipeline:
         :return: A set of arguments from the file.
         """
         with path.open("r") as file:
-            csv = reader(file)
+            csv = DictReader(file)
             return {
-                Argument(row[0], row[1], row[2], int(row[3]))
+                Argument(row["arg_id"], row["argument"], row["topic"],
+                         int(row["stance"]))
                 for row in csv
             }
 
@@ -78,9 +79,10 @@ class Pipeline:
         :return: A set of key points from the file.
         """
         with path.open("r") as file:
-            csv = reader(file)
+            csv = DictReader(file)
             return {
-                KeyPoint(row[0], row[1], row[2], int(row[3]))
+                KeyPoint(row["key_point_id"], row["key_point"], row["topic"],
+                         int(row["stance"]))
                 for row in csv
             }
 
@@ -93,9 +95,9 @@ class Pipeline:
         from the file.
         """
         with path.open("r") as file:
-            csv = reader(file)
+            csv = DictReader(file)
             return {
-                (row[0], row[1]): row[2]
+                (row["arg_id"], row["key_point_id"]): float(row["label"])
                 for row in csv
             }
 
@@ -110,9 +112,9 @@ class Pipeline:
         with path.open("r") as file:
             json = load(file)
             return {
-                (arg, kp): label
-                for arg, kps in json
-                for kp, label in kps
+                (arg, kp): float(label)
+                for arg, kps in json.items()
+                for kp, label in kps.items()
             }
 
     @staticmethod
@@ -146,6 +148,9 @@ class Pipeline:
         :param out: Optional file to save predictions to.
         :return: The evaluated score as returned by the evaluator.
         """
+
+        # Prepare matcher
+        self.matcher.prepare()
 
         # Load datasets
         train_data = Pipeline.load_dataset(DatasetType.TRAIN)
