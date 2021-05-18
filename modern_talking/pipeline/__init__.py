@@ -126,13 +126,13 @@ class Pipeline:
         key point IDs to save to the file.
         """
         with path.open("w") as file:
-            groups = dict(groupby(labels.items(), lambda arg_kp, _: arg_kp[1]))
+            groups = groupby(labels.keys(), lambda arg_kp: arg_kp[0])
             json = {
                 arg: {
-                    kp: label
-                    for kp, label in labels
+                    kp: labels[arg, kp]
+                    for _, kp in arg_kp
                 }
-                for arg, labels in groups
+                for (arg, arg_kp) in groups
             }
             dump(json, file)
 
