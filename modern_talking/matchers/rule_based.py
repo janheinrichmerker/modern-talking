@@ -33,4 +33,5 @@ class TermOverlapMatcher(UntrainedMatcher):
             (arg.id, kp.id): self.term_overlap(arg, kp)
             for arg in data.arguments
             for kp in data.key_points
+            if arg.topic == kp.topic and arg.stance == kp.stance
         }
