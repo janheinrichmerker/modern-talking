@@ -99,7 +99,43 @@ class Pipeline:
                 for row in csv
             }
 
-    def train_evaluate(self, ignore_test: bool = False) -> float:
+    @staticmethod
+    def load_predictions(path: Path) -> Labels:
+        """
+        Load predicted argument key point match labels from a JSON file.
+        :param path: Path to the JSON file.
+        :return: A dictionary of match labels for argument and key point IDs
+        from the file.
+        """
+        with path.open("r") as file:
+            json = load(file)
+            return {
+                (arg, kp): label
+                for arg, kps in json
+                for kp, label in kps
+            }
+
+    @staticmethod
+    def save_predictions(path: Path, labels: Labels):
+        """
+        Save predicted argument key point match labels to a JSON file.
+        :param path: Path to the JSON file.
+        :param labels: A dictionary of match labels for argument and
+        key point IDs to save to the file.
+        """
+        with path.open("w") as file:
+            groups = dict(groupby(labels.items(), lambda arg_kp, _: arg_kp[1]))
+            json = {
+                arg: {
+                    kp: label
+                    for kp, label in labels
+                }
+                for arg, labels in groups
+            }
+            dump(json, file)
+
+    def train_evaluate(self, ignore_test: bool = False,
+                       out: Path = None) -> float:
         """
         Parse training, test, and development data, train the matcher,
         and evaluate label quality.
@@ -107,6 +143,7 @@ class Pipeline:
         instead of the test dataset for evaluation.
         This is useful for example when the test dataset is not available
         during model development, like in the shared task.
+        :param out: Optional file to save predictions to.
         :return: The evaluated score as returned by the evaluator.
         """
 
@@ -120,6 +157,11 @@ class Pipeline:
         self.matcher.train(train_data, dev_data)
         # Predict labels for test data.
         predicted_labels = self.matcher.predict(test_data)
+
+        if out is not None:
+            Pipeline.save_predictions(out, predicted_labels)
+            predicted_labels = Pipeline.load_predictions(out)
+
         # Get ground-truth labels from test data.
         ground_truth_labels = test_data.labels
         # Evaluate labels.
