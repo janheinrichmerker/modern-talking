@@ -15,7 +15,7 @@ Topic = str
 Stance = Literal[1, -1]
 
 
-@dataclass
+@dataclass(frozen=True)
 class Argument:
     """
     Single argument with a specified stance against its topic.
@@ -26,7 +26,7 @@ class Argument:
     stance: Stance
 
 
-@dataclass
+@dataclass(frozen=True)
 class KeyPoint:
     """
     Single key point with a specified stance against its topic.
@@ -62,7 +62,7 @@ class DatasetType(Enum):
     DEV = auto()
 
 
-@dataclass
+@dataclass(frozen=True)
 class Dataset:
     """
     Dataset with arguments and key points.
@@ -71,7 +71,7 @@ class Dataset:
     key_points: Set[KeyPoint]
 
 
-@dataclass
+@dataclass(frozen=True)
 class LabelledDataset(Dataset):
     """
     Annotated dataset with arguments, key points and match labels.
