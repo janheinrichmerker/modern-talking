@@ -149,20 +149,25 @@ class Pipeline:
         :return: The evaluated score as returned by the evaluator.
         """
 
-        # Prepare matcher
+        # Prepare matcher.
+        print("Prepare matcher.")
         self.matcher.prepare()
 
-        # Load datasets
+        # Load datasets.
+        print("Load datasets.")
         train_data = Pipeline.load_dataset(DatasetType.TRAIN)
         dev_data = Pipeline.load_dataset(DatasetType.DEV)
         test_data = Pipeline.load_dataset(DatasetType.TEST) \
             if not ignore_test else dev_data
 
         # Train model.
+        print("Train model.")
         self.matcher.train(train_data, dev_data)
         # Predict labels for test data.
+        print("Predict labels.")
         predicted_labels = self.matcher.predict(test_data)
 
+        print("Save predictions.")
         if out is not None:
             Pipeline.save_predictions(out, predicted_labels)
             predicted_labels = Pipeline.load_predictions(out)
@@ -170,4 +175,5 @@ class Pipeline:
         # Get ground-truth labels from test data.
         ground_truth_labels = test_data.labels
         # Evaluate labels.
+        print("Evaluate labels.")
         return self.metric.evaluate(predicted_labels, ground_truth_labels)
