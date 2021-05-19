@@ -157,7 +157,8 @@ class EmsembleBoWMatcher(Matcher):
         # predict probability for each pair (arg, kp)
         proba = self.emsemble_model.predict_proba(features)
         label = self.emsemble_model.predict(features)
-        if label == 1.0:
+        # print(label[0])
+        if label[0] == 1.0:
             score = proba[0][1]
         else:
             score = 0

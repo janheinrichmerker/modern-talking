@@ -10,7 +10,7 @@ from modern_talking.matchers import Matcher
 from modern_talking.matchers.baselines import AllMatcher, RandomMatcher, \
     NoneMatcher
 from modern_talking.matchers.rule_based import TermOverlapMatcher, \
-    AdvancedTermOverlapMatcher
+    AdvancedTermOverlapMatcher, EmsembleBoWMatcher
 from modern_talking.pipeline import Pipeline
 
 matchers = (
@@ -19,6 +19,7 @@ matchers = (
     RandomMatcher(),
     TermOverlapMatcher(),
     AdvancedTermOverlapMatcher(),
+    EmsembleBoWMatcher(),
 )
 
 metrics = (
