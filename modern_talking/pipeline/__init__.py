@@ -1,5 +1,4 @@
 from csv import DictReader
-from itertools import groupby
 from json import load, dump
 from pathlib import Path
 from typing import Set
@@ -127,13 +126,14 @@ class Pipeline:
         key point IDs to save to the file.
         """
         with path.open("w") as file:
-            groups = groupby(labels.keys(), lambda arg_kp: arg_kp[0])
+            args = {arg for arg, _ in labels.keys()}
             json = {
                 arg: {
-                    kp: labels[arg, kp]
-                    for _, kp in arg_kp
+                    kp: label
+                    for (arg_inner, kp), label in labels.items()
+                    if arg_inner == arg
                 }
-                for (arg, arg_kp) in groups
+                for arg in args
             }
             dump(json, file)
 
@@ -171,10 +171,16 @@ class Pipeline:
                                         f"with-{self.matcher.name}.json"
         Pipeline.save_predictions(predictions_file, predicted_labels)
         saved_predicted_labels = Pipeline.load_predictions(predictions_file)
-        assert predicted_labels == saved_predicted_labels
+        assert saved_predicted_labels == predicted_labels
 
         # Get ground-truth labels from test data.
         ground_truth_labels = test_data.labels
+
         # Evaluate labels.
         print("Evaluate labels.")
-        return self.metric.evaluate(predicted_labels, ground_truth_labels)
+        result = self.metric.evaluate(predicted_labels, ground_truth_labels)
+        result_saved = self.metric.evaluate(saved_predicted_labels,
+                                            ground_truth_labels)
+        assert result_saved == result
+
+        return result
