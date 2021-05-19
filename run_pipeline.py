@@ -1,4 +1,5 @@
 from argparse import ArgumentParser, Namespace
+from typing import Optional
 
 from modern_talking.evaluation import Metric
 from modern_talking.evaluation.f_measure import FMeasure
@@ -35,8 +36,19 @@ parser.add_argument('metric')
 if __name__ == '__main__':
     args: Namespace = parser.parse_args()
 
-    matcher: Matcher = next(filter(lambda m: m.name == args.matcher, matchers))
-    metric: Metric = next(filter(lambda m: m.name == args.metric, metrics))
+    matcher: Optional[Matcher] = next(
+        filter(lambda m: m.name == args.matcher, matchers),
+        None
+    )
+    if matcher is None:
+        raise Exception(f"No matcher found with name {args.matcher}.")
+
+    metric: Optional[Metric] = next(
+        filter(lambda m: m.name == args.metric, metrics),
+        None
+    )
+    if metric is None:
+        raise Exception(f"No metric found with name {args.metric}.")
 
     pipeline = Pipeline(matcher, metric)
     result = pipeline.train_evaluate(True)
