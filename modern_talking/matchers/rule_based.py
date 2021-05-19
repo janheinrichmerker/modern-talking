@@ -1,8 +1,10 @@
+from typing import Optional
+
 from nltk.downloader import Downloader
 from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer
 
-from modern_talking.matchers import UntrainedMatcher
+from modern_talking.matchers import UntrainedMatcher, Matcher
 from modern_talking.model import Dataset, Labels, Argument, KeyPoint, Label
 
 downloader = Downloader()
@@ -33,15 +35,15 @@ class TermOverlapMatcher(UntrainedMatcher):
     def predict(self, data: Dataset) -> Labels:
         return {
             (arg.id, kp.id): self.term_overlap(arg, kp)
-            for arg in data.arguments
-            for kp in data.key_points
-            if arg.topic == kp.topic and arg.stance == kp.stance
+            for (arg, kp) in data.argument_key_point_pairs
         }
 
 
-class StemmedTermOverlapMatcher(UntrainedMatcher):
+class AdvancedTermOverlapMatcher(UntrainedMatcher):
     """
     Match argument key point pairs if their stemmed terms overlap.
+    This matcher is an improved version of `TermOverlapMatcher`
+    with thresholds and stemming.
     """
     name = "stemmed-term-overlap"
     stemmer = PorterStemmer()
@@ -50,7 +52,7 @@ class StemmedTermOverlapMatcher(UntrainedMatcher):
         if not downloader.is_installed("punkt"):
             downloader.download('punkt')
 
-    def term_overlap(self, arg: Argument, kp: KeyPoint) -> Label:
+    def term_overlap(self, arg: Argument, kp: KeyPoint) -> Optional[Label]:
         """
         Calculate term overlap between an argument and key point
         based on overlapping stemmed terms.
@@ -63,16 +65,19 @@ class StemmedTermOverlapMatcher(UntrainedMatcher):
             self.stemmer.stem(term)
             for term in word_tokenize(kp.text)
         }
+        max_overlap = min(len(arg_terms), len(kp_terms))
         overlapping_terms = arg_terms.intersection(kp_terms)
-        return pow(
-            len(overlapping_terms) / min(len(arg_terms), len(kp_terms)),
-            0.25
-        )
+        overlap = len(overlapping_terms)
+        relative_overlap = overlap / max_overlap
+        if relative_overlap <= 0.4:
+            return 0
+        elif relative_overlap >= 0.6:
+            return 1
+        else:
+            return None
 
     def predict(self, data: Dataset) -> Labels:
-        return {
+        return Matcher.filter_none({
             (arg.id, kp.id): self.term_overlap(arg, kp)
-            for arg in data.arguments
-            for kp in data.key_points
-            if arg.topic == kp.topic and arg.stance == kp.stance
-        }
+            for (arg, kp) in data.argument_key_point_pairs
+        })
