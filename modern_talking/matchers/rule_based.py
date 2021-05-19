@@ -1,7 +1,7 @@
 from typing import Optional
 
 from nltk.downloader import Downloader
-from nltk.stem import PorterStemmer
+from nltk.stem import SnowballStemmer
 from nltk.tokenize import word_tokenize
 
 from modern_talking.matchers import Matcher
@@ -47,8 +47,8 @@ class AdvancedTermOverlapMatcher(UntrainedMatcher):
     This matcher is an improved version of `TermOverlapMatcher`
     with thresholds and stemming.
     """
-    name = "stemmed-term-overlap"
-    stemmer = PorterStemmer()
+    name = "advanced-term-overlap"
+    stemmer = SnowballStemmer("english")
 
     def prepare(self):
         if not downloader.is_installed("punkt"):
