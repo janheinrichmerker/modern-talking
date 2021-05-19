@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import final
+from typing import final, Optional, Dict
 
 from modern_talking.model import Labels, Dataset, \
-    LabelledDataset
+    LabelledDataset, Label, ArgumentKeyPointIdPair
 
 
 class Matcher(ABC):
@@ -50,6 +50,16 @@ class Matcher(ABC):
         :return: Dictionary of match labels for argument key point pairs.
         """
         pass
+
+    @staticmethod
+    def filter_none(
+            optional_labels: Dict[ArgumentKeyPointIdPair, Optional[Label]]
+    ) -> Labels:
+        return {
+            arg_kp: label
+            for arg_kp, label in optional_labels.items()
+            if label is not None
+        }
 
 
 class UntrainedMatcher(Matcher, ABC):
