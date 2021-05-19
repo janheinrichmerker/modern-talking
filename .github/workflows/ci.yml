@@ -29,13 +29,6 @@ jobs:
     steps:
       - name: "📥 Check-out"
         uses: actions/checkout@v2
-      - name: "💾 Cache Conda"
-        uses: actions/cache@v2
-        with:
-          path: ~/conda_pkgs_dir
-          key:
-            ${{ runner.os }}-conda-${{hashFiles('environment.yml') }}
-
       - name: "🧰 Install Python"
         uses: actions/setup-python@v1
         with:
