@@ -4,28 +4,31 @@ from modern_talking.matchers import UntrainedMatcher
 from modern_talking.model import Labels, Dataset, KeyPoint, Argument, Label
 
 
-class TopicStanceMatcher(UntrainedMatcher):
+class AllMatcher(UntrainedMatcher):
     """
     Match arguments with key points if they share the same topic and stance.
     """
 
     name = "all"
 
-    @staticmethod
-    def topic_stance_match(arg: Argument, kp: KeyPoint) -> Label:
-        if arg.topic == kp.topic and arg.stance == kp.stance:
-            return 1
-        else:
-            return 0
+    def predict(self, data: Dataset) -> Labels:
+        return {
+            (arg.id, kp.id): 1
+            for (arg, kp) in data.argument_key_point_pairs
+        }
+
+
+class NoneMatcher(UntrainedMatcher):
+    """
+    Match no argument key point pair.
+    """
+
+    name = "none"
 
     def predict(self, data: Dataset) -> Labels:
-        """
-        Match all argument key point pairs with equal topic and stance.
-        """
         return {
-            (arg.id, kp.id): self.topic_stance_match(arg, kp)
-            for arg in data.arguments
-            for kp in data.key_points
+            (arg.id, kp.id): 0
+            for (arg, kp) in data.argument_key_point_pairs
         }
 
 
@@ -40,15 +43,8 @@ class RandomMatcher(UntrainedMatcher):
     def __init__(self, seed=None):
         self.random = Random(seed) if seed is not None else Random()
 
-    def random_match(self, arg: Argument, kp: KeyPoint) -> Label:
-        if arg.topic == kp.topic and arg.stance == kp.stance:
-            return self.random.uniform(0, 1)
-        else:
-            return 0
-
     def predict(self, data: Dataset) -> Labels:
         return {
-            (arg.id, kp.id): self.random_match(arg, kp)
-            for arg in data.arguments
-            for kp in data.key_points
+            (arg.id, kp.id): self.random.uniform(0, 1)
+            for (arg, kp) in data.argument_key_point_pairs
         }

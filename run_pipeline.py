@@ -6,13 +6,15 @@ from modern_talking.evaluation.precision import Precision
 from modern_talking.evaluation.recall import Recall
 from modern_talking.evaluation.track_1 import Track1Metric
 from modern_talking.matchers import Matcher
-from modern_talking.matchers.baselines import TopicStanceMatcher, RandomMatcher
+from modern_talking.matchers.baselines import AllMatcher, RandomMatcher, \
+    NoneMatcher
 from modern_talking.matchers.rule_based import TermOverlapMatcher, \
     StemmedTermOverlapMatcher
 from modern_talking.pipeline import Pipeline
 
 matchers = (
-    TopicStanceMatcher(),
+    AllMatcher(),
+    NoneMatcher(),
     RandomMatcher(),
     TermOverlapMatcher(),
     StemmedTermOverlapMatcher(),
