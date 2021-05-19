@@ -10,6 +10,7 @@ from modern_talking.model import Argument, KeyPoint, Labels, LabelledDataset, \
 
 data_dir = Path(__file__).parent.parent.parent / "data"
 output_dir = data_dir / "out"
+cache_dir = data_dir / "cache"
 
 
 class Pipeline:
@@ -159,9 +160,14 @@ class Pipeline:
         test_data = Pipeline.load_dataset(DatasetType.TEST) \
             if not ignore_test else dev_data
 
-        # Train model.
-        print("Train model.")
-        self.matcher.train(train_data, dev_data)
+        # Load/train model.
+        model_file = cache_dir / f"model-{self.matcher.name}.pickle"
+        print("Load model.")
+        if not self.matcher.load_model(model_file):
+            print("Train model.")
+            self.matcher.train(train_data, dev_data)
+            print("Save model.")
+            self.matcher.save_model(model_file)
         # Predict labels for test data.
         print("Predict labels.")
         predicted_labels = self.matcher.predict(test_data)

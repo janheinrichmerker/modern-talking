@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from pathlib import Path
 from typing import final, Optional, Dict
 
 from modern_talking.model import Labels, Dataset, \
@@ -37,6 +38,26 @@ class Matcher(ABC):
         :param dev_data: Dataset for hyper-parameter tuning.
         """
         pass
+
+    # noinspection PyMethodMayBeStatic
+    def load_model(self, path: Path) -> bool:
+        """
+        Load a cached model from the specified file path.
+        The default implementation doesn't load anything.
+        :param path: Path to load the model from, based on the matcher name.
+        :return Whether or not the model could be loaded.
+        If not, the model is trained and then stored.
+        """
+        return False
+
+    def save_model(self, path: Path):
+        """
+        Save the trained model to the specified file path
+        for caching.
+        The default implementation doesn't save anything.
+        :param path: Path to store the model to, based on the matcher name.
+        """
+        return
 
     @abstractmethod
     def predict(self, data: Dataset) -> Labels:
