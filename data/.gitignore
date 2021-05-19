@@ -1,4 +1,4 @@
 # Don't track datasets in Git.
 *
 !.gitignore
-!out/.gitkeep
+!**/.gitkeep
