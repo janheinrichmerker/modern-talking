@@ -1,23 +1,16 @@
+import pickle
 from typing import Optional
 
+import numpy as np
 from nltk.downloader import Downloader
-from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer
-import nltk
+from nltk.tokenize import word_tokenize
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.linear_model import LogisticRegression
+
 from modern_talking.matchers import UntrainedMatcher, Matcher
 from modern_talking.model import Dataset, Labels, Argument, KeyPoint, Label
 from modern_talking.model import LabelledDataset
-import numpy as np
-# package for saving trained model
-import pickle
-
-# packages for emsemble classifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.svm import SVC
-from sklearn.ensemble import VotingClassifier
-
-# packages for feature extraction for text data
-from sklearn.feature_extraction.text import CountVectorizer
 
 downloader = Downloader()
 
