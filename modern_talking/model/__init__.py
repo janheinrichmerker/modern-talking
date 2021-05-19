@@ -70,6 +70,19 @@ class Dataset:
     arguments: Set[Argument]
     key_points: Set[KeyPoint]
 
+    @property
+    def argument_key_point_pairs(self) -> Set[ArgumentKeyPointPair]:
+        """
+        Argument key point pairs in this dataset
+        which have the same topic and stance.
+        """
+        return {
+            (arg, kp)
+            for arg in self.arguments
+            for kp in self.key_points
+            if arg.topic == kp.topic and arg.stance == kp.stance
+        }
+
 
 @dataclass(frozen=True)
 class LabelledDataset(Dataset):
