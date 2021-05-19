@@ -1,7 +1,7 @@
 from random import Random
 
 from modern_talking.matchers import UntrainedMatcher
-from modern_talking.model import Labels, Dataset, KeyPoint, Argument, Label
+from modern_talking.model import Labels, Dataset
 
 
 class AllMatcher(UntrainedMatcher):
