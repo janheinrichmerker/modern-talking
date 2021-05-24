@@ -1,3 +1,4 @@
+from os import system
 from pathlib import Path
 from pickle import dump, load
 from typing import List
@@ -10,6 +11,8 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
+from spacy import Language
+from spacy.util import is_package
 
 from modern_talking.matchers import Matcher
 from modern_talking.model import Dataset, Labels, Argument, KeyPoint
@@ -17,27 +20,27 @@ from modern_talking.model import LabelledDataset
 
 import spacy
 
-# FIXME Add spaCy download.
-# nlp = spacy.load("en_core_web_sm")
-selected_pos = ["ADJ", "ADV", "AUX", "NOUN", "PRON", "PROPN", "VERB"]
-
-
-def get_token_by_pos(text):
-    doc = nlp(text)
-    pos_list = []
-    for token in doc:
-        if token.pos_ in selected_pos:
-            pos_list.append(token.text)
-    return " ".join(pos_list)
-
 
 class EmsemblePartOfSpeechMatcher(Matcher):
     name = "ensemble-bow-pos"
     model: LogisticRegression = None
     encoder: CountVectorizer = None
+    language: Language
 
-    def prepare() -> None:
+    def prepare(self) -> None:
+        if not is_package("en_core_web_sm"):
+            system("python -m spacy download en_core_web_sm")
+        self.language = spacy.load("en_core_web_sm")
         return
+
+    def get_token_by_pos(self, text: str) -> str:
+        doc = self.language(text)
+        pos_list = []
+        selected_pos = ["ADJ", "ADV", "AUX", "NOUN", "PRON", "PROPN", "VERB"]
+        for token in doc:
+            if token.pos_ in selected_pos:
+                pos_list.append(token.text)
+        return " ".join(pos_list)
 
     def load_model(self, path: Path) -> bool:
         print(path)
@@ -54,8 +57,7 @@ class EmsemblePartOfSpeechMatcher(Matcher):
         with path.open("wb") as file:
             dump((self.model, self.encoder), file)
 
-    @staticmethod
-    def get_texts(train_data: LabelledDataset) -> List[str]:
+    def get_texts(self, train_data: LabelledDataset) -> List[str]:
         stemmer = SnowballStemmer("english")
         train_texts: List[str] = []
         for (arg_id, kp_id), label in train_data.labels.items():
@@ -69,11 +71,11 @@ class EmsemblePartOfSpeechMatcher(Matcher):
             )
             arg_terms = [
                 stemmer.stem(term)
-                for term in word_tokenize(get_token_by_pos(arg.text))
+                for term in word_tokenize(self.get_token_by_pos(arg.text))
             ]
             kp_terms = [
                 stemmer.stem(term)
-                for term in word_tokenize(get_token_by_pos(kp.text))
+                for term in word_tokenize(self.get_token_by_pos(kp.text))
             ]
 
             text = " ".join(arg_terms) + ". " + " ".join(kp_terms)
@@ -113,7 +115,8 @@ class EmsemblePartOfSpeechMatcher(Matcher):
     def get_match_probability(self, argument: Argument, key_point: KeyPoint):
         # Transform input text to numeric features.
         stemmer = SnowballStemmer("english")
-        input_text = get_token_by_pos(argument.text + ". " + key_point.text)
+        input_text = self.get_token_by_pos(
+            argument.text + ". " + key_point.text)
         input_text = " ".join(
             [stemmer.stem(term) for term in word_tokenize(input_text)])
         features = self.encoder.transform([input_text]).toarray()
