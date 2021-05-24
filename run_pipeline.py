@@ -25,7 +25,7 @@ matchers = (
     RegressionBagOfWordsMatcher(),
     RegressionTfidfMatcher(),
     EmsembleVotingMatcher(),
-    EmsemblePartOfSpeechMatcher,
+    EmsemblePartOfSpeechMatcher(),
 )
 
 metrics = (
