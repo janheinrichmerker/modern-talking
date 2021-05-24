@@ -2,10 +2,8 @@ from pathlib import Path
 from pickle import dump, load
 from typing import List
 
-from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
 from nltk.tokenize import word_tokenize
-
 from numpy import array
 from sklearn.ensemble import VotingClassifier
 from sklearn.feature_extraction.text import CountVectorizer
@@ -19,8 +17,8 @@ from modern_talking.model import LabelledDataset
 
 import spacy
 
-nltk_stop_words = set(stopwords.words('english'))
-nlp = spacy.load("en_core_web_sm")
+# FIXME Add spaCy download.
+# nlp = spacy.load("en_core_web_sm")
 selected_pos = ["ADJ", "ADV", "AUX", "NOUN", "PRON", "PROPN", "VERB"]
 
 
@@ -37,6 +35,9 @@ class EmsemblePartOfSpeechMatcher(Matcher):
     name = "ensemble-bow-pos"
     model: LogisticRegression = None
     encoder: CountVectorizer = None
+
+    def prepare() -> None:
+        return
 
     def load_model(self, path: Path) -> bool:
         print(path)
