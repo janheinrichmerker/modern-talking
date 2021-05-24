@@ -3,6 +3,7 @@ from pathlib import Path
 from pickle import dump, load
 from typing import List
 
+from nltk.downloader import Downloader
 from nltk.stem import SnowballStemmer
 from nltk.tokenize import word_tokenize
 from numpy import array
@@ -20,6 +21,8 @@ from modern_talking.model import LabelledDataset
 
 import spacy
 
+downloader = Downloader()
+
 
 class EnsemblePartOfSpeechMatcher(Matcher):
     name = "ensemble-bow-pos"
@@ -28,10 +31,13 @@ class EnsemblePartOfSpeechMatcher(Matcher):
     language: Language
 
     def prepare(self) -> None:
+        # Install NLTK punctuation for tokenization.
+        if not downloader.is_installed("punkt"):
+            downloader.download('punkt')
+        # Install English spaCy model.
         if not is_package("en_core_web_sm"):
             system("python -m spacy download en_core_web_sm")
         self.language = spacy.load("en_core_web_sm")
-        return
 
     def get_token_by_pos(self, text: str) -> str:
         doc = self.language(text)
@@ -139,6 +145,11 @@ class EnsembleVotingMatcher(Matcher):
     model: VotingClassifier = None
     encoder: CountVectorizer = None
 
+    def prepare(self) -> None:
+        # Install NLTK punctuation for tokenization.
+        if not downloader.is_installed("punkt"):
+            downloader.download('punkt')
+
     def load_model(self, path: Path) -> bool:
         print(path)
         if self.model is not None and self.encoder is not None:
@@ -240,6 +251,11 @@ class RegressionTfidfMatcher(Matcher):
     print(model)
     print(encoder)
 
+    def prepare(self) -> None:
+        # Install NLTK punctuation for tokenization.
+        if not downloader.is_installed("punkt"):
+            downloader.download('punkt')
+
     def load_model(self, path: Path) -> bool:
         print(path)
         if self.model is not None and self.encoder is not None:
@@ -314,6 +330,11 @@ class RegressionBagOfWordsMatcher(Matcher):
 
     print(model)
     print(encoder)
+
+    def prepare(self) -> None:
+        # Install NLTK punctuation for tokenization.
+        if not downloader.is_installed("punkt"):
+            downloader.download('punkt')
 
     def load_model(self, path: Path) -> bool:
         print(path)
