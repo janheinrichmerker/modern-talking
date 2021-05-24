@@ -22,7 +22,7 @@ class Matcher(ABC):
         """
         pass
 
-    def prepare(self):
+    def prepare(self) -> None:
         """
         Prepare and initialize matcher.
         This method can be used, for example, to download additional data.

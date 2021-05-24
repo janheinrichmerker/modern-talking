@@ -18,7 +18,7 @@ class TermOverlapMatcher(UntrainedMatcher):
     """
     name = "term-overlap"
 
-    def prepare(self):
+    def prepare(self) -> None:
         if not downloader.is_installed("punkt"):
             downloader.download('punkt')
 
@@ -50,7 +50,7 @@ class AdvancedTermOverlapMatcher(UntrainedMatcher):
     name = "advanced-term-overlap"
     stemmer = SnowballStemmer("english")
 
-    def prepare(self):
+    def prepare(self) -> None:
         if not downloader.is_installed("punkt"):
             downloader.download('punkt')
 
