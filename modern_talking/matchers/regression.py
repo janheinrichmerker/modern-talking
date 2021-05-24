@@ -6,8 +6,6 @@ from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
 from nltk.tokenize import word_tokenize
 
-nltk_stop_words = set(stopwords.words('english'))
-
 from numpy import array
 from sklearn.ensemble import VotingClassifier
 from sklearn.feature_extraction.text import CountVectorizer
@@ -20,8 +18,11 @@ from modern_talking.model import Dataset, Labels, Argument, KeyPoint
 from modern_talking.model import LabelledDataset
 
 import spacy
+
+nltk_stop_words = set(stopwords.words('english'))
 nlp = spacy.load("en_core_web_sm")
 selected_pos = ["ADJ", "ADV", "AUX", "NOUN", "PRON", "PROPN", "VERB"]
+
 
 def get_token_by_pos(text):
     doc = nlp(text)
@@ -30,6 +31,7 @@ def get_token_by_pos(text):
         if token.pos_ in selected_pos:
             pos_list.append(token.text)
     return " ".join(pos_list)
+
 
 class EmsemblePartOfSpeechMatcher(Matcher):
     name = "ensemble-bow-pos"
@@ -78,7 +80,7 @@ class EmsemblePartOfSpeechMatcher(Matcher):
         return train_texts
 
     def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
-      
+
         self.train_encoder(train_data)
 
         train_features = self.encoder.transform(self.get_texts(train_data))
@@ -111,12 +113,13 @@ class EmsemblePartOfSpeechMatcher(Matcher):
         # Transform input text to numeric features.
         stemmer = SnowballStemmer("english")
         input_text = get_token_by_pos(argument.text + ". " + key_point.text)
-        input_text = " ".join([ stemmer.stem(term) for term in word_tokenize(input_text)])
+        input_text = " ".join(
+            [stemmer.stem(term) for term in word_tokenize(input_text)])
         features = self.encoder.transform([input_text]).toarray()
         # Predict label and probability with pretrained model.
         probability = self.model.predict_proba(features)
         label = self.model.predict(features)[0]
-        score = probability[0][1] #get probability of class 1
+        score = probability[0][1]  # get probability of class 1
         return score
 
     def predict(self, data: Dataset) -> Labels:
@@ -127,8 +130,8 @@ class EmsemblePartOfSpeechMatcher(Matcher):
             if arg.topic == kp.topic and arg.stance == kp.stance
         }
 
+
 class EmsembleVotingMatcher(Matcher):
-    
     name = "ensemble-bow-voting"
     model: VotingClassifier = None
     encoder: CountVectorizer = None
@@ -194,9 +197,9 @@ class EmsembleVotingMatcher(Matcher):
         )
         svc = SVC(probability=True)
         self.model = VotingClassifier(
-             estimators=[('lr', log_regression), ('svc', svc)],
-             voting='soft',
-             weights=[0.45, 0.55]
+            estimators=[('lr', log_regression), ('svc', svc)],
+            voting='soft',
+            weights=[0.45, 0.55]
         )
         self.model.fit(train_features, train_labels)
 
@@ -209,12 +212,13 @@ class EmsembleVotingMatcher(Matcher):
         # Transform input text to numeric features.
         stemmer = SnowballStemmer("english")
         input_text = argument.text + " " + key_point.text
-        input_text = " ".join([ stemmer.stem(term) for term in word_tokenize(input_text)])
+        input_text = " ".join(
+            [stemmer.stem(term) for term in word_tokenize(input_text)])
         features = self.encoder.transform([input_text]).toarray()
         # Predict label and probability with pretrained model.
         probability = self.model.predict_proba(features)
         label = self.model.predict(features)[0]
-        score = probability[0][1] #get probability of class 1
+        score = probability[0][1]  # get probability of class 1
         return score
 
     def predict(self, data: Dataset) -> Labels:
@@ -309,11 +313,12 @@ class RegressionTfidfMatcher(Matcher):
         # Transform input text to numeric features.
         stemmer = SnowballStemmer("english")
         input_text = argument.text + " " + key_point.text
-        input_text = " ".join([ stemmer.stem(term) for term in word_tokenize(input_text)])
+        input_text = " ".join(
+            [stemmer.stem(term) for term in word_tokenize(input_text)])
         features = self.encoder.transform([input_text]).toarray()
         # Predict label and probability with pretrained model.
         probability = self.model.predict_proba(features)
-        score = probability[0][1] #get probability of class 1
+        score = probability[0][1]  # get probability of class 1
         return score
 
     def predict(self, data: Dataset) -> Labels:
@@ -323,6 +328,7 @@ class RegressionTfidfMatcher(Matcher):
             for kp in data.key_points
             if arg.topic == kp.topic and arg.stance == kp.stance
         }
+
 
 class RegressionBagOfWordsMatcher(Matcher):
     """
@@ -413,12 +419,13 @@ class RegressionBagOfWordsMatcher(Matcher):
         # Transform input text to numeric features.
         stemmer = SnowballStemmer("english")
         input_text = argument.text + " " + key_point.text
-        input_text = " ".join([ stemmer.stem(term) for term in word_tokenize(input_text)])
+        input_text = " ".join(
+            [stemmer.stem(term) for term in word_tokenize(input_text)])
         features = self.encoder.transform([input_text]).toarray()
         # Predict label and probability with pretrained model.
         probability = self.model.predict_proba(features)
         label = self.model.predict(features)[0]
-        score = probability[0][1] #get probability of class 1
+        score = probability[0][1]  # get probability of class 1
         # if label[0] == 1.0:
         #    score = probability[0][1]
         # else:
