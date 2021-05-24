@@ -1,0 +1,74 @@
+\documentclass[english,handout]{mlutalk}
+
+\title{Ideas for Approaches}
+% \title{%
+%   Modern Talking: Key-Point Analysis \\
+%   using Modern Natural Language Processing
+% }
+\subtitle{Natural Language Processing, Summer Semester 2021}
+\author{Max Henze \and Hanh Luu \and Jan Heinrich Reimer}
+\institute{Martin Luther University Halle-Wittenberg}
+\date{\today}
+\titlegraphic{\includegraphics[width=3cm]{figures/mlu-halle}}
+
+\addbibresource{../../../literature/literature.bib}
+
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{xspace}
+\usepackage{biblatex}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\newcommand{\Bert}{\textsc{Bert}\xspace}
+\newcommand{\ArgKP}{\mbox{ArgKP}\xspace}
+\newcommand{\ArgQ}{\mbox{IBM-ArgQ-Rank-30kArgs}\xspace}
+\newcommand{\BiLSTM}{\mbox{BiLSTM}\xspace}
+\newcommand{\BertBase}{\textsc{Bert}-Base\xspace}
+\newcommand{\BertLarge}{\textsc{Bert}-Large\xspace}
+\newcommand{\TF}{\mbox{TF}\xspace}
+\newcommand{\TFIDF}{\mbox{TF/IDF}\xspace}
+
+\begin{document}
+
+\titleframe
+
+
+\begin{frame}{Language Model Approach}
+  
+  \begin{itemize}
+    \item Using BERT we can create the following input structure\\
+      \begin{itemize}
+        \item \textit{[CLS]} argument \textit{[SEP]} Key Point
+      \end{itemize}
+    \item Hence learning contextual relations between words
+  \end{itemize}
+
+  \begin{tabular}{ll}
+    \toprule
+      pro & con \\
+    \midrule
+      often used as baseline & computationally intensive \\
+      often good results but not too good & might need to use DistilBERT\\
+    \bottomrule
+  \end{tabular}
+
+\end{frame}
+
+\begin{frame}{Language Model Approach cont.}
+  
+    \begin{itemize}
+      \item \cite{StabMSRG2018} showed that integrating topic information "has a strong impact on argument prediction"
+      \item Therefore maybe use BICLSTM and integrate topic information only on i and c gates
+    \end{itemize}
+  
+\end{frame}
+
+
+
+\appendix
+\section{\appendixname}
+
+\bibliographyframe
+
+\end{document}
