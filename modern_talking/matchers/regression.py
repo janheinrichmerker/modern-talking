@@ -49,7 +49,6 @@ class EnsemblePartOfSpeechMatcher(Matcher):
         return " ".join(pos_list)
 
     def load_model(self, path: Path) -> bool:
-        print(path)
         if self.model is not None and self.encoder is not None:
             return True
         if not path.exists() or not path.is_file():
@@ -59,7 +58,6 @@ class EnsemblePartOfSpeechMatcher(Matcher):
             return True
 
     def save_model(self, path: Path):
-        print(path)
         with path.open("wb") as file:
             dump((self.model, self.encoder), file)
 
@@ -151,7 +149,6 @@ class EnsembleVotingMatcher(Matcher):
             downloader.download('punkt')
 
     def load_model(self, path: Path) -> bool:
-        print(path)
         if self.model is not None and self.encoder is not None:
             return True
         if not path.exists() or not path.is_file():
@@ -161,7 +158,6 @@ class EnsembleVotingMatcher(Matcher):
             return True
 
     def save_model(self, path: Path):
-        print(path)
         with path.open("wb") as file:
             dump((self.model, self.encoder), file)
 
@@ -248,16 +244,12 @@ class RegressionTfidfMatcher(Matcher):
     model: LogisticRegression = None
     encoder: TfidfVectorizer = None
 
-    print(model)
-    print(encoder)
-
     def prepare(self) -> None:
         # Install NLTK punctuation for tokenization.
         if not downloader.is_installed("punkt"):
             downloader.download('punkt')
 
     def load_model(self, path: Path) -> bool:
-        print(path)
         if self.model is not None and self.encoder is not None:
             return True
         if not path.exists() or not path.is_file():
@@ -267,7 +259,6 @@ class RegressionTfidfMatcher(Matcher):
             return True
 
     def save_model(self, path: Path):
-        print(path)
         with path.open("wb") as file:
             dump((self.model, self.encoder), file)
 
@@ -328,16 +319,12 @@ class RegressionBagOfWordsMatcher(Matcher):
     model: LogisticRegression = None
     encoder: CountVectorizer = None
 
-    print(model)
-    print(encoder)
-
     def prepare(self) -> None:
         # Install NLTK punctuation for tokenization.
         if not downloader.is_installed("punkt"):
             downloader.download('punkt')
 
     def load_model(self, path: Path) -> bool:
-        print(path)
         if self.model is not None and self.encoder is not None:
             return True
         if not path.exists() or not path.is_file():
@@ -347,7 +334,6 @@ class RegressionBagOfWordsMatcher(Matcher):
             return True
 
     def save_model(self, path: Path):
-        print(path)
         with path.open("wb") as file:
             dump((self.model, self.encoder), file)
 
