@@ -21,7 +21,7 @@ from modern_talking.model import LabelledDataset
 import spacy
 
 
-class EmsemblePartOfSpeechMatcher(Matcher):
+class EnsemblePartOfSpeechMatcher(Matcher):
     name = "ensemble-bow-pos"
     model: LogisticRegression = None
     encoder: CountVectorizer = None
@@ -135,7 +135,7 @@ class EmsemblePartOfSpeechMatcher(Matcher):
         }
 
 
-class EmsembleVotingMatcher(Matcher):
+class EnsembleVotingMatcher(Matcher):
     name = "ensemble-bow-voting"
     model: VotingClassifier = None
     encoder: CountVectorizer = None
