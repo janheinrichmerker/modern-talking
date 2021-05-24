@@ -15,6 +15,7 @@ pytest = "*"
 pytest-cov = "*"
 rope = "*"
 flake8 = "*"
+spacy = "*"
 
 [requires]
 python_version = "3.8"
