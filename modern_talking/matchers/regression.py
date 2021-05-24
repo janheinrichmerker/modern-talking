@@ -2,11 +2,10 @@ from pathlib import Path
 from pickle import dump, load
 from typing import List
 
-import nltk
-from nltk.stem.porter import PorterStemmer
+from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
 from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
+
 nltk_stop_words = set(stopwords.words('english'))
 
 from numpy import array
