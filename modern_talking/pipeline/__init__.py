@@ -1,4 +1,5 @@
-from csv import reader
+from csv import DictReader
+from json import load, dump
 from pathlib import Path
 from typing import Set
 
@@ -6,6 +7,10 @@ from modern_talking.evaluation import Metric
 from modern_talking.matchers import Matcher
 from modern_talking.model import Argument, KeyPoint, Labels, LabelledDataset, \
     DatasetType
+
+data_dir = Path(__file__).parent.parent.parent / "data"
+output_dir = data_dir / "out"
+cache_dir = data_dir / "cache"
 
 
 class Pipeline:
@@ -42,8 +47,6 @@ class Pipeline:
         else:
             raise Exception("Unknown dataset type")
 
-        data_dir = Path(__file__).parent.parent.parent / "data"
-
         arguments_file = data_dir / f"arguments_{suffix}.csv"
         key_points_file = data_dir / f"key_points_{suffix}.csv"
         labels_file = data_dir / f"labels_{suffix}.csv"
@@ -62,9 +65,10 @@ class Pipeline:
         :return: A set of arguments from the file.
         """
         with path.open("r") as file:
-            csv = reader(file)
+            csv = DictReader(file)
             return {
-                Argument(row[0], row[1], row[2], int(row[3]))
+                Argument(row["arg_id"], row["argument"], row["topic"],
+                         int(row["stance"]))
                 for row in csv
             }
 
@@ -76,9 +80,10 @@ class Pipeline:
         :return: A set of key points from the file.
         """
         with path.open("r") as file:
-            csv = reader(file)
+            csv = DictReader(file)
             return {
-                KeyPoint(row[0], row[1], row[2], int(row[3]))
+                KeyPoint(row["key_point_id"], row["key_point"], row["topic"],
+                         int(row["stance"]))
                 for row in csv
             }
 
@@ -91,11 +96,47 @@ class Pipeline:
         from the file.
         """
         with path.open("r") as file:
-            csv = reader(file)
+            csv = DictReader(file)
             return {
-                (row[0], row[1]): row[2]
+                (row["arg_id"], row["key_point_id"]): float(row["label"])
                 for row in csv
             }
+
+    @staticmethod
+    def load_predictions(path: Path) -> Labels:
+        """
+        Load predicted argument key point match labels from a JSON file.
+        :param path: Path to the JSON file.
+        :return: A dictionary of match labels for argument and key point IDs
+        from the file.
+        """
+        with path.open("r") as file:
+            json = load(file)
+            return {
+                (arg, kp): float(label)
+                for arg, kps in json.items()
+                for kp, label in kps.items()
+            }
+
+    @staticmethod
+    def save_predictions(path: Path, labels: Labels):
+        """
+        Save predicted argument key point match labels to a JSON file.
+        :param path: Path to the JSON file.
+        :param labels: A dictionary of match labels for argument and
+        key point IDs to save to the file.
+        """
+        with path.open("w") as file:
+            args = {arg for arg, _ in labels.keys()}
+            json = {
+                arg: {
+                    kp: label
+                    for (arg_inner, kp), label in labels.items()
+                    if arg_inner == arg
+                }
+                for arg in args
+            }
+            dump(json, file)
 
     def train_evaluate(self, ignore_test: bool = False) -> float:
         """
@@ -108,17 +149,44 @@ class Pipeline:
         :return: The evaluated score as returned by the evaluator.
         """
 
-        # Load datasets
+        # Prepare matcher.
+        print("Prepare matcher.")
+        self.matcher.prepare()
+
+        # Load datasets.
+        print("Load datasets.")
         train_data = Pipeline.load_dataset(DatasetType.TRAIN)
         dev_data = Pipeline.load_dataset(DatasetType.DEV)
         test_data = Pipeline.load_dataset(DatasetType.TEST) \
             if not ignore_test else dev_data
 
-        # Train model.
-        self.matcher.train(train_data, dev_data)
+        # Load/train model.
+        model_file = cache_dir / f"model-{self.matcher.name}.pickle"
+        print("Load model.")
+        if not self.matcher.load_model(model_file):
+            print("Train model.")
+            self.matcher.train(train_data, dev_data)
+            print("Save model.")
+            self.matcher.save_model(model_file)
         # Predict labels for test data.
+        print("Predict labels.")
         predicted_labels = self.matcher.predict(test_data)
+
+        print("Save predictions.")
+        predictions_file = output_dir / f"predictions-{self.metric.name}-" \
+                                        f"with-{self.matcher.name}.json"
+        Pipeline.save_predictions(predictions_file, predicted_labels)
+        saved_predicted_labels = Pipeline.load_predictions(predictions_file)
+        assert saved_predicted_labels == predicted_labels
+
         # Get ground-truth labels from test data.
         ground_truth_labels = test_data.labels
+
         # Evaluate labels.
-        return self.metric.evaluate(predicted_labels, ground_truth_labels)
+        print("Evaluate labels.")
+        result = self.metric.evaluate(predicted_labels, ground_truth_labels)
+        result_saved = self.metric.evaluate(saved_predicted_labels,
+                                            ground_truth_labels)
+        assert result_saved == result
+
+        return result

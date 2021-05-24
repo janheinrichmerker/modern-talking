@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import final
+from pathlib import Path
+from typing import final, Optional, Dict
 
 from modern_talking.model import Labels, Dataset, \
-    LabelledDataset
+    LabelledDataset, Label, ArgumentKeyPointIdPair
 
 
 class Matcher(ABC):
@@ -21,6 +22,13 @@ class Matcher(ABC):
         """
         pass
 
+    def prepare(self):
+        """
+        Prepare and initialize matcher.
+        This method can be used, for example, to download additional data.
+        """
+        return
+
     @abstractmethod
     def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
         """
@@ -30,6 +38,26 @@ class Matcher(ABC):
         :param dev_data: Dataset for hyper-parameter tuning.
         """
         pass
+
+    # noinspection PyMethodMayBeStatic
+    def load_model(self, path: Path) -> bool:
+        """
+        Load a cached model from the specified file path.
+        The default implementation doesn't load anything.
+        :param path: Path to load the model from, based on the matcher name.
+        :return Whether or not the model could be loaded.
+        If not, the model is trained and then stored.
+        """
+        return False
+
+    def save_model(self, path: Path):
+        """
+        Save the trained model to the specified file path
+        for caching.
+        The default implementation doesn't save anything.
+        :param path: Path to store the model to, based on the matcher name.
+        """
+        return
 
     @abstractmethod
     def predict(self, data: Dataset) -> Labels:
@@ -43,6 +71,16 @@ class Matcher(ABC):
         :return: Dictionary of match labels for argument key point pairs.
         """
         pass
+
+    @staticmethod
+    def filter_none(
+            optional_labels: Dict[ArgumentKeyPointIdPair, Optional[Label]]
+    ) -> Labels:
+        return {
+            arg_kp: label
+            for arg_kp, label in optional_labels.items()
+            if label is not None
+        }
 
 
 class UntrainedMatcher(Matcher, ABC):

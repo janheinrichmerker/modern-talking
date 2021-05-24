@@ -12,6 +12,7 @@
       <excludeFolder url="file://$MODULE_DIR$/literature/bert-siamese-neural-network" />
       <excludeFolder url="file://$MODULE_DIR$/literature/key-point-analysis" />
       <excludeFolder url="file://$MODULE_DIR$/literature/stance-classification" />
+      <excludeFolder url="file://$MODULE_DIR$/.pytest_cache" />
     </content>
     <orderEntry type="jdk" jdkName="Pipenv (Project)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

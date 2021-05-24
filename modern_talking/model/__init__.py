@@ -15,7 +15,7 @@ Topic = str
 Stance = Literal[1, -1]
 
 
-@dataclass
+@dataclass(frozen=True)
 class Argument:
     """
     Single argument with a specified stance against its topic.
@@ -26,7 +26,7 @@ class Argument:
     stance: Stance
 
 
-@dataclass
+@dataclass(frozen=True)
 class KeyPoint:
     """
     Single key point with a specified stance against its topic.
@@ -62,7 +62,7 @@ class DatasetType(Enum):
     DEV = auto()
 
 
-@dataclass
+@dataclass(frozen=True)
 class Dataset:
     """
     Dataset with arguments and key points.
@@ -70,8 +70,21 @@ class Dataset:
     arguments: Set[Argument]
     key_points: Set[KeyPoint]
 
+    @property
+    def argument_key_point_pairs(self) -> Set[ArgumentKeyPointPair]:
+        """
+        Argument key point pairs in this dataset
+        which have the same topic and stance.
+        """
+        return {
+            (arg, kp)
+            for arg in self.arguments
+            for kp in self.key_points
+            if arg.topic == kp.topic and arg.stance == kp.stance
+        }
 
-@dataclass
+
+@dataclass(frozen=True)
 class LabelledDataset(Dataset):
     """
     Annotated dataset with arguments, key points and match labels.
