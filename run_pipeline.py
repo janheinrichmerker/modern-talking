@@ -9,7 +9,9 @@ from modern_talking.evaluation.track_1 import Track1Metric
 from modern_talking.matchers import Matcher
 from modern_talking.matchers.baselines import AllMatcher, RandomMatcher, \
     NoneMatcher
-from modern_talking.matchers.regression import EnsembleBagOfWordsMatcher
+from modern_talking.matchers.regression import EmsembleVotingMatcher, \
+    RegressionTfidfMatcher, RegressionBagOfWordsMatcher, EmsemblePartOfSpeechMatcher
+
 from modern_talking.matchers.rule_based import TermOverlapMatcher, \
     AdvancedTermOverlapMatcher
 from modern_talking.pipeline import Pipeline
@@ -20,7 +22,10 @@ matchers = (
     RandomMatcher(),
     TermOverlapMatcher(),
     AdvancedTermOverlapMatcher(),
-    EnsembleBagOfWordsMatcher(),
+    RegressionBagOfWordsMatcher(),
+    RegressionTfidfMatcher(),
+    EmsembleVotingMatcher(),
+    EmsemblePartOfSpeechMatcher,
 )
 
 metrics = (
