@@ -47,6 +47,7 @@
 % Math:
 \RequirePackage{amsmath}
 \RequirePackage{amssymb}
+\RequirePackage{bm}
 
 % Swap commands for better style.
 \let\tmp\mod \let\mod\bmod \let\bmod\tmp
@@ -117,7 +118,7 @@
 % Pro/contra items in lists:
 \RequirePackage{bm}
 \newcommand{\pro}{\item[\(\bm{+}\)]} % Pro item
-\newcommand{\contra}{\item[\(\bm{-}\)]} % Contra item
+\newcommand{\contra}{\item[\(\bm{-}\)]}\newcommand{\con}{\contra} % Contra item
 
 % "Thank you!" banner.
 \newcommand{\thankyouname}{Thank you!}

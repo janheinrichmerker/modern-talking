@@ -1,6 +1,6 @@
 \documentclass[english,handout]{mlutalk}
 
-\title{Ideas for Approaches}
+\title{Ideas for Approaches -- Modern Talking}
 % \title{%
 %   Modern Talking: Key-Point Analysis \\
 %   using Modern Natural Language Processing
@@ -11,12 +11,10 @@
 \date{\today}
 \titlegraphic{\includegraphics[width=3cm]{figures/mlu-halle}}
 
-\addbibresource{../../../literature/literature.bib}
+\addbibresource{../literature/literature.bib}
 
-\usepackage{tikz}
 \usepackage{listings}
 \usepackage{xspace}
-\usepackage{biblatex}
 \usepackage{tabularx}
 \usepackage{booktabs}
 
@@ -26,47 +24,65 @@
 \newcommand{\BiLSTM}{\mbox{BiLSTM}\xspace}
 \newcommand{\BertBase}{\textsc{Bert}-Base\xspace}
 \newcommand{\BertLarge}{\textsc{Bert}-Large\xspace}
+\newcommand{\DistilBert}{Distil\textsc{Bert}\xspace}
 \newcommand{\TF}{\mbox{TF}\xspace}
 \newcommand{\TFIDF}{\mbox{TF/IDF}\xspace}
+
+\lstset{basicstyle=\ttfamily\footnotesize}
 
 \begin{document}
 
 \titleframe
 
-
-\begin{frame}{Language Model Approach}
-  
+\begin{frame}{Term Overlap (Rule-Based)}
   \begin{itemize}
-    \item Using BERT we can create the following input structure\\
-      \begin{itemize}
-        \item \textit{[CLS]} argument \textit{[SEP]} Key Point
-      \end{itemize}
-    \item Hence learning contextual relations between words
+    \item count words that occur in argument and key Point
+    \item in relation to minimal length \(\to\) normalized score
+    \item preprocessing: Snowball stemmer~\cite{Porter1980}
+    \item only decide if relative overlap \(\leq 0.4\) or \(\geq 0.6\)
   \end{itemize}
 
+  \begin{block}{Pro/Con}
+    \begin{itemize}
+      \pro simple baseline
+      \pro reasonable improvement with preprocessing
+      \con poor performance on shared task's strict metric
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Using Language Models}
+
+  \begin{itemize}
+    \item Using \Bert we can create the following input structure \\
+    \lstinline{[CLS] Argument [SEP] Key Point}
+    \item \Bert allows learning contextual relations between words
+  \end{itemize}
+
+  \begin{table}
   \begin{tabular}{ll}
     \toprule
-      pro & con \\
+    \textbf{Pro} & \textbf{Con} \\
     \midrule
-      often used as baseline & computationally intensive \\
-      often good results but not too good & might need to use DistilBERT\\
+    often used as baseline & computationally intensive \\
+    good results (though not too good) & might need to use \DistilBert \\
     \bottomrule
   \end{tabular}
+  \end{table}
 
 \end{frame}
 
-\begin{frame}{Language Model Approach cont.}
+\begin{frame}{Topic Information / \BiLSTM}
   
-    \begin{itemize}
-      \item \cite{StabMSRG2018} showed that integrating topic information "has a strong impact on argument prediction"
-      \item Therefore maybe use BICLSTM and integrate topic information only on i and c gates
-    \end{itemize}
-  
+  \begin{itemize}
+    \item Stab et al. show that integrating topic information \textquote{has a strong impact on argument prediction}~\cite{StabMSRG2018}
+    \item Therefore maybe use \BiLSTM and integrate topic information only on \(i\)~and \(c\)~gates
+  \end{itemize}
+
 \end{frame}
-
-
 
 \appendix
+
 \section{\appendixname}
 
 \bibliographyframe
