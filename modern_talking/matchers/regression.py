@@ -32,7 +32,7 @@ class SVCPartOfSpeechMatcher(Matcher):
     def prepare(self) -> None:
         if not is_package("en_core_web_sm"):
             system("python -m spacy download en_core_web_sm")
-        self.language = spacy.load("en_core_web_sm")
+        self.language = spacy_load("en_core_web_sm")
         return
 
     def get_token_by_pos(self, text: str) -> str:
@@ -235,7 +235,7 @@ class RegressionPartOfSpeechMatcher(Matcher):
     def prepare(self) -> None:
         if not is_package("en_core_web_sm"):
             system("python -m spacy download en_core_web_sm")
-        self.language = spacy.load("en_core_web_sm")
+        self.language = spacy_load("en_core_web_sm")
         return
 
     def get_token_by_pos(self, text: str) -> str:
