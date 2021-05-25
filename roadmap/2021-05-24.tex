@@ -27,6 +27,7 @@
 \newcommand{\DistilBert}{Distil\textsc{Bert}\xspace}
 \newcommand{\TF}{\mbox{TF}\xspace}
 \newcommand{\TFIDF}{\mbox{TF/IDF}\xspace}
+\newcommand{\mAP}{\mbox{mAP}\xspace}
 
 \lstset{basicstyle=\ttfamily\footnotesize}
 
@@ -46,29 +47,73 @@
     \begin{itemize}
       \pro simple baseline
       \pro reasonable improvement with preprocessing
-      \con poor performance on shared task's strict metric
+      \con poor performance on shared task's strict \mAP metric
     \end{itemize}
   \end{block}
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Logistic Regression and Ensemble Voting}
+
+  \begin{itemize}
+    % TODO Reasoning behind the approaches?
+    \item Logistic regression on bags-of-words~(BOW) or \TFIDF \\
+    \item Support vector classifier~(SVC) on BOW
+    \item vecturize using \lstinline{CountVectorizer}~(for BOW) or \lstinline{TFIDFVectorizer}~(for \TFIDF)
+    \item Ensemble of logistic regression and SVM
+    \item Improve with part-of-speech tagging~(POS) % TODO How?
+    \item Stemming with Snowball stemmer~\cite{Porter1980}
+  \end{itemize}
+
+  \begin{block}{Improvement ideas}
+  \begin{itemize}
+      \item reduce features by trimming words, e.g., \textttsmall{homeschooling} \(\to\) \textttsmall{homesch}
+      \item lemmatization vs. stemming
+      \item other solvers for logistic regression
+      \item use Doc2Vec embeddings for features
+  \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Comparison}
+  \begin{table}
+    \centering
+    \caption{Strict and relaxed mean average precision~(\mAP) as computed with the shared task's evaluation script.}
+    \begin{tabular}{lcc}
+      \toprule
+      \textbf{Approach} & \multicolumn{2}{c}{\textbf{\mAP}} \\
+      & strict & relaxed \\
+      \midrule
+      term overlap~(no preprocessing) & 0.52 & 0.70 \\
+      term overlap~(with preprocessing) & \underline{0.56} & 0.72 \\
+      regression~(C=1, \TFIDF) & ??? & 0.55 \\
+      regression~(C=14, BOW) & ??? & 0.70 \\
+      regression~(C=14, BOW, POS) & ??? & 0.66 \\
+      SVC~(BOW) & ??? & 0.70 \\
+      SVC~(BOW, POS) & ??? & \underline{0.74} \\
+      ensemble~(LG=0.55, SVC=0.45, BOW) & ??? & 0.64 \\
+      ensemble~(LG=0.55, SVC=0.45, BOW, POS) & ??? & 0.70 \\
+      ensemble~(LG=0.45, SVC=0.55, BOW) & ??? & 0.65 \\
+      ensemble~(LG=0.45, SVC=0.55, BOW, POS) & ??? & 0.71 \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
 \end{frame}
 
 \begin{frame}{Using Language Models}
 
   \begin{itemize}
-    \item Using \Bert we can create the following input structure \\
+    \item using \Bert we can create the following input structure \\
     \lstinline{[CLS] Argument [SEP] Key Point}
     \item \Bert allows learning contextual relations between words
   \end{itemize}
 
-  \begin{table}
-  \begin{tabular}{ll}
-    \toprule
-    \textbf{Pro} & \textbf{Con} \\
-    \midrule
-    often used as baseline & computationally intensive \\
-    good results (though not too good) & might need to use \DistilBert \\
-    \bottomrule
-  \end{tabular}
-  \end{table}
+  \begin{block}{Pro/Con}
+    \begin{itemize}
+      \pro often used as baseline
+      \pro good results (though not too good)
+      \con computationally intensive \\ might need to use \DistilBert
+    \end{itemize}
+  \end{block}
 
 \end{frame}
 
@@ -76,7 +121,7 @@
   
   \begin{itemize}
     \item Stab et al. show that integrating topic information \textquote{has a strong impact on argument prediction}~\cite{StabMSRG2018}
-    \item Therefore maybe use \BiLSTM and integrate topic information only on \(i\)~and \(c\)~gates
+    \item maybe use \BiLSTM and integrate topic information only on \(i\)~and \(c\)~gates
   \end{itemize}
 
 \end{frame}
