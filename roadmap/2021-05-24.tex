@@ -37,7 +37,7 @@
 
 \begin{frame}{Term Overlap (Rule-Based)}
   \begin{itemize}
-    \item count words that occur in argument and key Point
+    \item count words that occur in argument and key point
     \item in relation to minimal length \(\to\) normalized score
     \item preprocessing: Snowball stemmer~\cite{Porter1980}
     \item only decide if relative overlap \(\leq 0.4\) or \(\geq 0.6\)
@@ -56,12 +56,12 @@
 
   \begin{itemize}
     % TODO Reasoning behind the approaches?
-    \item Logistic regression on bags-of-words~(BOW) or \TFIDF \\
-    \item Support vector classifier~(SVC) on BOW
-    \item vecturize using \lstinline{CountVectorizer}~(for BOW) or \lstinline{TFIDFVectorizer}~(for \TFIDF)
-    \item Ensemble of logistic regression and SVM
-    \item Improve with part-of-speech tagging~(POS) % TODO How?
-    \item Stemming with Snowball stemmer~\cite{Porter1980}
+    \item logistic regression on bags-of-words~(BOW) or \TFIDF \\
+    \item support vector classifier~(SVC) on BOW
+    \item vectorize using \lstinline{CountVectorizer}~(for BOW) or \lstinline{TFIDFVectorizer}~(for \TFIDF)
+    \item ensemble of logistic regression and SVM
+    \item improve with part-of-speech tagging~(POS) % TODO How?
+    \item stemming with Snowball stemmer~\cite{Porter1980}
   \end{itemize}
 
   \begin{block}{Improvement ideas}
@@ -103,7 +103,7 @@
 
   \begin{itemize}
     \item using \Bert we can create the following input structure \\
-    \lstinline{[CLS] Argument [SEP] Key Point}
+    \lstinline{[CLS] argument [SEP] key point}
     \item \Bert allows learning contextual relations between words
   \end{itemize}
 
