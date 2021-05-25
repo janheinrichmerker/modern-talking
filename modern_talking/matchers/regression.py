@@ -45,7 +45,6 @@ class SVCPartOfSpeechMatcher(Matcher):
         return " ".join(pos_list)
 
     def load_model(self, path: Path) -> bool:
-        print(path)
         if self.model is not None and self.encoder is not None:
             return True
         if not path.exists() or not path.is_file():
@@ -55,7 +54,6 @@ class SVCPartOfSpeechMatcher(Matcher):
             return True
 
     def save_model(self, path: Path):
-        print(path)
         with path.open("wb") as file:
             dump((self.model, self.encoder), file)
 
@@ -250,7 +248,6 @@ class RegressionPartOfSpeechMatcher(Matcher):
         return " ".join(pos_list)
 
     def load_model(self, path: Path) -> bool:
-        print(path)
         if self.model is not None and self.encoder is not None:
             return True
         if not path.exists() or not path.is_file():
@@ -260,7 +257,6 @@ class RegressionPartOfSpeechMatcher(Matcher):
             return True
 
     def save_model(self, path: Path):
-        print(path)
         with path.open("wb") as file:
             dump((self.model, self.encoder), file)
 
@@ -575,11 +571,7 @@ class SVCBagOfWordsMatcher(Matcher):
     model: SVC = None
     encoder: CountVectorizer = None
 
-    print(model)
-    print(encoder)
-
     def load_model(self, path: Path) -> bool:
-        print(path)
         if self.model is not None and self.encoder is not None:
             return True
         if not path.exists() or not path.is_file():
@@ -589,7 +581,6 @@ class SVCBagOfWordsMatcher(Matcher):
             return True
 
     def save_model(self, path: Path):
-        print(path)
         with path.open("wb") as file:
             dump((self.model, self.encoder), file)
 
