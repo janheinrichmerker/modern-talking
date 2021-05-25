@@ -11,7 +11,8 @@ from modern_talking.matchers.baselines import AllMatcher, RandomMatcher, \
     NoneMatcher
 from modern_talking.matchers.regression import EnsembleVotingMatcher, \
     RegressionTfidfMatcher, RegressionBagOfWordsMatcher, \
-    EnsemblePartOfSpeechMatcher
+    EnsemblePartOfSpeechMatcher, RegressionPartOfSpeechMatcher, \
+    SVCPartOfSpeechMatcher, SVCBagOfWordsMatcher
 
 from modern_talking.matchers.rule_based import TermOverlapMatcher, \
     AdvancedTermOverlapMatcher
@@ -25,8 +26,11 @@ matchers = (
     AdvancedTermOverlapMatcher(),
     RegressionBagOfWordsMatcher(),
     RegressionTfidfMatcher(),
+    RegressionPartOfSpeechMatcher(),
     EnsembleVotingMatcher(),
     EnsemblePartOfSpeechMatcher(),
+    SVCPartOfSpeechMatcher(),
+    SVCBagOfWordsMatcher(),
 )
 
 metrics = (

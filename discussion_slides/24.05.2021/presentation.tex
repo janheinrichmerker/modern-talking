@@ -64,6 +64,36 @@
   
 \end{frame}
 
+\begin{frame}[allowframebreaks]{Logistic Regression and Ensemble Voting}
+
+\begin{block}{All approaches with Stemming Snowball}
+  \begin{tabular}{lll}
+    \toprule
+      name & params & mAP (relaxed) \\
+    \midrule
+      regression-bow & C=14, CountVectorizer & 0.70 \\
+      regression-bow-pos & C=14, CountVectorizer, POS & 0.66\\
+      regression-tfidf & C=1, TFIDFVectorizer & 0.55 \\
+      ensemble-bow & LG, SVC, 0.55, 0.45 & 0.635 \\
+      ensemble-bow & LG, SVC, 0.45, 0.55 & 0.647 \\
+      ensemble-bow-pos & LG, SVC, 0.55, 0.45 & 0.696 \\
+      ensemble-bow-pos & LG, SVC, 0.45, 0.55 & 0.713 \\
+      svc-bow-pos & SVC, CountVectorizer, POS &   0.74 \\
+      svc-bow & SVC, CountVectorizer & 0.70\\
+    \bottomrule
+  \end{tabular}
+\end{block}
+\framebreak
+\begin{block}{Further}
+\begin{itemize}
+    \item features reducing: cutting words by certain length, ex: homeschooling - homesch (get max 6 characters)
+    \item instead of stemming, using lemmatization
+    \item other solvers for logistic regression
+    \item using doc2vec embeddings for features
+\end{itemize}
+\end{block}
+\end{frame}
+
 
 
 \appendix
