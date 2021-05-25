@@ -60,8 +60,7 @@ class SVCPartOfSpeechMatcher(Matcher):
     def get_texts(self, train_data: LabelledDataset) -> List[str]:
         stemmer = SnowballStemmer("english")
         train_texts: List[str] = []
-        for i in tqdm(range(len(list(train_data.labels.items())))):
-            (arg_id, kp_id), label = list(train_data.labels.items())[i]
+        for (arg_id, kp_id), label in tqdm(train_data.labels.items()):
             arg = next(arg for arg in train_data.arguments if arg.id == arg_id)
             kp = next(kp for kp in train_data.key_points if kp.id == kp_id)
             arg_terms = [
@@ -264,8 +263,7 @@ class RegressionPartOfSpeechMatcher(Matcher):
         stemmer = SnowballStemmer("english")
         train_texts: List[str] = []
         print("Token selection by POS")
-        for i in tqdm(range(len(list(train_data.labels.items())))):
-            (arg_id, kp_id), label = list(train_data.labels.items())[i]
+        for (arg_id, kp_id), label in tqdm(train_data.labels.items()):
             arg = next(arg for arg in train_data.arguments if arg.id == arg_id)
             kp = next(kp for kp in train_data.key_points if kp.id == kp_id)
             arg_terms = [
