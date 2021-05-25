@@ -12,14 +12,12 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
-from spacy import Language
+from spacy import Language, load as spacy_load
 from spacy.util import is_package
 
 from modern_talking.matchers import Matcher
 from modern_talking.model import Dataset, Labels, Argument, KeyPoint
 from modern_talking.model import LabelledDataset
-
-import spacy
 
 downloader = Downloader()
 
@@ -37,7 +35,7 @@ class EnsemblePartOfSpeechMatcher(Matcher):
         # Install English spaCy model.
         if not is_package("en_core_web_sm"):
             system("python -m spacy download en_core_web_sm")
-        self.language = spacy.load("en_core_web_sm")
+        self.language = spacy_load("en_core_web_sm")
 
     def get_token_by_pos(self, text: str) -> str:
         doc = self.language(text)
