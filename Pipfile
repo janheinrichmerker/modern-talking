@@ -16,6 +16,7 @@ pytest-cov = "*"
 rope = "*"
 flake8 = "*"
 spacy = "*"
+transformers = "*"
 
 [requires]
 python_version = "3.8"
