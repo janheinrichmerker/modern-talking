@@ -71,10 +71,8 @@ class AdvancedTermOverlapMatcher(UntrainedMatcher):
         overlapping_terms = arg_terms.intersection(kp_terms)
         overlap = len(overlapping_terms)
         relative_overlap = overlap / max_overlap
-        if relative_overlap <= 0.4:
-            return 0
-        elif relative_overlap >= 0.6:
-            return 1
+        if not 0.4 < relative_overlap < 0.6:
+            return relative_overlap
         else:
             return None
 
