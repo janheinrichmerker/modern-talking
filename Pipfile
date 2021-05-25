@@ -17,6 +17,9 @@ rope = "*"
 flake8 = "*"
 spacy = "*"
 transformers = "*"
+numpy = "*"
+scipy = "*"
+seaborn = "*"
 
 [requires]
 python_version = "3.8"
