@@ -66,14 +66,8 @@ class SVCPartOfSpeechMatcher(Matcher):
         train_texts: List[str] = []
         for i in tqdm(range(len(list(train_data.labels.items())))):
             (arg_id, kp_id), label = list(train_data.labels.items())[i]
-            arg = next(
-                arg for arg in train_data.arguments
-                if arg.id == arg_id
-            )
-            kp = next(
-                kp for kp in train_data.key_points
-                if kp.id == kp_id
-            )
+            arg = next(arg for arg in train_data.arguments if arg.id == arg_id)
+            kp = next(kp for kp in train_data.key_points if kp.id == kp_id)
             arg_terms = [
                 stemmer.stem(term)
                 for term in word_tokenize(self.get_token_by_pos(arg.text))
@@ -106,10 +100,11 @@ class SVCPartOfSpeechMatcher(Matcher):
     def get_match_probability(self, argument: Argument, key_point: KeyPoint):
         # Transform input text to numeric features.
         stemmer = SnowballStemmer("english")
-        input_text = self.get_token_by_pos(
-            argument.text + ". " + key_point.text)
+        input_text = argument.text + ". " + key_point.text
+        input_text = self.get_token_by_pos(input_text)
         input_text = " ".join(
-            [stemmer.stem(term) for term in word_tokenize(input_text)])
+            [stemmer.stem(term) for term in word_tokenize(input_text)]
+        )
         features = self.encoder.transform([input_text]).toarray()
         # Predict label and probability with pretrained model.
         probability = self.model.predict_proba(features)
@@ -124,8 +119,10 @@ class SVCPartOfSpeechMatcher(Matcher):
             if arg.topic == kp.topic and arg.stance == kp.stance
         }
 
+
 class EnsemblePartOfSpeechMatcher(Matcher):
     name = "ensemble-bow-pos"
+
     model: VotingClassifier = None
     encoder: CountVectorizer = None
     language: Language
@@ -133,7 +130,7 @@ class EnsemblePartOfSpeechMatcher(Matcher):
     def prepare(self) -> None:
         # Install NLTK punctuation for tokenization.
         if not downloader.is_installed("punkt"):
-            downloader.download('punkt')
+            downloader.download("punkt")
         # Install English spaCy model.
         if not is_package("en_core_web_sm"):
             system("python -m spacy download en_core_web_sm")
@@ -167,14 +164,8 @@ class EnsemblePartOfSpeechMatcher(Matcher):
         print("Token selection by POS")
         for i in tqdm(range(len(list(train_data.labels.items())))):
             (arg_id, kp_id), label = list(train_data.labels.items())[i]
-            arg = next(
-                arg for arg in train_data.arguments
-                if arg.id == arg_id
-            )
-            kp = next(
-                kp for kp in train_data.key_points
-                if kp.id == kp_id
-            )
+            arg = next(arg for arg in train_data.arguments if arg.id == arg_id)
+            kp = next(kp for kp in train_data.key_points if kp.id == kp_id)
             arg_terms = [
                 stemmer.stem(term)
                 for term in word_tokenize(self.get_token_by_pos(arg.text))
@@ -204,9 +195,9 @@ class EnsemblePartOfSpeechMatcher(Matcher):
         )
         svc = SVC(probability=True)
         self.model = VotingClassifier(
-             estimators=[('lr', log_regression), ('svc', svc)],
-             voting='soft',
-             weights=[0.45, 0.55]
+            estimators=[("lr", log_regression), ("svc", svc)],
+            voting="soft",
+            weights=[0.45, 0.55],
         )
         self.model.fit(train_features, train_labels)
 
@@ -218,10 +209,11 @@ class EnsemblePartOfSpeechMatcher(Matcher):
     def get_match_probability(self, argument: Argument, key_point: KeyPoint):
         # Transform input text to numeric features.
         stemmer = SnowballStemmer("english")
-        input_text = self.get_token_by_pos(
-            argument.text + ". " + key_point.text)
+        input_text = argument.text + ". " + key_point.text
+        input_text = self.get_token_by_pos(input_text)
         input_text = " ".join(
-            [stemmer.stem(term) for term in word_tokenize(input_text)])
+            [stemmer.stem(term) for term in word_tokenize(input_text)]
+        )
         features = self.encoder.transform([input_text]).toarray()
         # Predict label and probability with pretrained model.
         probability = self.model.predict_proba(features)
@@ -235,6 +227,7 @@ class EnsemblePartOfSpeechMatcher(Matcher):
             for kp in data.key_points
             if arg.topic == kp.topic and arg.stance == kp.stance
         }
+
 
 class RegressionPartOfSpeechMatcher(Matcher):
     name = "regression-bow-pos"
@@ -279,14 +272,8 @@ class RegressionPartOfSpeechMatcher(Matcher):
         print("Token selection by POS")
         for i in tqdm(range(len(list(train_data.labels.items())))):
             (arg_id, kp_id), label = list(train_data.labels.items())[i]
-            arg = next(
-                arg for arg in train_data.arguments
-                if arg.id == arg_id
-            )
-            kp = next(
-                kp for kp in train_data.key_points
-                if kp.id == kp_id
-            )
+            arg = next(arg for arg in train_data.arguments if arg.id == arg_id)
+            kp = next(kp for kp in train_data.key_points if kp.id == kp_id)
             arg_terms = [
                 stemmer.stem(term)
                 for term in word_tokenize(self.get_token_by_pos(arg.text))
@@ -325,10 +312,11 @@ class RegressionPartOfSpeechMatcher(Matcher):
     def get_match_probability(self, argument: Argument, key_point: KeyPoint):
         # Transform input text to numeric features.
         stemmer = SnowballStemmer("english")
-        input_text = self.get_token_by_pos(
-            argument.text + ". " + key_point.text)
+        input_text = argument.text + ". " + key_point.text
+        input_text = self.get_token_by_pos(input_text)
         input_text = " ".join(
-            [stemmer.stem(term) for term in word_tokenize(input_text)])
+            [stemmer.stem(term) for term in word_tokenize(input_text)]
+        )
         features = self.encoder.transform([input_text]).toarray()
         # Predict label and probability with pretrained model.
         probability = self.model.predict_proba(features)
@@ -353,7 +341,7 @@ class EnsembleVotingMatcher(Matcher):
     def prepare(self) -> None:
         # Install NLTK punctuation for tokenization.
         if not downloader.is_installed("punkt"):
-            downloader.download('punkt')
+            downloader.download("punkt")
 
     def load_model(self, path: Path) -> bool:
         if self.model is not None and self.encoder is not None:
@@ -388,9 +376,9 @@ class EnsembleVotingMatcher(Matcher):
         )
         svc = SVC(probability=True)
         self.model = VotingClassifier(
-            estimators=[('lr', log_regression), ('svc', svc)],
-            voting='soft',
-            weights=[0.55, 0.45]
+            estimators=[("lr", log_regression), ("svc", svc)],
+            voting="soft",
+            weights=[0.55, 0.45],
         )
         self.model.fit(train_features, train_labels)
 
@@ -404,7 +392,8 @@ class EnsembleVotingMatcher(Matcher):
         stemmer = SnowballStemmer("english")
         input_text = argument.text + " " + key_point.text
         input_text = " ".join(
-            [stemmer.stem(term) for term in word_tokenize(input_text)])
+            [stemmer.stem(term) for term in word_tokenize(input_text)]
+        )
         features = self.encoder.transform([input_text]).toarray()
         # Predict label and probability with pretrained model.
         probability = self.model.predict_proba(features)
@@ -424,22 +413,10 @@ def get_texts(train_data: LabelledDataset) -> List[str]:
     stemmer = SnowballStemmer("english")
     train_texts: List[str] = []
     for (arg_id, kp_id), label in train_data.labels.items():
-        arg = next(
-            arg for arg in train_data.arguments
-            if arg.id == arg_id
-        )
-        kp = next(
-            kp for kp in train_data.key_points
-            if kp.id == kp_id
-        )
-        arg_terms = [
-            stemmer.stem(term)
-            for term in word_tokenize(arg.text)
-        ]
-        kp_terms = [
-            stemmer.stem(term)
-            for term in word_tokenize(kp.text)
-        ]
+        arg = next(arg for arg in train_data.arguments if arg.id == arg_id)
+        kp = next(kp for kp in train_data.key_points if kp.id == kp_id)
+        arg_terms = [stemmer.stem(term) for term in word_tokenize(arg.text)]
+        kp_terms = [stemmer.stem(term) for term in word_tokenize(kp.text)]
         text = " ".join(arg_terms) + " " + " ".join(kp_terms)
         train_texts.append(text)
     return train_texts
@@ -454,7 +431,7 @@ class RegressionTfidfMatcher(Matcher):
     def prepare(self) -> None:
         # Install NLTK punctuation for tokenization.
         if not downloader.is_installed("punkt"):
-            downloader.download('punkt')
+            downloader.download("punkt")
 
     def load_model(self, path: Path) -> bool:
         if self.model is not None and self.encoder is not None:
@@ -500,7 +477,8 @@ class RegressionTfidfMatcher(Matcher):
         stemmer = SnowballStemmer("english")
         input_text = argument.text + " " + key_point.text
         input_text = " ".join(
-            [stemmer.stem(term) for term in word_tokenize(input_text)])
+            [stemmer.stem(term) for term in word_tokenize(input_text)]
+        )
         features = self.encoder.transform([input_text]).toarray()
         # Predict label and probability with pretrained model.
         probability = self.model.predict_proba(features)
@@ -521,6 +499,7 @@ class RegressionBagOfWordsMatcher(Matcher):
     Return probabilities as matching scores.
     TODO Document matcher.
     """
+
     name = "regression-bow"
 
     model: LogisticRegression = None
@@ -529,7 +508,7 @@ class RegressionBagOfWordsMatcher(Matcher):
     def prepare(self) -> None:
         # Install NLTK punctuation for tokenization.
         if not downloader.is_installed("punkt"):
-            downloader.download('punkt')
+            downloader.download("punkt")
 
     def load_model(self, path: Path) -> bool:
         if self.model is not None and self.encoder is not None:
@@ -575,7 +554,8 @@ class RegressionBagOfWordsMatcher(Matcher):
         stemmer = SnowballStemmer("english")
         input_text = argument.text + " " + key_point.text
         input_text = " ".join(
-            [stemmer.stem(term) for term in word_tokenize(input_text)])
+            [stemmer.stem(term) for term in word_tokenize(input_text)]
+        )
         features = self.encoder.transform([input_text]).toarray()
         # Predict label and probability with pretrained model.
         probability = self.model.predict_proba(features)
@@ -589,6 +569,8 @@ class RegressionBagOfWordsMatcher(Matcher):
             for kp in data.key_points
             if arg.topic == kp.topic and arg.stance == kp.stance
         }
+
+
 class SVCBagOfWordsMatcher(Matcher):
     name = "svc-bow"
 
@@ -636,7 +618,8 @@ class SVCBagOfWordsMatcher(Matcher):
         stemmer = SnowballStemmer("english")
         input_text = argument.text + " " + key_point.text
         input_text = " ".join(
-            [stemmer.stem(term) for term in word_tokenize(input_text)])
+            [stemmer.stem(term) for term in word_tokenize(input_text)]
+        )
         features = self.encoder.transform([input_text]).toarray()
         # Predict label and probability with pretrained model.
         probability = self.model.predict_proba(features)
