@@ -21,19 +21,21 @@ Then install dependencies (may take a while):
 pipenv install
 ```
 
-### Datasets
+### Run a matcher pipeline
 
-Download required datasets:
+Each matcher and metric has a unique name. (Names can be listed with `pipenv run python main.py matchers` and `pipenv run python main.py metrics`.)
+You can then run a pipeline, i.e., train and evaluate a matcher:
 
 ```shell script
-pipenv run python modern_talking/download_datasets.py
+pipenv run python main.py traineval [MATCHER] [METRIC]
 ```
 
-This will download train and dev datasets to the `data/` subdirectory.
+This will automatically download all datasets, train the matcher on the train set and evaluate the metric for predicted labels on the dev set.
+Predicted labels are also saved to `data/out/predictions-[METRIC]-[MATCHER].json` in JSON format as described in the [shared task documentation](https://github.com/ibm/KPA_2021_shared_task#track-1---key-point-matching).
 
-### Evaluation
+### Manual evaluation
 
-Evaluate predicted matches:
+Evaluate predicted matches in JSON format:
 
 ```shell script
 pipenv run python modern_talking/evaluation/track_1_kp_matching.py data/ data/out/predictions-[METRIC]-[MATCHER].json

@@ -1,6 +1,7 @@
 from argparse import ArgumentParser, Namespace
 from typing import Optional
 
+from modern_talking.data import download_kpa_2021_data
 from modern_talking.evaluation import Metric
 from modern_talking.evaluation.f_measure import FMeasure
 from modern_talking.evaluation.precision import Precision
@@ -42,12 +43,18 @@ metrics = (
 )
 
 parser: ArgumentParser = ArgumentParser()
-parser.add_argument('matcher')
-parser.add_argument('metric')
+subparsers = parser.add_subparsers(dest="command")
+matchers_parser = subparsers.add_parser("matchers")
+metrics_parser = subparsers.add_parser("metrics")
+train_eval_parser = subparsers.add_parser("traineval")
+train_eval_parser.add_argument('matcher')
+train_eval_parser.add_argument('metric')
 
-if __name__ == '__main__':
-    args: Namespace = parser.parse_args()
 
+def train_eval() -> None:
+    """
+    Train/evaluate matcher.
+    """
     matcher: Optional[Matcher] = next(
         filter(lambda m: m.name == args.matcher, matchers),
         None
@@ -62,7 +69,37 @@ if __name__ == '__main__':
     if metric is None:
         raise Exception(f"No metric found with name {args.metric}.")
 
+    # Download datasets.
+    download_kpa_2021_data()
+
+    # Execute pipeline.
     pipeline = Pipeline(matcher, metric)
     result = pipeline.train_evaluate(True)
 
     print(f"Score: {result} ({metric.name})")
+
+
+def list_matchers() -> None:
+    """
+    Print matcher names.
+    """
+    for matcher in matchers:
+        print(matcher.name)
+
+
+def list_metrics() -> None:
+    """
+    Print metric names.
+    """
+    for metric in metrics:
+        print(metric.name)
+
+
+if __name__ == '__main__':
+    args: Namespace = parser.parse_args()
+    if args.command == "matchers":
+        list_matchers()
+    elif args.command == "metrics":
+        list_metrics()
+    elif args.command == "traineval":
+        train_eval()
