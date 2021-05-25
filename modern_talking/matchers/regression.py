@@ -64,9 +64,7 @@ class SVCPartOfSpeechMatcher(Matcher):
     def get_texts(self, train_data: LabelledDataset) -> List[str]:
         stemmer = SnowballStemmer("english")
         train_texts: List[str] = []
-        print("Token selection by POS")
         for i in tqdm(range(len(list(train_data.labels.items())))):
-        # for (arg_id, kp_id), label in train_data.labels.items():
             (arg_id, kp_id), label = list(train_data.labels.items())[i]
             arg = next(
                 arg for arg in train_data.arguments
@@ -168,7 +166,6 @@ class EnsemblePartOfSpeechMatcher(Matcher):
         train_texts: List[str] = []
         print("Token selection by POS")
         for i in tqdm(range(len(list(train_data.labels.items())))):
-        # for (arg_id, kp_id), label in train_data.labels.items():
             (arg_id, kp_id), label = list(train_data.labels.items())[i]
             arg = next(
                 arg for arg in train_data.arguments
@@ -241,6 +238,7 @@ class EnsemblePartOfSpeechMatcher(Matcher):
 
 class RegressionPartOfSpeechMatcher(Matcher):
     name = "regression-bow-pos"
+
     model: LogisticRegression = None
     encoder: CountVectorizer = None
     language: Language
@@ -280,7 +278,6 @@ class RegressionPartOfSpeechMatcher(Matcher):
         train_texts: List[str] = []
         print("Token selection by POS")
         for i in tqdm(range(len(list(train_data.labels.items())))):
-        # for (arg_id, kp_id), label in train_data.labels.items():
             (arg_id, kp_id), label = list(train_data.labels.items())[i]
             arg = next(
                 arg for arg in train_data.arguments
@@ -349,6 +346,7 @@ class RegressionPartOfSpeechMatcher(Matcher):
 
 class EnsembleVotingMatcher(Matcher):
     name = "ensemble-bow-voting"
+
     model: VotingClassifier = None
     encoder: CountVectorizer = None
 
@@ -622,11 +620,8 @@ class SVCBagOfWordsMatcher(Matcher):
         classifiers have different weights for prediction.
         """
         self.train_encoder(train_data)
-
         train_features = self.encoder.transform(get_texts(train_data))
         train_labels = array(list(train_data.labels.values()))
-
-
         svc = SVC(probability=True)
         self.model = svc
         self.model.fit(train_features, train_labels)
