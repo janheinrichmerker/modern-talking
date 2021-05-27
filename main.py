@@ -11,6 +11,7 @@ from modern_talking.matchers import Matcher
 from modern_talking.matchers.baselines import AllMatcher, RandomMatcher, \
     NoneMatcher
 from modern_talking.matchers.bert_based import BertMatcher
+from modern_talking.matchers.bilstm import BidirectionalLstmMatcher
 from modern_talking.matchers.regression import EnsembleVotingMatcher, \
     RegressionTfidfMatcher, RegressionBagOfWordsMatcher, \
     EnsemblePartOfSpeechMatcher, RegressionPartOfSpeechMatcher, \
@@ -34,6 +35,7 @@ matchers = (
     SVCPartOfSpeechMatcher(),
     SVCBagOfWordsMatcher(),
     BertMatcher(),
+    BidirectionalLstmMatcher(),
 )
 
 metrics = (
