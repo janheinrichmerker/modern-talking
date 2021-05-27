@@ -161,13 +161,13 @@ class Pipeline:
             if not ignore_test else dev_data
 
         # Load/train model.
-        model_file = cache_dir / f"model-{self.matcher.name}.pickle"
+        model_path = cache_dir / f"model-{self.matcher.name}"
         print("Load model.")
-        if not self.matcher.load_model(model_file):
+        if not self.matcher.load_model(model_path):
             print("Train model.")
             self.matcher.train(train_data, dev_data)
             print("Save model.")
-            self.matcher.save_model(model_file)
+            self.matcher.save_model(model_path)
         # Predict labels for test data.
         print("Predict labels.")
         predicted_labels = self.matcher.predict(test_data)
