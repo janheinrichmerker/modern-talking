@@ -1,13 +1,17 @@
+# Disable TensorFlow name import Lint error. (TensorFlow delegates modules.)
+# pylint: disable=no-name-in-module
+
 from typing import Tuple
 
-import tensorflow
-from tensorflow.keras import Input
-from tensorflow.keras import Model
-from tensorflow.keras.layers import Dropout, Dense
-from tensorflow.keras.losses import CategoricalCrossentropy
-from tensorflow.keras.metrics import CategoricalAccuracy
-from tensorflow.keras.optimizers import Adam
+from tensorflow import int32
+from tensorflow.python.data import Dataset as TFDataset
+from tensorflow.python.distribute.mirrored_strategy import MirroredStrategy
+from tensorflow.python.keras import Input, Model
 from tensorflow.python.keras.callbacks import History
+from tensorflow.python.keras.layers import Dropout, Dense
+from tensorflow.python.keras.losses import CategoricalCrossentropy
+from tensorflow.python.keras.metrics import CategoricalAccuracy
+from tensorflow.python.keras.optimizer_v2.adam import Adam
 from transformers import TFBertModel, BertConfig, BertTokenizerFast
 from transformers.modeling_tf_outputs import TFBaseModelOutputWithPooling
 
@@ -58,17 +62,17 @@ class BertMatcher(Matcher):
         )
         input_ids = Input(
             shape=(self.config.max_length,),
-            dtype=tensorflow.int32,
+            dtype=int32,
             name="input_ids"
         )
         attention_masks = Input(
             shape=(self.config.max_length,),
-            dtype=tensorflow.int32,
+            dtype=int32,
             name="attention_mask"
         )
         token_type_ids = Input(
             shape=(self.config.max_length,),
-            dtype=tensorflow.int32,
+            dtype=int32,
             name="token_type_ids"
         )
 
@@ -107,7 +111,7 @@ class BertMatcher(Matcher):
             int(data.labels.get((arg.id, kp.id), 2))
             for arg, kp in pairs
         ]
-        return tensorflow.data.Dataset.from_tensor_slices((
+        return TFDataset.from_tensor_slices((
             dict(encodings),
             labels,
         ))
@@ -121,7 +125,7 @@ class BertMatcher(Matcher):
             max_length=self.config.max_length,
             return_tensors="tf",
         )
-        return tensorflow.data.Dataset.from_tensor_slices((
+        return TFDataset.from_tensor_slices((
             dict(encodings),
         ))
 
@@ -129,7 +133,7 @@ class BertMatcher(Matcher):
         data_train = self._labelled_data_tensor(train_data)
         data_dev = self._labelled_data_tensor(dev_data)
 
-        strategy = tensorflow.distribute.MirroredStrategy()
+        strategy = MirroredStrategy()
         with strategy.scope():
             bert_model, model = self._create_model()
             model.compile(

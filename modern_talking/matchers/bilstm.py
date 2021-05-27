@@ -1,14 +1,18 @@
+# Disable TensorFlow name import Lint error. (TensorFlow delegates modules.)
+# pylint: disable=no-name-in-module
+
 from pathlib import Path
 from typing import List, Tuple
 
-import tensorflow
-from tensorflow.keras import Model, Input
-from tensorflow.keras.layers import Embedding, Bidirectional, LSTM, Dense
-from tensorflow.keras.layers.experimental.preprocessing import \
-    TextVectorization
-from tensorflow.keras.losses import BinaryCrossentropy
-from tensorflow.keras.optimizers import Adam
+from tensorflow import string
+from tensorflow.python.data import Dataset as TFDataset
+from tensorflow.python.keras import Model, Input
+from tensorflow.python.keras.layers import TextVectorization, Embedding, \
+    Bidirectional, LSTM, Dense
+from tensorflow.python.keras.losses import BinaryCrossentropy
+from tensorflow.python.keras.metrics import Accuracy
 from tensorflow.python.keras.models import load_model
+from tensorflow.python.keras.optimizer_v2.adam import Adam
 
 from modern_talking.matchers import Matcher
 from modern_talking.model import Dataset, Labels, LabelledDataset, Argument, \
@@ -31,14 +35,14 @@ class BidirectionalLstmMatcher(Matcher):
     ) -> Tuple[TextVectorization, Model]:
         inputs = Input(
             shape=(1,),
-            dtype=tensorflow.string
+            dtype=string
         )
 
         vectorization = TextVectorization(
             max_tokens=self.max_features,
             output_sequence_length=self.max_length
         )
-        text_dataset = tensorflow.data.Dataset.from_tensor_slices(texts)
+        text_dataset = TFDataset.from_tensor_slices(texts)
         vectorization.adapt(text_dataset.batch(self.batch_size))
         vectorized = vectorization(inputs)
 
@@ -95,7 +99,7 @@ class BidirectionalLstmMatcher(Matcher):
         self.model.compile(
             optimizer=Adam(),
             loss=BinaryCrossentropy(),
-            metrics=["accuracy"],
+            metrics=[Accuracy()],
         )
         self.model.fit(
             train_texts, train_labels,
