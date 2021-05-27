@@ -85,7 +85,7 @@ def list_matchers() -> None:
     """
     Print matcher names.
     """
-    for matcher in matchers:
+    for matcher in sorted(matchers, key=lambda m: m.name):
         print(matcher.name)
 
 
@@ -93,7 +93,7 @@ def list_metrics() -> None:
     """
     Print metric names.
     """
-    for metric in metrics:
+    for metric in sorted(metrics, key=lambda m: m.name):
         print(metric.name)
 
 
