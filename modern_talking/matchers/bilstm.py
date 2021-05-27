@@ -57,7 +57,7 @@ class BidirectionalLstmMatcher(Matcher):
     @staticmethod
     def _load_labelled_split(
             data: LabelledDataset
-    ) -> Tuple[ List[str], List[int]]:
+    ) -> Tuple[List[str], List[int]]:
         pairs = [(arg, kp) for arg, kp in data.argument_key_point_pairs]
         texts = [
             BidirectionalLstmMatcher._join_texts(arg, kp)
@@ -113,7 +113,7 @@ class BidirectionalLstmMatcher(Matcher):
         labels = self.model.predict(
             texts,
             batch_size=self.batch_size,
-        )[:,0].tolist()
+        )[:, 0].tolist()
         return {
             arg_kp_id: label
             for arg_kp_id, label in zip(ids, labels)
@@ -132,5 +132,3 @@ class BidirectionalLstmMatcher(Matcher):
     def save_model(self, path: Path):
         model_path = path / "model.tf"
         self.model.save(model_path, overwrite=True)
-
-
