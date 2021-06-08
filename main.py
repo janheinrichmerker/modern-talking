@@ -64,14 +64,16 @@ def train_eval() -> None:
         None
     )
     if matcher is None:
-        raise Exception(f"No matcher found with name {args.matcher}.")
+        raise Exception(f"No matcher found with name {args.matcher}. "
+                        f"List matchers with the `matchers` command.")
 
     metric: Optional[Metric] = next(
         filter(lambda m: m.name == args.metric, metrics),
         None
     )
     if metric is None:
-        raise Exception(f"No metric found with name {args.metric}.")
+        raise Exception(f"No metric found with name {args.metric}. "
+                        f"List metrics with the `metrics` command.")
 
     # Download datasets.
     download_kpa_2021_data()
