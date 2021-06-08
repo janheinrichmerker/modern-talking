@@ -15,6 +15,8 @@ downloader = Downloader()
 class TermOverlapMatcher(UntrainedMatcher):
     """
     Match argument key point pairs if their terms overlap.
+
+    See https://en.wikipedia.org/wiki/Overlap_coefficient
     """
     name = "term-overlap"
 
@@ -46,6 +48,8 @@ class AdvancedTermOverlapMatcher(UntrainedMatcher):
     Match argument key point pairs if their stemmed terms overlap.
     This matcher is an improved version of `TermOverlapMatcher`
     with thresholds and stemming.
+
+    See https://en.wikipedia.org/wiki/Overlap_coefficient
     """
     name = "advanced-term-overlap"
     stemmer = SnowballStemmer("english")
