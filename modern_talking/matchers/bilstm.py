@@ -7,6 +7,7 @@ from typing import List, Tuple
 from tensorflow import string
 from tensorflow.python.data import Dataset as TFDataset
 from tensorflow.python.keras import Model, Input
+from tensorflow.python.keras.initializers.initializers_v2 import Constant
 from tensorflow.python.keras.layers import TextVectorization, Embedding, \
     Bidirectional, LSTM, Dense
 from tensorflow.python.keras.losses import BinaryCrossentropy
@@ -14,6 +15,8 @@ from tensorflow.python.keras.metrics import Accuracy
 from tensorflow.python.keras.models import load_model
 from tensorflow.python.keras.optimizer_v2.adam import Adam
 
+from modern_talking.data.glove import download_glove_embeddings, \
+    get_glove_embedding_matrix
 from modern_talking.matchers import Matcher
 from modern_talking.model import Dataset, Labels, LabelledDataset, Argument, \
     KeyPoint
@@ -29,6 +32,9 @@ class BidirectionalLstmMatcher(Matcher):
 
     model: Model = None
 
+    def prepare(self) -> None:
+        download_glove_embeddings()
+
     def create_model(
             self,
             texts: List[str]
@@ -43,10 +49,22 @@ class BidirectionalLstmMatcher(Matcher):
             output_sequence_length=self.max_length
         )
         text_dataset = TFDataset.from_tensor_slices(texts)
-        vectorization.adapt(text_dataset.batch(self.batch_size))
+        vectorization.adapt(text_dataset)
+        vocabulary = vectorization.get_vocabulary()
+        vocabulary_dimension = len(vocabulary) + 2
         vectorized = vectorization(inputs)
 
-        embedding = Embedding(self.max_features, 128)(vectorized)
+        embedding_matrix = get_glove_embedding_matrix(vocabulary)
+        embedding_dimension = embedding_matrix.shape[1]
+
+        embedding_layer = Embedding(
+            vocabulary_dimension,
+            embedding_dimension,
+            embeddings_initializer=Constant(embedding_matrix),
+            trainable=False,
+        )
+
+        embedding = embedding_layer(vectorized)
 
         bilstm_1 = Bidirectional(LSTM(64, return_sequences=True))(embedding)
 
@@ -67,6 +85,7 @@ class BidirectionalLstmMatcher(Matcher):
             BidirectionalLstmMatcher._join_texts(arg, kp)
             for arg, kp in pairs
         ]
+        # OneHotEncoder()
         labels = [
             int(data.labels.get((arg.id, kp.id), 0))
             for arg, kp in pairs
