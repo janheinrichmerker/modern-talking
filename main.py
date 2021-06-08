@@ -16,17 +16,16 @@ from modern_talking.matchers.regression import EnsembleVotingMatcher, \
     RegressionTfidfMatcher, RegressionBagOfWordsMatcher, \
     EnsemblePartOfSpeechMatcher, RegressionPartOfSpeechMatcher, \
     SVCPartOfSpeechMatcher, SVCBagOfWordsMatcher
-
-from modern_talking.matchers.term_overlap import TermOverlapMatcher, \
-    AdvancedTermOverlapMatcher
+from modern_talking.matchers.term_overlap import TermOverlapMatcher
 from modern_talking.pipeline import Pipeline
 
 matchers = (
     AllMatcher(),
     NoneMatcher(),
     RandomMatcher(),
+    TermOverlapMatcher(stemming=False, stop_words=False),
+    TermOverlapMatcher(stop_words=False),
     TermOverlapMatcher(),
-    AdvancedTermOverlapMatcher(),
     RegressionBagOfWordsMatcher(),
     RegressionTfidfMatcher(),
     RegressionPartOfSpeechMatcher(),
