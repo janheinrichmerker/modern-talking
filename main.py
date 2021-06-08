@@ -10,14 +10,14 @@ from modern_talking.evaluation.track_1 import Track1Metric
 from modern_talking.matchers import Matcher
 from modern_talking.matchers.baselines import AllMatcher, RandomMatcher, \
     NoneMatcher
-from modern_talking.matchers.bert_based import BertMatcher
+from modern_talking.matchers.bert import BertMatcher
 from modern_talking.matchers.bilstm import BidirectionalLstmMatcher
 from modern_talking.matchers.regression import EnsembleVotingMatcher, \
     RegressionTfidfMatcher, RegressionBagOfWordsMatcher, \
     EnsemblePartOfSpeechMatcher, RegressionPartOfSpeechMatcher, \
     SVCPartOfSpeechMatcher, SVCBagOfWordsMatcher
 
-from modern_talking.matchers.rule_based import TermOverlapMatcher, \
+from modern_talking.matchers.term_overlap import TermOverlapMatcher, \
     AdvancedTermOverlapMatcher
 from modern_talking.pipeline import Pipeline
 
