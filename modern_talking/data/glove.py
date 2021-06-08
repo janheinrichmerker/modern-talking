@@ -23,13 +23,7 @@ glove_file = glove_dir / glove_txt_name
 def get_glove_embedding_matrix(voc: List[str]) -> ndarray:
     embeddings_index = {}
     with glove_file.open("r") as file:
-        i = 0
         for line in file:
-            if i > 100:
-                break
-            else:
-                i += 1
-
             word, coefficients = line.split(maxsplit=1)
             coefficients = fromstring(coefficients, "f", sep=" ")
             embeddings_index[word] = coefficients
