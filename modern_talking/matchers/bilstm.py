@@ -11,7 +11,7 @@ from tensorflow.python.keras.initializers.initializers_v2 import Constant
 from tensorflow.python.keras.layers import TextVectorization, Embedding, \
     Bidirectional, LSTM, Dense
 from tensorflow.python.keras.losses import BinaryCrossentropy
-from tensorflow.python.keras.metrics import Accuracy, Precision, Recall
+from tensorflow.python.keras.metrics import Precision, Recall
 from tensorflow.python.keras.models import load_model
 from tensorflow.python.keras.optimizer_v2.adam import Adam
 
@@ -116,7 +116,7 @@ class BidirectionalLstmMatcher(Matcher):
         self.model.compile(
             optimizer=Adam(),
             loss=BinaryCrossentropy(),
-            metrics=[Precision(), Accuracy(), Recall()],
+            metrics=[Precision(), Recall()],
         )
         self.model.fit(
             train_texts, train_labels,
