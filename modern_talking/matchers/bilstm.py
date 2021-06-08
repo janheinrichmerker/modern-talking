@@ -11,7 +11,7 @@ from tensorflow.python.keras.initializers.initializers_v2 import Constant
 from tensorflow.python.keras.layers import TextVectorization, Embedding, \
     Bidirectional, LSTM, Dense
 from tensorflow.python.keras.losses import BinaryCrossentropy
-from tensorflow.python.keras.metrics import Accuracy, Precision
+from tensorflow.python.keras.metrics import Accuracy, Precision, Recall
 from tensorflow.python.keras.models import load_model
 from tensorflow.python.keras.optimizer_v2.adam import Adam
 
@@ -26,7 +26,6 @@ class BidirectionalLstmMatcher(Matcher):
     name = "bilstm"
 
     max_features = 20000  # Consider top 20k words.
-    max_length = 200  # Consider first 200 words of each key point or argument.
     batch_size = 64
     epochs = 5
 
@@ -117,7 +116,7 @@ class BidirectionalLstmMatcher(Matcher):
         self.model.compile(
             optimizer=Adam(),
             loss=BinaryCrossentropy(),
-            metrics=[Precision()],
+            metrics=[Precision(), Accuracy(), Recall()],
         )
         self.model.fit(
             train_texts, train_labels,
