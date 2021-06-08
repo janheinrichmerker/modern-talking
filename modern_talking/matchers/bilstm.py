@@ -11,7 +11,7 @@ from tensorflow.python.keras.initializers.initializers_v2 import Constant
 from tensorflow.python.keras.layers import TextVectorization, Embedding, \
     Bidirectional, LSTM, Dense
 from tensorflow.python.keras.losses import BinaryCrossentropy
-from tensorflow.python.keras.metrics import Accuracy
+from tensorflow.python.keras.metrics import Accuracy, Precision
 from tensorflow.python.keras.models import load_model
 from tensorflow.python.keras.optimizer_v2.adam import Adam
 
@@ -46,7 +46,6 @@ class BidirectionalLstmMatcher(Matcher):
 
         vectorization = TextVectorization(
             max_tokens=self.max_features,
-            output_sequence_length=self.max_length
         )
         text_dataset = TFDataset.from_tensor_slices(texts)
         vectorization.adapt(text_dataset)
@@ -118,7 +117,7 @@ class BidirectionalLstmMatcher(Matcher):
         self.model.compile(
             optimizer=Adam(),
             loss=BinaryCrossentropy(),
-            metrics=[Accuracy()],
+            metrics=[Precision()],
         )
         self.model.fit(
             train_texts, train_labels,
