@@ -35,13 +35,11 @@ def get_glove_embedding_matrix(voc: List[str]) -> ndarray:
             embeddings_index[word] = coefficients
     print(f"Found {len(embeddings_index)} word vectors.")
 
-    word_index = dict(zip(voc, range(len(voc))))
-    num_tokens = len(voc) + 2
     hits = 0
     misses = 0
 
-    embedding_matrix: ndarray = zeros((num_tokens, dimensions))
-    for word, i in word_index.items():
+    embedding_matrix: ndarray = zeros((len(voc) + 2, dimensions))
+    for i, word in enumerate(voc):
         embedding_vector = embeddings_index.get(word)
         if embedding_vector is not None:
             embedding_matrix[i] = embedding_vector
