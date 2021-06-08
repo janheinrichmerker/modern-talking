@@ -21,7 +21,8 @@ from modern_talking.model import Dataset as UnlabelledDataset, Labels, \
 
 
 def create_bilstm_model(
-        texts: List[str]
+        texts: List[str],
+        bilstm_units: int,
 ) -> Model:
     # Specify model inputs.
     argument_text = Input(
@@ -45,11 +46,15 @@ def create_bilstm_model(
     argument_text_embedding = embed(argument_text_vector)
     key_point_embedding = embed(key_point_text_vector)
 
-    # Apply Bidirectional LSTM.
-    argument_text_bilstm = Bidirectional(LSTM(128))(
+    # Apply Bidirectional LSTM separately.
+    argument_text_bilstm = Bidirectional(LSTM(
+        bilstm_units, return_sequences=True
+    ))(
         argument_text_embedding
     )
-    key_point_bilstm = Bidirectional(LSTM(64))(
+    key_point_bilstm = Bidirectional(LSTM(
+        bilstm_units, return_sequences=True
+    ))(
         key_point_embedding
     )
 
@@ -58,11 +63,11 @@ def create_bilstm_model(
         argument_text_bilstm, key_point_bilstm
     ])
 
-    # Scale down vector in dense layer.
-    scaled = Dense(64, activation="relu")(concatenated)
+    # Apply Bidirectional LSTM separately.
+    bilstm = Bidirectional(LSTM(bilstm_units))(concatenated)
 
     # Classify (one-hot using softmax).
-    outputs = Dense(3, activation="softmax")(scaled)
+    outputs = Dense(3, activation="softmax")(bilstm)
 
     # Define model.
     model = Model(
@@ -74,13 +79,29 @@ def create_bilstm_model(
 
 
 class BidirectionalLstmMatcher(Matcher):
-    name = "bilstm-glove"
-
-    max_features = 100_000
-    batch_size = 128
-    epochs = 5
+    max_features: int
+    bilstm_units: int
+    batch_size: int
+    epochs: int
 
     model: Model = None
+
+    def __init__(
+            self,
+            max_features: int = 500_000,
+            bilstm_units: int = 16,
+            batch_size: int = 32,
+            epochs: int = 10,
+    ):
+        self.max_features = max_features
+        self.bilstm_units = bilstm_units
+        self.batch_size = batch_size
+        self.epochs = epochs
+
+    @property
+    def name(self) -> str:
+        return f"bilstm-glove-{self.max_features}" \
+               f"-{self.bilstm_units}"
 
     def prepare(self) -> None:
         download_glove_embeddings()
@@ -127,7 +148,10 @@ class BidirectionalLstmMatcher(Matcher):
                 dev_arg_texts +
                 dev_kp_texts
         )
-        self.model = create_bilstm_model(model_texts)
+        self.model = create_bilstm_model(
+            model_texts,
+            self.bilstm_units,
+        )
         self.model.summary()
 
         self.model.compile(
@@ -161,6 +185,7 @@ class BidirectionalLstmMatcher(Matcher):
         return {
             arg_kp_id: label
             for arg_kp_id, label in zip(ids, labels)
+            if label is not None
         }
 
     def load_model(self, path: Path) -> bool:
