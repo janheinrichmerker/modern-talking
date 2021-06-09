@@ -23,6 +23,7 @@ seaborn = "*"
 keras = "*"
 tensorflow = "*"
 tensorflow-addons = "*"
+pydot = "*"
 
 [requires]
 python_version = "3"
