@@ -16,7 +16,6 @@
     </content>
     <orderEntry type="jdk" jdkName="Pipenv (Project)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Python 3.8 (modern-talking) interpreter library" level="application" />
   </component>
   <component name="PackageRequirementsSettings">
     <option name="removeUnused" value="true" />
