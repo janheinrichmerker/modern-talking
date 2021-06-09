@@ -1,14 +1,14 @@
-from typing import Optional, List
+from typing import Optional, List, Iterable
 
-from numpy import ndarray, array
+from numpy import ndarray
 from tensorflow.python.keras.backend import argmax
 from tensorflow.python.keras.utils.np_utils import to_categorical
 
 from modern_talking.model import Label
 
 
-def encode_labels(labels: List[Optional[Label]]) -> ndarray:
-    labels = list(map(_label_to_index, labels))
+def encode_labels(labels: Iterable[Optional[Label]]) -> ndarray:
+    labels = [_label_to_index(label) for label in labels]
     return to_categorical(labels)
 
 
@@ -24,7 +24,7 @@ def _label_to_index(label: Optional[Label]) -> int:
 
 def decode_labels(categorical: ndarray) -> List[Optional[Label]]:
     indices = argmax(categorical)
-    return list(map(_index_to_label, indices))
+    return [_index_to_label(index) for index in indices]
 
 
 def _index_to_label(index: int) -> Optional[Label]:
