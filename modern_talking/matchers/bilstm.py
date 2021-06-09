@@ -3,6 +3,7 @@ from typing import List, Tuple
 
 from numpy import ndarray, array
 from tensorflow import string
+from tensorflow.python.data import Dataset
 from tensorflow.python.keras import Model, Input
 from tensorflow.python.keras.layers import Bidirectional, \
     LSTM, Dense, Concatenate
@@ -17,7 +18,7 @@ from modern_talking.matchers.encoding import encode_labels, decode_labels
 from modern_talking.matchers.layers import text_vectorization_layer, \
     glove_embedding_layer
 from modern_talking.model import Dataset as UnlabelledDataset, Labels, \
-    LabelledDataset
+    LabelledDataset, ArgumentKeyPointIdPair
 
 
 def create_bilstm_model(
@@ -48,20 +49,16 @@ def create_bilstm_model(
 
     # Apply Bidirectional LSTM separately.
     argument_text_bilstm = Bidirectional(LSTM(
-        bilstm_units, return_sequences=True
-    ))(
-        argument_text_embedding
-    )
+        bilstm_units,
+        return_sequences=True
+    ))(argument_text_embedding)
     key_point_bilstm = Bidirectional(LSTM(
-        bilstm_units, return_sequences=True
-    ))(
-        key_point_embedding
-    )
+        bilstm_units,
+        return_sequences=True
+    ))(key_point_embedding)
 
     # Merge vectors by concatenating.
-    concatenated = Concatenate(axis=1)([
-        argument_text_bilstm, key_point_bilstm
-    ])
+    concatenated = Concatenate(1)([argument_text_bilstm, key_point_bilstm])
 
     # Apply Bidirectional LSTM separately.
     bilstm = Bidirectional(LSTM(bilstm_units))(concatenated)
@@ -74,8 +71,43 @@ def create_bilstm_model(
         inputs=[argument_text, key_point_text],
         outputs=outputs
     )
-
     return model
+
+
+def _prepare_unlabelled_data(
+        data: UnlabelledDataset
+) -> Tuple[Dataset, List[ArgumentKeyPointIdPair]]:
+    pairs = [(arg, kp) for arg, kp in data.argument_key_point_pairs]
+    ids = [(arg.id, kp.id) for arg, kp in pairs]
+    arg_texts = [arg.text for arg, kp in pairs]
+    kp_texts = [kp.text for arg, kp in pairs]
+    dataset = Dataset.from_tensor_slices((
+        {
+            "argument_text": array(arg_texts),
+            "key_point_text": array(kp_texts)
+        },
+    ))
+    return dataset, ids
+
+
+def _prepare_labelled_data(
+        data: LabelledDataset,
+) -> Tuple[Dataset, List[str]]:
+    pairs = [(arg, kp) for arg, kp in data.argument_key_point_pairs]
+    arg_texts = [arg.text for arg, kp in pairs]
+    kp_texts = [kp.text for arg, kp in pairs]
+    labels = encode_labels(
+        data.labels.get((arg.id, kp.id)) for arg, kp in pairs
+    )
+    dataset = Dataset.from_tensor_slices((
+        {
+            "argument_text": array(arg_texts),
+            "key_point_text": array(kp_texts),
+        },
+        labels,
+    ))
+    texts = arg_texts + kp_texts
+    return dataset, texts
 
 
 class BidirectionalLstmMatcher(Matcher):
@@ -88,100 +120,49 @@ class BidirectionalLstmMatcher(Matcher):
 
     def __init__(
             self,
-            max_features: int = 500_000,
             bilstm_units: int = 16,
-            batch_size: int = 32,
+            batch_size: int = 16,
             epochs: int = 10,
     ):
-        self.max_features = max_features
         self.bilstm_units = bilstm_units
         self.batch_size = batch_size
         self.epochs = epochs
 
     @property
     def name(self) -> str:
-        return f"bilstm-glove-{self.max_features}" \
-               f"-{self.bilstm_units}"
+        return f"bilstm-glove-{self.bilstm_units}"
 
     def prepare(self) -> None:
         download_glove_embeddings()
 
-    @staticmethod
-    def _load_labelled_split(
-            data: LabelledDataset
-    ) -> Tuple[List[str], List[str], ndarray]:
-        pairs = [(arg, kp) for arg, kp in data.argument_key_point_pairs]
-        arg_texts = [arg.text for arg, kp in pairs]
-        kp_texts = [kp.text for arg, kp in pairs]
-        labels = encode_labels([
-            data.labels.get((arg.id, kp.id)) for arg, kp in pairs
-        ])
-        return arg_texts, kp_texts, labels
-
-    @staticmethod
-    def _load_split(
-            data: UnlabelledDataset
-    ) -> Tuple[List[Tuple[str, str]], List[str], List[str]]:
-        pairs = [(arg, kp) for arg, kp in data.argument_key_point_pairs]
-        ids = [(arg.id, kp.id) for arg, kp in pairs]
-        arg_texts = [arg.text for arg, kp in pairs]
-        kp_texts = [kp.text for arg, kp in pairs]
-        return ids, arg_texts, kp_texts
-
     def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
-        train_arg_texts, train_kp_texts, train_labels = \
-            self._load_labelled_split(train_data)
-        train_inputs = {
-            "argument_text": array(train_arg_texts),
-            "key_point_text": array(train_kp_texts)
-        }
-        dev_arg_texts, dev_kp_texts, dev_labels = \
-            self._load_labelled_split(dev_data)
-        dev_inputs = {
-            "argument_text": array(dev_arg_texts),
-            "key_point_text": array(dev_kp_texts)
-        }
+        train_dataset, train_texts = _prepare_labelled_data(train_data)
+        train_dataset = train_dataset.batch(self.batch_size)
+        dev_dataset, dev_texts = _prepare_labelled_data(dev_data)
+        dev_dataset = dev_dataset.batch(self.batch_size)
 
-        model_texts = (
-                train_arg_texts +
-                train_kp_texts +
-                dev_arg_texts +
-                dev_kp_texts
-        )
         self.model = create_bilstm_model(
-            model_texts,
+            train_texts + dev_texts,
             self.bilstm_units,
         )
-        self.model.summary()
-
         self.model.compile(
             optimizer=Adam(),
             loss=CategoricalCrossentropy(),
             metrics=[Precision(), Recall()],
         )
+        self.model.summary()
         self.model.fit(
-            train_inputs, train_labels,
-            validation_data=(dev_inputs, dev_labels),
-            batch_size=self.batch_size,
+            train_dataset,
+            validation_data=dev_dataset,
             epochs=self.epochs,
         )
-        self.model.evaluate(
-            dev_inputs, dev_labels,
-            batch_size=self.batch_size,
-        )
+        self.model.evaluate(dev_dataset)
 
     def predict(self, data: UnlabelledDataset) -> Labels:
-        ids, arg_texts, kp_texts = self._load_split(data)
-        inputs = {
-            "argument_text": array(arg_texts),
-            "key_point_text": array(kp_texts)
-        }
-        prediction = self.model.predict(
-            inputs,
-            batch_size=self.batch_size,
-        )
-        prediction: ndarray
-        labels = decode_labels(prediction)
+        dataset, ids = _prepare_unlabelled_data(data)
+        dataset = dataset.batch(self.batch_size)
+        predictions: ndarray = self.model.predict(dataset)
+        labels = decode_labels(predictions)
         return {
             arg_kp_id: label
             for arg_kp_id, label in zip(ids, labels)
