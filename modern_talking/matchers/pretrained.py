@@ -171,11 +171,13 @@ class PretrainedMatcher(Matcher):
             self.tokenizer,
             self.config
         )
+        train_dataset = train_dataset.batch(self.batch_size)
         dev_dataset = _prepare_labelled_data(
             dev_data,
             self.tokenizer,
             self.config
         )
+        dev_dataset = dev_dataset.batch(self.batch_size)
 
         self.model = create_model(self.pretrained_model)
         self.model.compile(
@@ -187,13 +189,9 @@ class PretrainedMatcher(Matcher):
         self.model.fit(
             train_dataset,
             validation_data=dev_dataset,
-            batch_size=self.batch_size,
             epochs=self.epochs,
         )
-        self.model.evaluate(
-            dev_dataset,
-            batch_size=self.batch_size,
-        )
+        self.model.evaluate(dev_dataset)
 
     def predict(self, data: UnlabelledDataset) -> Labels:
         dataset, ids = _prepare_unlabelled_data(
@@ -201,10 +199,8 @@ class PretrainedMatcher(Matcher):
             self.tokenizer,
             self.config
         )
-        predictions: ndarray = self.model.predict(
-            dataset,
-            batch_size=self.batch_size
-        )
+        dataset = dataset.batch(self.batch_size)
+        predictions: ndarray = self.model.predict(dataset)
         labels = decode_labels(predictions)
         return {
             arg_kp_id: label
