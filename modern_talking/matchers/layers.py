@@ -1,10 +1,15 @@
 from typing import List
 
-from tensorflow.python.data import Dataset
-from tensorflow.python.keras.initializers.initializers_v2 import Constant
-from tensorflow.python.keras.layers import Embedding, TextVectorization
+from keras.initializers.initializers_v2 import Constant
+from keras.layers import Embedding
+from keras.layers.preprocessing.text_vectorization import TextVectorization
+from tensorflow import data
 
 from modern_talking.data.glove import get_glove_embedding_matrix
+
+# Workaround as we cannot import directly like this:
+# `from tensorflow.data import Dataset`
+Dataset = data.Dataset
 
 
 def text_vectorization_layer(

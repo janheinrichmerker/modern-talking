@@ -40,7 +40,7 @@ jobs:
       - name: "🧰 Install dependencies"
         run: pipenv install --deploy
       - name: "🧪 Check Python code format"
-        run: pipenv run flake8
+        run: pipenv run flake8 --exclude=./modern_talking/evaluation/track_1_kp_matching.py
       - name: "🧪 Lint Python code"
         run: pipenv run pylint -E modern_talking
       - name: "🧪 Test Python code"

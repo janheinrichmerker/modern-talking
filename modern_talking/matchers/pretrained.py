@@ -1,18 +1,15 @@
-# Disable TensorFlow name import Lint error. (TensorFlow delegates modules.)
-# pylint: disable=no-name-in-module
-
 from os import PathLike
 from typing import Union, Set, Tuple, List
 
 from numpy import ndarray
 from tensorflow import int32
-from tensorflow.python.data import Dataset as TFDataset, Dataset
-from tensorflow.python.keras import Input, Model
-from tensorflow.python.keras.layers import Dense, Dropout, Concatenate, \
+from keras import Input, Model
+from keras.layers import Dense, Dropout, Concatenate, \
     GlobalMaxPooling1D, GlobalAveragePooling1D, Bidirectional, LSTM
-from tensorflow.python.keras.losses import CategoricalCrossentropy
-from tensorflow.python.keras.metrics import Precision, Recall
-from tensorflow.python.keras.optimizer_v2.adam import Adam
+from keras.losses import CategoricalCrossentropy
+from keras.metrics import Precision, Recall
+from keras.optimizer_v2.adam import Adam
+from tensorflow import data
 from transformers import TFPreTrainedModel, PretrainedConfig, \
     PreTrainedTokenizerFast, AutoConfig, AutoTokenizer, TFAutoModel, \
     BatchEncoding
@@ -22,6 +19,10 @@ from modern_talking.matchers import Matcher
 from modern_talking.matchers.encoding import encode_labels, decode_labels
 from modern_talking.model import Dataset as UnlabelledDataset, Labels, \
     LabelledDataset, ArgumentKeyPointPair, ArgumentKeyPointIdPair
+
+# Workaround as we cannot import directly like this:
+# `from tensorflow.data import Dataset`
+Dataset = data.Dataset
 
 
 def create_model(pretrained_model: TFPreTrainedModel) -> Model:
@@ -35,11 +36,11 @@ def create_model(pretrained_model: TFPreTrainedModel) -> Model:
         shape=(pretrained_model.config.max_length,),
         dtype=int32,
     )
-    token_type_ids = Input(
-        name="token_type_ids",
-        shape=(pretrained_model.config.max_length,),
-        dtype=int32,
-    )
+    # token_type_ids = Input(
+    #     name="token_type_ids",
+    #     shape=(pretrained_model.config.max_length,),
+    #     dtype=int32,
+    # )
 
     # Encode with pretrained transformer model.
     encoder_outputs: TFBaseModelOutput = pretrained_model(
@@ -111,7 +112,7 @@ def _prepare_labelled_data(
     labels = encode_labels([
         data.labels.get((arg.id, kp.id)) for arg, kp in pairs
     ])
-    dataset = TFDataset.from_tensor_slices((
+    dataset = Dataset.from_tensor_slices((
         dict(encodings),
         labels,
     ))

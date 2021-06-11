@@ -3,14 +3,14 @@ from typing import List, Tuple
 
 from numpy import ndarray, array
 from tensorflow import string
-from tensorflow.python.data import Dataset
-from tensorflow.python.keras import Model, Input
-from tensorflow.python.keras.layers import Bidirectional, \
+from keras import Model, Input
+from keras.layers import Bidirectional, \
     LSTM, Dense, Concatenate
-from tensorflow.python.keras.losses import CategoricalCrossentropy
-from tensorflow.python.keras.metrics import Precision, Recall
-from tensorflow.python.keras.models import load_model
-from tensorflow.python.keras.optimizer_v2.adam import Adam
+from keras.losses import CategoricalCrossentropy
+from keras.metrics import Precision, Recall
+from keras.models import load_model
+from keras.optimizer_v2.adam import Adam
+from tensorflow import data
 
 from modern_talking.data.glove import download_glove_embeddings
 from modern_talking.matchers import Matcher
@@ -19,6 +19,10 @@ from modern_talking.matchers.layers import text_vectorization_layer, \
     glove_embedding_layer
 from modern_talking.model import Dataset as UnlabelledDataset, Labels, \
     LabelledDataset, ArgumentKeyPointIdPair
+
+# Workaround as we cannot import directly like this:
+# `from tensorflow.data import Dataset`
+Dataset = data.Dataset
 
 
 def create_bilstm_model(
