@@ -97,7 +97,13 @@ def _prepare_unlabelled_data(
 def _prepare_labelled_data(
         data: LabelledDataset,
 ) -> Tuple[Dataset, List[str]]:
-    pairs = [(arg, kp) for arg, kp in data.argument_key_point_pairs]
+
+    pairs = [
+            (arg, kp)
+            for arg in data.arguments
+            for kp in data.key_points
+        ]
+    # pairs = [(arg, kp) for arg, kp in data.argument_key_point_pairs]
     arg_texts = [arg.text for arg, kp in pairs]
     kp_texts = [kp.text for arg, kp in pairs]
     labels = encode_labels(
@@ -146,7 +152,7 @@ class BidirectionalLstmMatcher(Matcher):
         dev_dataset = dev_dataset.batch(self.batch_size)
 
         self.model = create_bilstm_model(
-            train_texts + dev_texts,
+            train_texts,
             self.bilstm_units,
         )
         self.model.compile(
