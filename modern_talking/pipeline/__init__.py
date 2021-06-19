@@ -177,8 +177,7 @@ class Pipeline:
         test_labels = self.matcher.predict(test_data)
 
         print("Save test predictions.")
-        predictions_file = output_dir / f"predictions-{self.metric.name}-" \
-                                        f"with-{self.matcher.name}.json"
+        predictions_file = output_dir / f"predictions-{self.matcher.name}.json"
         Pipeline.save_predictions(predictions_file, test_labels)
         saved_test_labels = Pipeline.load_predictions(predictions_file)
         assert saved_test_labels == test_labels
