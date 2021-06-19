@@ -1,5 +1,6 @@
 from csv import DictReader
 from json import load, dump
+from math import isnan
 from pathlib import Path
 from typing import Set
 
@@ -187,13 +188,15 @@ class Pipeline:
         train_result = self.metric.evaluate(train_labels, train_data.labels)
         print(f"Metric {self.metric.name} on train dataset: {train_result}")
         dev_result = self.metric.evaluate(dev_labels, dev_data.labels)
-        print(f"Metric {self.metric.name} on dev dataset: {dev_result}")
+        print(f"Metric {self.metric.name} on dev dataset:   {dev_result}")
         test_result = self.metric.evaluate(test_labels, test_data.labels)
         saved_test_result = self.metric.evaluate(
             saved_test_labels,
             test_data.labels
         )
-        assert saved_test_result == test_result
-        print(f"Metric {self.metric.name} on test dataset: {test_result}")
+        assert (saved_test_result == test_result
+                or isnan(saved_test_result) and isnan(test_result))
+        print(f"Metric {self.metric.name} on test dataset:  {test_result} "
+              f"(verified on exported JSON file)")
 
         return test_result
