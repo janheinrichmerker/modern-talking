@@ -117,6 +117,8 @@ class TermOverlapMatcher(UntrainedMatcher):
 
         # Calculate number of terms that exist in both.
         max_overlap_count = min(len(arg_terms), len(kp_terms))
+        if max_overlap_count == 0:
+            return 0
         overlapping_terms = arg_terms.intersection(kp_terms)
         overlap_count = len(overlapping_terms)
 
