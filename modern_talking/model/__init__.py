@@ -70,6 +70,14 @@ class Dataset:
     arguments: Set[Argument]
     key_points: Set[KeyPoint]
 
+    @property
+    def arguments_sorted(self):
+        return sorted(self.arguments, key=lambda arg: arg.id)
+
+    @property
+    def key_points_sorted(self):
+        return sorted(self.key_points, key=lambda kp: kp.id)
+
 
 @dataclass(frozen=True)
 class LabelledDataset(Dataset):
