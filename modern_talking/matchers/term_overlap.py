@@ -6,7 +6,6 @@ from nltk.downloader import Downloader
 from nltk.stem import SnowballStemmer
 from nltk.tokenize import word_tokenize
 
-from modern_talking.matchers import Matcher
 from modern_talking.matchers import UntrainedMatcher
 from modern_talking.model import Dataset, Labels, Argument, KeyPoint
 from modern_talking.model import Label
@@ -84,7 +83,9 @@ class TermOverlapMatcher(UntrainedMatcher):
         return relative_overlap
 
     def predict(self, data: Dataset) -> Labels:
-        return Matcher.filter_none({
+        return {
             (arg.id, kp.id): self.term_overlap(arg, kp)
-            for (arg, kp) in data.argument_key_point_pairs
-        })
+            for arg in data.arguments
+            for kp in data.key_points
+            if arg.topic == kp.topic and arg.stance == kp.stance
+        }

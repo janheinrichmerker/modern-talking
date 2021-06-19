@@ -14,7 +14,9 @@ class AllMatcher(UntrainedMatcher):
     def predict(self, data: Dataset) -> Labels:
         return {
             (arg.id, kp.id): 1
-            for (arg, kp) in data.argument_key_point_pairs
+            for arg in data.arguments
+            for kp in data.key_points
+            if arg.topic == kp.topic and arg.stance == kp.stance
         }
 
 
@@ -28,7 +30,9 @@ class NoneMatcher(UntrainedMatcher):
     def predict(self, data: Dataset) -> Labels:
         return {
             (arg.id, kp.id): 0
-            for (arg, kp) in data.argument_key_point_pairs
+            for arg in data.arguments
+            for kp in data.key_points
+            if arg.topic == kp.topic and arg.stance == kp.stance
         }
 
 
@@ -46,5 +50,7 @@ class RandomMatcher(UntrainedMatcher):
     def predict(self, data: Dataset) -> Labels:
         return {
             (arg.id, kp.id): self.random.uniform(0, 1)
-            for (arg, kp) in data.argument_key_point_pairs
+            for arg in data.arguments
+            for kp in data.key_points
+            if arg.topic == kp.topic and arg.stance == kp.stance
         }

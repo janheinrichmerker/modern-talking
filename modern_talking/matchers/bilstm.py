@@ -81,7 +81,12 @@ def create_bilstm_model(
 def _prepare_unlabelled_data(
         data: UnlabelledDataset
 ) -> Tuple[Dataset, List[ArgumentKeyPointIdPair]]:
-    pairs = [(arg, kp) for arg, kp in data.argument_key_point_pairs]
+    pairs = [
+        (arg, kp)
+        for arg in data.arguments
+        for kp in data.key_points
+        if arg.topic == kp.topic and arg.stance == kp.stance
+    ]
     ids = [(arg.id, kp.id) for arg, kp in pairs]
     arg_texts = [arg.text for arg, kp in pairs]
     kp_texts = [kp.text for arg, kp in pairs]
@@ -97,13 +102,11 @@ def _prepare_unlabelled_data(
 def _prepare_labelled_data(
         data: LabelledDataset,
 ) -> Tuple[Dataset, List[str]]:
-
     pairs = [
-            (arg, kp)
-            for arg in data.arguments
-            for kp in data.key_points
-        ]
-    # pairs = [(arg, kp) for arg, kp in data.argument_key_point_pairs]
+        (arg, kp)
+        for arg in data.arguments
+        for kp in data.key_points
+    ]
     arg_texts = [arg.text for arg, kp in pairs]
     kp_texts = [kp.text for arg, kp in pairs]
     labels = encode_labels(

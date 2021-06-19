@@ -1,15 +1,15 @@
 from os import PathLike
-from typing import Union, Set, Tuple, List
+from typing import Union, Tuple, List
 
-from numpy import ndarray
-from tensorflow import int32
 from keras import Input, Model
 from keras.layers import Dense, Dropout, Concatenate, \
     GlobalMaxPooling1D, GlobalAveragePooling1D, Bidirectional, LSTM
 from keras.losses import CategoricalCrossentropy
 from keras.metrics import Precision, Recall
 from keras.optimizer_v2.adam import Adam
+from numpy import ndarray
 from tensorflow import data
+from tensorflow import int32
 from transformers import TFPreTrainedModel, PretrainedConfig, \
     PreTrainedTokenizerFast, AutoConfig, AutoTokenizer, TFAutoModel, \
     BatchEncoding
@@ -73,7 +73,7 @@ def create_model(pretrained_model: TFPreTrainedModel) -> Model:
 
 
 def _prepare_encodings(
-        arg_kp_pairs: Set[ArgumentKeyPointPair],
+        arg_kp_pairs: List[ArgumentKeyPointPair],
         tokenizer: PreTrainedTokenizerFast,
         config: PretrainedConfig
 ) -> BatchEncoding:
@@ -93,7 +93,12 @@ def _prepare_unlabelled_data(
         tokenizer: PreTrainedTokenizerFast,
         config: PretrainedConfig
 ) -> Tuple[Dataset, List[ArgumentKeyPointIdPair]]:
-    pairs = data.argument_key_point_pairs
+    pairs = [
+        (arg, kp)
+        for arg in data.arguments
+        for kp in data.key_points
+        if arg.topic == kp.topic and arg.stance == kp.stance
+    ]
     ids = [(arg.id, kp.id) for arg, kp in pairs]
     encodings = _prepare_encodings(pairs, tokenizer, config)
     dataset = Dataset.from_tensor_slices((
@@ -107,7 +112,11 @@ def _prepare_labelled_data(
         tokenizer: PreTrainedTokenizerFast,
         config: PretrainedConfig
 ) -> Dataset:
-    pairs = data.argument_key_point_pairs
+    pairs = [
+        (arg, kp)
+        for arg in data.arguments
+        for kp in data.key_points
+    ]
     encodings = _prepare_encodings(pairs, tokenizer, config)
     labels = encode_labels([
         data.labels.get((arg.id, kp.id)) for arg, kp in pairs
