@@ -127,13 +127,15 @@ class Pipeline:
         :param labels: A dictionary of match labels for argument and
         key point IDs to save to the file.
         """
+        args = sorted(set(arg for arg, _ in labels.keys()))
+        kps = sorted(set(kp for _, kp in labels.keys()))
+
         with path.open("w") as file:
-            args = {arg for arg, _ in labels.keys()}
             json = {
                 arg: {
-                    kp: label
-                    for (arg_inner, kp), label in labels.items()
-                    if arg_inner == arg
+                    kp: labels[arg, kp]
+                    for kp in kps
+                    if (arg, kp) in labels.keys()
                 }
                 for arg in args
             }
