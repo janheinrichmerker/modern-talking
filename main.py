@@ -10,6 +10,7 @@ from modern_talking.evaluation.track_1 import Track1Metric
 from modern_talking.matchers import Matcher
 from modern_talking.matchers.baselines import AllMatcher, RandomMatcher, \
     NoneMatcher
+from modern_talking.matchers.bert_bilstm import BertBilstmMatcher, MergeType
 from modern_talking.matchers.pretrained import PretrainedMatcher
 from modern_talking.matchers.bilstm import BidirectionalLstmMatcher
 from modern_talking.matchers.regression import EnsembleVotingMatcher, \
@@ -36,6 +37,14 @@ matchers = (
     PretrainedMatcher("bert-base-uncased"),
     PretrainedMatcher("distilbert-base-uncased"),
     BidirectionalLstmMatcher(),
+    BertBilstmMatcher(
+        "distilbert-base-uncased",
+        merge_memories=MergeType.subtract
+    ),
+    BertBilstmMatcher(
+        "distilbert-base-uncased",
+        merge_memories=MergeType.concatenate
+    ),
 )
 
 metrics = (

@@ -28,8 +28,8 @@ Dataset = data.Dataset
 
 
 class MergeType(Enum):
-    concatenate = "concatenate"
-    subtract = "subtract"
+    concatenate = 1
+    subtract = 2
 
 
 def create_model(
@@ -201,7 +201,7 @@ class BertBilstmMatcher(Matcher):
                f"dropout-{self.embedding_dropout}-" \
                f"bilstm-{self.bilstm_units}-" \
                f"dropout-{self.memory_dropout}-" \
-               f"{self.merge_memories}"
+               f"{self.merge_memories.name}"
 
     def prepare(self) -> None:
         # Load pretrained model config.
