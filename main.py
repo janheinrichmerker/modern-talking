@@ -23,7 +23,7 @@ from modern_talking.pipeline import Pipeline
 matchers = (
     AllMatcher(),
     NoneMatcher(),
-    RandomMatcher(),
+    RandomMatcher(1234),
     TermOverlapMatcher(),
     TermOverlapMatcher(stemming=True),
     TermOverlapMatcher(stemming=True, stop_words=True),

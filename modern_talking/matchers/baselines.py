@@ -42,15 +42,15 @@ class RandomMatcher(UntrainedMatcher):
     """
 
     name = "random"
-    random: Random
 
     def __init__(self, seed=None):
-        self.random = Random(seed) if seed is not None else Random()
+        self.seed = seed
 
     def predict(self, data: Dataset) -> Labels:
+        random = Random(self.seed) if self.seed is not None else Random()
         return {
-            (arg.id, kp.id): self.random.uniform(0, 1)
-            for arg in data.arguments
-            for kp in data.key_points
+            (arg.id, kp.id): random.uniform(0, 1)
+            for arg in data.arguments_sorted
+            for kp in data.key_points_sorted
             if arg.topic == kp.topic and arg.stance == kp.stance
         }
