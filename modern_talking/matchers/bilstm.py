@@ -143,7 +143,7 @@ class BidirectionalLstmMatcher(Matcher):
 
     @property
     def name(self) -> str:
-        return f"bilstm-glove-{self.bilstm_units}"
+        return f"bilstm-{self.bilstm_units}-glove"
 
     def prepare(self) -> None:
         download_glove_embeddings()
