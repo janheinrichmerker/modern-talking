@@ -6,7 +6,8 @@ Keep up-to-date and mark best approach bold.
 | --- | --- | --- |
 | term overlap (no preprocessing) | 0.52 | 0.70 |
 | term overlap (stemming) | 0.60 | 0.75 |
-| term overlap (stemming, stop words) | **0.65** | **0.81** |
+| term overlap (stemming, stop words) | **0.64** | 0.80 |
+| term overlap (stemming, stop words, synonyms, antonyms) | **0.64** | **0.82** |
 | regression (C=1, TF/IDF) | 0.32 | 0.55 |
 | regression (C=14, BOW) | 0.44 | 0.70 |
 | regression (C=14, BOW, POS) | 0.47 | 0.66 |

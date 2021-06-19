@@ -24,9 +24,15 @@ matchers = (
     AllMatcher(),
     NoneMatcher(),
     RandomMatcher(),
-    TermOverlapMatcher(stemming=False, stop_words=False),
-    TermOverlapMatcher(stop_words=False),
     TermOverlapMatcher(),
+    TermOverlapMatcher(stemming=True),
+    TermOverlapMatcher(stemming=True, stop_words=True),
+    TermOverlapMatcher(
+        stemming=True,
+        stop_words=True,
+        synonyms=True,
+        antonyms=True
+    ),
     RegressionBagOfWordsMatcher(),
     RegressionTfidfMatcher(),
     RegressionPartOfSpeechMatcher(),
