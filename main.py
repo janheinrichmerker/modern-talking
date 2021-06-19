@@ -6,7 +6,7 @@ from modern_talking.evaluation import Metric
 from modern_talking.evaluation.f_measure import FMeasure
 from modern_talking.evaluation.precision import Precision
 from modern_talking.evaluation.recall import Recall
-from modern_talking.evaluation.track_1 import Track1Metric
+from modern_talking.evaluation.map import Track1Metric
 from modern_talking.matchers import Matcher
 from modern_talking.matchers.baselines import AllMatcher, RandomMatcher, \
     NoneMatcher
