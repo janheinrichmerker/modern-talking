@@ -168,25 +168,32 @@ class Pipeline:
             self.matcher.train(train_data, dev_data)
             print("Save model.")
             self.matcher.save_model(model_path)
-        # Predict labels for test data.
-        print("Predict labels.")
-        predicted_labels = self.matcher.predict(test_data)
 
-        print("Save predictions.")
+        # Predict labels.
+        print("Predict labels.")
+        train_labels = self.matcher.predict(train_data)
+        dev_labels = self.matcher.predict(dev_data)
+        test_labels = self.matcher.predict(test_data)
+
+        print("Save test predictions.")
         predictions_file = output_dir / f"predictions-{self.metric.name}-" \
                                         f"with-{self.matcher.name}.json"
-        Pipeline.save_predictions(predictions_file, predicted_labels)
-        saved_predicted_labels = Pipeline.load_predictions(predictions_file)
-        assert saved_predicted_labels == predicted_labels
-
-        # Get ground-truth labels from test data.
-        ground_truth_labels = test_data.labels
+        Pipeline.save_predictions(predictions_file, test_labels)
+        saved_test_labels = Pipeline.load_predictions(predictions_file)
+        assert saved_test_labels == test_labels
 
         # Evaluate labels.
         print("Evaluate labels.")
-        result = self.metric.evaluate(predicted_labels, ground_truth_labels)
-        result_saved = self.metric.evaluate(saved_predicted_labels,
-                                            ground_truth_labels)
-        assert result_saved == result
+        train_result = self.metric.evaluate(train_labels, train_data.labels)
+        print(f"Metric {self.metric.name} on train dataset: {train_result}")
+        dev_result = self.metric.evaluate(dev_labels, dev_data.labels)
+        print(f"Metric {self.metric.name} on dev dataset: {dev_result}")
+        test_result = self.metric.evaluate(test_labels, test_data.labels)
+        saved_test_result = self.metric.evaluate(
+            saved_test_labels,
+            test_data.labels
+        )
+        assert saved_test_result == test_result
+        print(f"Metric {self.metric.name} on test dataset: {test_result}")
 
-        return result
+        return test_result

@@ -95,9 +95,9 @@ def train_eval() -> None:
 
     # Execute pipeline.
     pipeline = Pipeline(matcher, metric)
-    result = pipeline.train_evaluate(True)
+    result = pipeline.train_evaluate(ignore_test=True)
 
-    print(f"Score: {result} ({metric.name})")
+    print(f"Final score for metric {metric.name} on test dataset: {result}")
 
 
 def list_matchers() -> None:
