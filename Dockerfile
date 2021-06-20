@@ -2,10 +2,10 @@ FROM tensorflow/tensorflow:latest-gpu-py3
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install Python 3.9.
-RUN apt-get update &&
-    apt-get install software-properties-common &&
-    add-apt-repository ppa:deadsnakes/ppa &&
-    apt-get install python3.9 &&
+RUN apt-get update && \
+    apt-get install software-properties-common && \
+    add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get install python3.9 && \
     update-alternatives --install /usr/local/bin/python python /usr/bin/python3 40
 
 # Set working directory.
