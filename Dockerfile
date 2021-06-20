@@ -1,12 +1,16 @@
 FROM tensorflow/tensorflow:latest-gpu-py3
 ENV DEBIAN_FRONTEND=noninteractive
 
+RUN which python
+
 # Install Python 3.9.
 RUN apt-get update \
     && apt-get install -y software-properties-common \
     && add-apt-repository ppa:deadsnakes/ppa \
     && apt-get install -y python3.9 \
-    && update-alternatives --install /usr/local/bin/python python /usr/bin/python3.9 40
+    && ln -sf /usr/bin/python3.9 /usr/bin/python
+
+RUN which python
 
 # Set working directory.
 WORKDIR /workspace
