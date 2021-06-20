@@ -44,6 +44,5 @@ def glove_embedding_layer(
         len(vocabulary) + 2,
         dimension,
         embeddings_initializer=Constant(initial_matrix),
-        trainable=False,
     )
     return layer
