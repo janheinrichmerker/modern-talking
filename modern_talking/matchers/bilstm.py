@@ -172,7 +172,7 @@ class BidirectionalLstmMatcher(Matcher):
             self.bilstm_units,
         )
         self.model.compile(
-            optimizer=Adam(1e-4),
+            optimizer=Adam(1e-5),
             loss=CategoricalCrossentropy(),
             metrics=[Precision(), Recall()],
         )
