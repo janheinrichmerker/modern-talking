@@ -44,7 +44,10 @@ def create_bilstm_model(
     )
 
     # Convert texts to vectors.
-    vectorize = text_vectorization_layer(texts)
+    vectorize = text_vectorization_layer(
+        texts,
+        output_sequence_length=512
+    )
     argument_text_vector = vectorize(argument_text)
     key_point_text_vector = vectorize(key_point_text)
 

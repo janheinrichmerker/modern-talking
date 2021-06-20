@@ -17,13 +17,17 @@ Dataset = data.Dataset
 
 def text_vectorization_layer(
         texts: List[str],
-        max_tokens: int = 100_000
+        max_tokens: int = 100_000,
+        output_sequence_length: int = None,
 ) -> TextVectorization:
     """
     Create a text vectorization layer with the
     for the most frequent tokens in the given texts.
     """
-    layer = TextVectorization(max_tokens)
+    layer = TextVectorization(
+        max_tokens,
+        output_sequence_length=output_sequence_length
+    )
     text_dataset = Dataset.from_tensor_slices(texts)
     layer.adapt(text_dataset)
     return layer
