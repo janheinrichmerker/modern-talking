@@ -13,7 +13,6 @@ from tensorflow import int32
 from transformers import TFPreTrainedModel, PretrainedConfig, \
     PreTrainedTokenizerFast, AutoConfig, AutoTokenizer, TFAutoModel, \
     BatchEncoding
-from transformers.modeling_tf_outputs import TFBaseModelOutput
 
 from modern_talking.matchers import Matcher
 from modern_talking.matchers.encoding import encode_labels, decode_labels
@@ -43,15 +42,13 @@ def create_model(pretrained_model: TFPreTrainedModel) -> Model:
     # )
 
     # Encode with pretrained transformer model.
-    encoder_outputs: TFBaseModelOutput = pretrained_model(
+    encoding_seq, encoding_pool = pretrained_model(
         input_ids,
         attention_mask=attention_masks,
         # token_type_ids=token_type_ids,
     )
 
-    bilstm = Bidirectional(LSTM(64, return_sequences=True))(
-        encoder_outputs.last_hidden_state
-    )
+    bilstm = Bidirectional(LSTM(64, return_sequences=True))(encoding_seq)
     avg_pool = GlobalAveragePooling1D()(bilstm)
     max_pool = GlobalMaxPooling1D()(bilstm)
     concat = Concatenate()([avg_pool, max_pool])
@@ -89,14 +86,14 @@ def _prepare_encodings(
 
 
 def _prepare_unlabelled_data(
-        data: UnlabelledDataset,
+        unlabelled_data: UnlabelledDataset,
         tokenizer: PreTrainedTokenizerFast,
         config: PretrainedConfig
 ) -> Tuple[Dataset, List[ArgumentKeyPointIdPair]]:
     pairs = [
         (arg, kp)
-        for arg in data.arguments
-        for kp in data.key_points
+        for arg in unlabelled_data.arguments
+        for kp in unlabelled_data.key_points
         if arg.topic == kp.topic and arg.stance == kp.stance
     ]
     ids = [(arg.id, kp.id) for arg, kp in pairs]
@@ -108,18 +105,18 @@ def _prepare_unlabelled_data(
 
 
 def _prepare_labelled_data(
-        data: LabelledDataset,
+        labelled_data: LabelledDataset,
         tokenizer: PreTrainedTokenizerFast,
         config: PretrainedConfig
 ) -> Dataset:
     pairs = [
         (arg, kp)
-        for arg in data.arguments
-        for kp in data.key_points
+        for arg in labelled_data.arguments
+        for kp in labelled_data.key_points
     ]
     encodings = _prepare_encodings(pairs, tokenizer, config)
     labels = encode_labels([
-        data.labels.get((arg.id, kp.id)) for arg, kp in pairs
+        labelled_data.labels.get((arg.id, kp.id)) for arg, kp in pairs
     ])
     dataset = Dataset.from_tensor_slices((
         dict(encodings),
@@ -203,9 +200,9 @@ class PretrainedMatcher(Matcher):
         )
         self.model.evaluate(dev_dataset)
 
-    def predict(self, data: UnlabelledDataset) -> Labels:
+    def predict(self, test_data: UnlabelledDataset) -> Labels:
         dataset, ids = _prepare_unlabelled_data(
-            data,
+            test_data,
             self.tokenizer,
             self.config
         )

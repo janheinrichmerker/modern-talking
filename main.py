@@ -45,16 +45,16 @@ matchers = (
     BidirectionalLstmMatcher(),
     BertBilstmMatcher(
         "distilbert-base-uncased",
-        0.2,
-        32,
-        0.2,
+        encoding_dropout=0.2,
+        bilstm_units=32,
+        memory_dropout=0.2,
         merge_memories=MergeType.subtract
     ),
     BertBilstmMatcher(
         "distilbert-base-uncased",
-        0.2,
-        32,
-        0.2,
+        encoding_dropout=0.2,
+        bilstm_units=32,
+        memory_dropout=0.2,
         merge_memories=MergeType.concatenate
     ),
 )

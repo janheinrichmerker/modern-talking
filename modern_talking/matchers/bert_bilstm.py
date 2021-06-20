@@ -15,7 +15,6 @@ from tensorflow import data, int32
 from transformers import TFPreTrainedModel, PretrainedConfig, \
     PreTrainedTokenizerFast, AutoConfig, AutoTokenizer, TFAutoModel, \
     BatchEncoding
-from transformers.modeling_tf_outputs import TFBaseModelOutput
 
 from modern_talking.matchers import Matcher
 from modern_talking.matchers.encoding import encode_labels, decode_labels
@@ -58,7 +57,7 @@ class PretrainedTokenizer(Layer):
 
 def create_model(
         pretrained_model: TFPreTrainedModel,
-        embedding_dropout: float = 0.2,
+        encoding_dropout: float = 0.2,
         bilstm_units: int = 64,
         memory_dropout: float = 0.2,
         merge_memories: MergeType = MergeType.subtract
@@ -95,23 +94,27 @@ def create_model(
         dtype=int32,
     )
 
-    # Embed with pretrained transformer model.
-    argument_embed: TFBaseModelOutput = pretrained_model(
+    # Encode with pretrained transformer model.
+    argument_encoding_seq, argument_encoding_pool = pretrained_model(
         argument_input_ids,
         attention_mask=argument_attention_mask,
         # token_type_ids=argument_token_type_ids,
     )
-    argument_embed = SpatialDropout1D(embedding_dropout)(argument_embed)
-    key_point_embed: TFBaseModelOutput = pretrained_model(
+    argument_encoding_seq = SpatialDropout1D(encoding_dropout)(
+        argument_encoding_seq
+    )
+    key_point_encoding_seq, key_point_encoding_pool = pretrained_model(
         key_point_input_ids,
         attention_mask=key_point_attention_mask,
         # token_type_ids=key_point_token_type_ids,
     )
-    key_point_embed = SpatialDropout1D(embedding_dropout)(key_point_embed)
+    key_point_encoding_seq = SpatialDropout1D(encoding_dropout)(
+        key_point_encoding_seq
+    )
 
     # Long short term memory.
     argument_bilstm = Bidirectional(LSTM(bilstm_units, return_sequences=True))
-    argument_memory_seq = argument_bilstm(argument_embed.last_hidden_state)
+    argument_memory_seq = argument_bilstm(argument_encoding_seq)
     argument_memory_avg = GlobalAveragePooling1D()(argument_memory_seq)
     argument_memory_max = GlobalMaxPooling1D()(argument_memory_seq)
     argument_memory = Concatenate()([
@@ -120,7 +123,7 @@ def create_model(
     ])
     argument_memory = Dropout(memory_dropout)(argument_memory)
     key_point_bilstm = Bidirectional(LSTM(bilstm_units, return_sequences=True))
-    key_point_memory_seq = key_point_bilstm(key_point_embed.last_hidden_state)
+    key_point_memory_seq = key_point_bilstm(key_point_encoding_seq)
     key_point_memory_avg = GlobalAveragePooling1D()(key_point_memory_seq)
     key_point_memory_max = GlobalMaxPooling1D()(key_point_memory_seq)
     key_point_memory = Concatenate()([
@@ -242,11 +245,11 @@ class BertBilstmMatcher(Matcher):
     with a pretrained BERT model and classifying the merged outputs.
     """
 
-    batch_size = 32
+    batch_size = 16
     epochs = 1
 
     pretrained_model_name: str
-    embedding_dropout: float
+    encoding_dropout: float
     bilstm_units: int
     memory_dropout: float
     merge_memories: MergeType
@@ -260,13 +263,13 @@ class BertBilstmMatcher(Matcher):
     def __init__(
             self,
             pretrained_model_name: str,
-            embedding_dropout: float,
+            encoding_dropout: float,
             bilstm_units: int,
             memory_dropout: float,
             merge_memories: MergeType,
     ):
         self.pretrained_model_name = pretrained_model_name
-        self.embedding_dropout = embedding_dropout
+        self.encoding_dropout = encoding_dropout
         self.bilstm_units = bilstm_units
         self.memory_dropout = memory_dropout
         self.merge_memories = merge_memories
@@ -274,7 +277,7 @@ class BertBilstmMatcher(Matcher):
     @property
     def name(self) -> str:
         return f"{self.pretrained_model_name}-" \
-               f"dropout-{self.embedding_dropout}-" \
+               f"dropout-{self.encoding_dropout}-" \
                f"bilstm-{self.bilstm_units}-" \
                f"dropout-{self.memory_dropout}-" \
                f"{self.merge_memories.name}"
@@ -290,7 +293,7 @@ class BertBilstmMatcher(Matcher):
             config=self.config
         )
 
-        # Load pretrained embedding model.
+        # Load pretrained encoder model.
         self.pretrained_model = TFAutoModel.from_pretrained(
             self.pretrained_model_name,
             config=self.config
@@ -317,7 +320,7 @@ class BertBilstmMatcher(Matcher):
         print("\tBuild and compile model.")
         self.model = create_model(
             self.pretrained_model,
-            self.embedding_dropout,
+            self.encoding_dropout,
             self.bilstm_units,
             self.memory_dropout,
             self.merge_memories
