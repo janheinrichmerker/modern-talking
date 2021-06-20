@@ -1,4 +1,5 @@
 FROM tensorflow/tensorflow:latest-gpu-py3
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Install Pyenv and Python 3.9.
 RUN apt-get update && \
