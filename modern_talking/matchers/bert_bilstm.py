@@ -17,7 +17,7 @@ from tensorflow import data, int32
 from transformers import TFPreTrainedModel, PretrainedConfig, \
     PreTrainedTokenizerFast, AutoConfig, AutoTokenizer, TFAutoModel, \
     BatchEncoding
-from transformers.modeling_outputs import BaseModelOutputWithPooling
+from transformers.modeling_tf_outputs import TFBaseModelOutputWithPooling
 
 from modern_talking.matchers import Matcher
 from modern_talking.matchers.encoding import encode_labels, decode_labels
@@ -74,7 +74,7 @@ def create_model(
     )
 
     # Encode with pretrained transformer model.
-    argument_encoding: BaseModelOutputWithPooling = pretrained_model(
+    argument_encoding: TFBaseModelOutputWithPooling = pretrained_model(
         argument_input_ids,
         attention_mask=argument_attention_mask,
         # token_type_ids=argument_token_type_ids,
@@ -83,7 +83,7 @@ def create_model(
     argument_encoding_sequence = SpatialDropout1D(encoding_dropout)(
         argument_encoding_sequence
     )
-    key_point_encoding: BaseModelOutputWithPooling = pretrained_model(
+    key_point_encoding: TFBaseModelOutputWithPooling = pretrained_model(
         key_point_input_ids,
         attention_mask=key_point_attention_mask,
         # token_type_ids=key_point_token_type_ids,

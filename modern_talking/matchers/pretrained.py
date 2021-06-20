@@ -13,7 +13,7 @@ from tensorflow.keras.optimizers import Adam
 from transformers import TFPreTrainedModel, PretrainedConfig, \
     PreTrainedTokenizerFast, AutoConfig, AutoTokenizer, TFAutoModel, \
     BatchEncoding
-from transformers.modeling_outputs import BaseModelOutputWithPooling
+from transformers.modeling_tf_outputs import TFBaseModelOutputWithPooling
 
 from modern_talking.matchers import Matcher
 from modern_talking.matchers.encoding import encode_labels, decode_labels
@@ -43,7 +43,7 @@ def create_model(pretrained_model: TFPreTrainedModel) -> Model:
     )
 
     # Encode with pretrained transformer model.
-    encoding: BaseModelOutputWithPooling = pretrained_model(
+    encoding: TFBaseModelOutputWithPooling = pretrained_model(
         input_ids,
         attention_mask=attention_mask,
         # token_type_ids=token_type_ids,
