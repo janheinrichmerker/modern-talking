@@ -218,9 +218,7 @@ def _prepare_labelled_data(
     arg_texts = [arg.text for arg, kp in pairs]
     kp_texts = [kp.text for arg, kp in pairs]
     arg_encodings = _prepare_encodings(arg_texts, tokenizer, config)
-    print(arg_encodings.keys())
     kp_encodings = _prepare_encodings(kp_texts, tokenizer, config)
-    print(kp_encodings.keys())
     labels = encode_labels(
         dataset.labels.get((arg.id, kp.id)) for arg, kp in pairs
     )
@@ -262,10 +260,10 @@ class BertBilstmMatcher(Matcher):
     def __init__(
             self,
             pretrained_model_name: str,
-            embedding_dropout: float = 0.2,
-            bilstm_units: int = 64,
-            memory_dropout: float = 0.2,
-            merge_memories: MergeType = MergeType.subtract,
+            embedding_dropout: float,
+            bilstm_units: int,
+            memory_dropout: float,
+            merge_memories: MergeType,
     ):
         self.pretrained_model_name = pretrained_model_name
         self.embedding_dropout = embedding_dropout
