@@ -27,17 +27,17 @@ Dataset = data.Dataset
 def create_model(pretrained_model: TFPreTrainedModel) -> Model:
     input_ids = Input(
         name="input_ids",
-        shape=(pretrained_model.config.max_length,),
+        shape=(512,),
         dtype=int32,
     )
     attention_masks = Input(
         name="attention_mask",
-        shape=(pretrained_model.config.max_length,),
+        shape=(512,),
         dtype=int32,
     )
     # token_type_ids = Input(
     #     name="token_type_ids",
-    #     shape=(pretrained_model.config.max_length,),
+    #     shape=(512,),
     #     dtype=int32,
     # )
 
@@ -73,15 +73,16 @@ def create_model(pretrained_model: TFPreTrainedModel) -> Model:
 def _prepare_encodings(
         arg_kp_pairs: List[ArgumentKeyPointPair],
         tokenizer: PreTrainedTokenizerFast,
-        config: PretrainedConfig
 ) -> BatchEncoding:
-    encodings: BatchEncoding = tokenizer(
+    encodings: BatchEncoding = tokenizer.__call__(
         [arg.text for arg, kp in arg_kp_pairs],
         [kp.text for arg, kp in arg_kp_pairs],
-        padding=True,
-        truncation=True,
-        max_length=config.max_length,
+        max_length=512,
+        pad_to_max_length=True,
         return_tensors="tf",
+        return_attention_mask=True,
+        return_token_type_ids=True,
+        add_special_tokens=True,
     )
     return encodings
 
@@ -175,7 +176,8 @@ class PretrainedMatcher(Matcher):
 
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.pretrained_model_name,
-            config=self.config
+            config=self.config,
+            do_lower_case=True,
         )
 
         self.pretrained_model = TFAutoModel.from_pretrained(

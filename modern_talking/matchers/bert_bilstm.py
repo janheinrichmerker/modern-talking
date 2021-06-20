@@ -67,32 +67,32 @@ def create_model(
     # Specify model inputs.
     argument_input_ids = Input(
         name="argument_input_ids",
-        shape=(pretrained_model.config.max_length,),
+        shape=(512,),
         dtype=int32,
     )
     argument_attention_mask = Input(
         name="argument_attention_mask",
-        shape=(pretrained_model.config.max_length,),
+        shape=(512,),
         dtype=int32,
     )
     argument_token_type_ids = Input(
         name="argument_token_type_ids",
-        shape=(pretrained_model.config.max_length,),
+        shape=(512,),
         dtype=int32,
     )
     key_point_input_ids = Input(
         name="key_point_input_ids",
-        shape=(pretrained_model.config.max_length,),
+        shape=(512,),
         dtype=int32,
     )
     key_point_attention_mask = Input(
         name="key_point_attention_mask",
-        shape=(pretrained_model.config.max_length,),
+        shape=(512,),
         dtype=int32,
     )
     key_point_token_type_ids = Input(
         name="key_point_token_type_ids",
-        shape=(pretrained_model.config.max_length,),
+        shape=(512,),
         dtype=int32,
     )
 
@@ -168,17 +168,16 @@ def create_model(
 def _prepare_encodings(
         texts: List[str],
         tokenizer: PreTrainedTokenizerFast,
-        config: PretrainedConfig
 ) -> BatchEncoding:
     # Tokenize using pretrained tokenizer (e.g., WordPiece)
     encodings: BatchEncoding = tokenizer(
         texts,
-        padding=True,
-        truncation=True,
-        max_length=config.max_length,
+        max_length=512,
+        pad_to_max_length=True,
+        return_tensors="tf",
         return_attention_mask=True,
         return_token_type_ids=True,
-        return_tensors="tf",
+        add_special_tokens=True,
     )
     return encodings
 
@@ -304,7 +303,8 @@ class BertBilstmMatcher(Matcher):
         # Load pretrained tokenizer.
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.pretrained_model_name,
-            config=self.config
+            config=self.config,
+            do_lower_case=True,
         )
 
         # Load pretrained encoder model.
