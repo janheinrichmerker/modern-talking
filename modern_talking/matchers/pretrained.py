@@ -41,13 +41,14 @@ def create_model(pretrained_model: TFPreTrainedModel) -> Model:
     # )
 
     # Encode with pretrained transformer model.
-    encoding_seq, encoding_pool = pretrained_model(
+    encoding = pretrained_model(
         input_ids,
         attention_mask=attention_masks,
         # token_type_ids=token_type_ids,
     )
+    encoding_sequence = encoding.last_hidden_state
 
-    bilstm = Bidirectional(LSTM(64, return_sequences=True))(encoding_seq)
+    bilstm = Bidirectional(LSTM(64, return_sequences=True))(encoding_sequence)
     avg_pool = GlobalAveragePooling1D()(bilstm)
     max_pool = GlobalMaxPooling1D()(bilstm)
     concat = Concatenate()([avg_pool, max_pool])
@@ -157,8 +158,12 @@ class PretrainedMatcher(Matcher):
         return f"pretrained-{self.model_name}"
 
     def prepare(self) -> None:
-        self.config = AutoConfig.from_pretrained(self.model_name)
-        self.config.output_hidden_states = False
+        self.config = AutoConfig.from_pretrained(
+            self.model_name,
+            output_hidden_states=False,
+            output_attentions=False,
+            return_dict=True,
+        )
 
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.model_name,

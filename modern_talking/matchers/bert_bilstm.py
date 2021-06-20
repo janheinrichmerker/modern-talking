@@ -4,9 +4,9 @@ from typing import Tuple, List
 from tensorflow.keras import Model, Input
 from tensorflow.keras.activations import relu, softmax
 from tensorflow.keras.callbacks import ModelCheckpoint
-from tensorflow.keras.layers import Dense, Dropout, Concatenate, Layer, Subtract, \
-    GlobalMaxPooling1D, GlobalAveragePooling1D, Bidirectional, LSTM, \
-    SpatialDropout1D
+from tensorflow.keras.layers import Dense, Dropout, Concatenate, Layer, \
+    Subtract, GlobalMaxPooling1D, GlobalAveragePooling1D, Bidirectional, \
+    LSTM, SpatialDropout1D
 from tensorflow.keras.losses import CategoricalCrossentropy
 from tensorflow.keras.metrics import Precision, Recall
 from tensorflow.keras.optimizers import Adam
@@ -95,26 +95,28 @@ def create_model(
     )
 
     # Encode with pretrained transformer model.
-    argument_encoding_seq, argument_encoding_pool = pretrained_model(
+    argument_encoding = pretrained_model(
         argument_input_ids,
         attention_mask=argument_attention_mask,
         # token_type_ids=argument_token_type_ids,
     )
-    argument_encoding_seq = SpatialDropout1D(encoding_dropout)(
-        argument_encoding_seq
+    argument_encoding_sequence = argument_encoding.last_hidden_state
+    argument_encoding_sequence = SpatialDropout1D(encoding_dropout)(
+        argument_encoding_sequence
     )
-    key_point_encoding_seq, key_point_encoding_pool = pretrained_model(
+    key_point_encoding = pretrained_model(
         key_point_input_ids,
         attention_mask=key_point_attention_mask,
         # token_type_ids=key_point_token_type_ids,
     )
-    key_point_encoding_seq = SpatialDropout1D(encoding_dropout)(
-        key_point_encoding_seq
+    key_point_encoding_sequence = key_point_encoding.last_hidden_state
+    key_point_encoding_sequence = SpatialDropout1D(encoding_dropout)(
+        key_point_encoding_sequence
     )
 
     # Long short term memory.
     argument_bilstm = Bidirectional(LSTM(bilstm_units, return_sequences=True))
-    argument_memory_seq = argument_bilstm(argument_encoding_seq)
+    argument_memory_seq = argument_bilstm(argument_encoding_sequence)
     argument_memory_avg = GlobalAveragePooling1D()(argument_memory_seq)
     argument_memory_max = GlobalMaxPooling1D()(argument_memory_seq)
     argument_memory = Concatenate()([
@@ -123,7 +125,7 @@ def create_model(
     ])
     argument_memory = Dropout(memory_dropout)(argument_memory)
     key_point_bilstm = Bidirectional(LSTM(bilstm_units, return_sequences=True))
-    key_point_memory_seq = key_point_bilstm(key_point_encoding_seq)
+    key_point_memory_seq = key_point_bilstm(key_point_encoding_sequence)
     key_point_memory_avg = GlobalAveragePooling1D()(key_point_memory_seq)
     key_point_memory_max = GlobalMaxPooling1D()(key_point_memory_seq)
     key_point_memory = Concatenate()([
@@ -284,8 +286,12 @@ class BertBilstmMatcher(Matcher):
 
     def prepare(self) -> None:
         # Load pretrained model config.
-        self.config = AutoConfig.from_pretrained(self.pretrained_model_name)
-        self.config.output_hidden_states = False
+        self.config = AutoConfig.from_pretrained(
+            self.pretrained_model_name,
+            output_hidden_states=False,
+            output_attentions=False,
+            return_dict=True,
+        )
 
         # Load pretrained tokenizer.
         self.tokenizer = AutoTokenizer.from_pretrained(
