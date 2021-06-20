@@ -89,8 +89,7 @@ def _prepare_encodings(
 
 def _prepare_unlabelled_data(
         unlabelled_data: UnlabelledDataset,
-        tokenizer: PreTrainedTokenizerFast,
-        config: PretrainedConfig
+        tokenizer: PreTrainedTokenizerFast
 ) -> Tuple[Dataset, List[ArgumentKeyPointIdPair]]:
     pairs = [
         (arg, kp)
@@ -99,7 +98,7 @@ def _prepare_unlabelled_data(
         if arg.topic == kp.topic and arg.stance == kp.stance
     ]
     ids = [(arg.id, kp.id) for arg, kp in pairs]
-    encodings = _prepare_encodings(pairs, tokenizer, config)
+    encodings = _prepare_encodings(pairs, tokenizer)
     dataset = Dataset.from_tensor_slices((
         dict(encodings),
     ))
@@ -109,7 +108,6 @@ def _prepare_unlabelled_data(
 def _prepare_labelled_data(
         labelled_data: LabelledDataset,
         tokenizer: PreTrainedTokenizerFast,
-        config: PretrainedConfig
 ) -> Dataset:
     pairs = [
         (arg, kp)
@@ -117,7 +115,7 @@ def _prepare_labelled_data(
         for kp in labelled_data.key_points
         if arg.topic == kp.topic and arg.stance == kp.stance
     ]
-    encodings = _prepare_encodings(pairs, tokenizer, config)
+    encodings = _prepare_encodings(pairs, tokenizer)
     labels = encode_labels([
         labelled_data.labels.get((arg.id, kp.id)) for arg, kp in pairs
     ])
@@ -187,17 +185,9 @@ class PretrainedMatcher(Matcher):
         self.pretrained_model.trainable = False
 
     def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
-        train_dataset = _prepare_labelled_data(
-            train_data,
-            self.tokenizer,
-            self.config
-        )
+        train_dataset = _prepare_labelled_data(train_data, self.tokenizer)
         train_dataset = train_dataset.batch(self.batch_size)
-        dev_dataset = _prepare_labelled_data(
-            dev_data,
-            self.tokenizer,
-            self.config
-        )
+        dev_dataset = _prepare_labelled_data(dev_data, self.tokenizer)
         dev_dataset = dev_dataset.batch(self.batch_size)
 
         self.model = create_model(self.pretrained_model)
@@ -215,11 +205,7 @@ class PretrainedMatcher(Matcher):
         self.model.evaluate(dev_dataset)
 
     def predict(self, test_data: UnlabelledDataset) -> Labels:
-        dataset, ids = _prepare_unlabelled_data(
-            test_data,
-            self.tokenizer,
-            self.config
-        )
+        dataset, ids = _prepare_unlabelled_data(test_data, self.tokenizer)
         dataset = dataset.batch(self.batch_size)
         predictions: ndarray = self.model.predict(dataset)
         labels = decode_labels(predictions)

@@ -185,7 +185,6 @@ def _prepare_encodings(
 def _prepare_unlabelled_data(
         unlabelled_data: UnlabelledDataset,
         tokenizer: PreTrainedTokenizerFast,
-        config: PretrainedConfig
 ) -> Tuple[Dataset, List[ArgumentKeyPointIdPair]]:
     pairs = [
         (arg, kp)
@@ -196,8 +195,8 @@ def _prepare_unlabelled_data(
     ids = [(arg.id, kp.id) for arg, kp in pairs]
     arg_texts = [arg.text for arg, kp in pairs]
     kp_texts = [kp.text for arg, kp in pairs]
-    arg_encodings = _prepare_encodings(arg_texts, tokenizer, config)
-    kp_encodings = _prepare_encodings(kp_texts, tokenizer, config)
+    arg_encodings = _prepare_encodings(arg_texts, tokenizer)
+    kp_encodings = _prepare_encodings(kp_texts, tokenizer)
     dataset = Dataset.from_tensor_slices((
         {
             "argument_input_ids": arg_encodings["input_ids"],
@@ -214,7 +213,6 @@ def _prepare_unlabelled_data(
 def _prepare_labelled_data(
         labelled_data: LabelledDataset,
         tokenizer: PreTrainedTokenizerFast,
-        config: PretrainedConfig
 ) -> Dataset:
     pairs = [
         (arg, kp)
@@ -224,8 +222,8 @@ def _prepare_labelled_data(
     ]
     arg_texts = [arg.text for arg, kp in pairs]
     kp_texts = [kp.text for arg, kp in pairs]
-    arg_encodings = _prepare_encodings(arg_texts, tokenizer, config)
-    kp_encodings = _prepare_encodings(kp_texts, tokenizer, config)
+    arg_encodings = _prepare_encodings(arg_texts, tokenizer)
+    kp_encodings = _prepare_encodings(kp_texts, tokenizer)
     labels = encode_labels(
         labelled_data.labels.get((arg.id, kp.id)) for arg, kp in pairs
     )
@@ -317,17 +315,9 @@ class BertBilstmMatcher(Matcher):
     def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
         # Load and prepare datasets as tensors.
         print("\tLoad and prepare datasets for model.")
-        train_dataset = _prepare_labelled_data(
-            train_data,
-            self.tokenizer,
-            self.config
-        )
+        train_dataset = _prepare_labelled_data(train_data, self.tokenizer)
         train_dataset = train_dataset.batch(self.batch_size)
-        dev_dataset = _prepare_labelled_data(
-            dev_data,
-            self.tokenizer,
-            self.config
-        )
+        dev_dataset = _prepare_labelled_data(dev_data, self.tokenizer)
         dev_dataset = dev_dataset.batch(self.batch_size)
 
         # Build model.
@@ -373,8 +363,7 @@ class BertBilstmMatcher(Matcher):
         print("\tLoad and prepare datasets for model.")
         test_dataset, test_ids = _prepare_unlabelled_data(
             test_data,
-            self.tokenizer,
-            self.config
+            self.tokenizer
         )
         test_dataset = test_dataset.batch(self.batch_size)
 
