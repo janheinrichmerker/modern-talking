@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-latex:
-    name: "🏗️ LaTeX build"
+    name: "🏗️ Build LaTeX paper"
     runs-on: ubuntu-20.04
     steps:
       - name: "📥 Check-out"
@@ -21,7 +21,7 @@ jobs:
           path: paper/emnlp2021.pdf
           name: Paper
   test-python:
-    name: "🧪 Python test"
+    name: "🧪 Test Python code"
     runs-on: ubuntu-20.04
     defaults:
       run:
@@ -54,5 +54,40 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           fail_ci_if_error: true
+  push-docker:
+    name: "🚀 Push Docker image"
+    runs-on: ubuntu-20.04
+    steps:
+      - name: "📥 Check-out"
+        uses: actions/checkout@v2
+      - name: "📄 Parse Docker metadata"
+        id: meta
+        uses: crazy-max/ghaction-docker-meta@v1
+        with:
+          images: ${{ github.repository }}
+          tag-match: "v(.*)"
+          tag-match-group: 1
+      - name: "🧰 Set up QEMU"
+        uses: docker/setup-qemu-action@v1
+      - name: "🧰 Set up Docker Buildx"
+        uses: docker/setup-buildx-action@v1
+      - name: "🔑 Login to GitHub Packages"
+        uses: docker/login-action@v1
+        with:
+          registry: docker.pkg.github.com
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: "🚀 Build & push Docker image to GitHub Packages"
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: |
+            ${{ steps.meta.outputs.labels }}
+            org.opencontainers.image.documentation=https://github.com/${{ github.repository }}
+            org.opencontainers.image.title=Modern Talking
+            org.opencontainers.image.description=Key-Point Analysis using Modern Natural Language Processing
         
  
