@@ -5,14 +5,15 @@ from typing import Tuple, List
 from numpy import ndarray
 from tensorflow import data, int32
 from tensorflow.keras import Input, Model
-from tensorflow.keras.layers import Dense, Dropout, Concatenate, \
-    GlobalMaxPooling1D, GlobalAveragePooling1D, Bidirectional, LSTM
+from tensorflow.keras.activations import relu, softmax
+from tensorflow.keras.layers import Dense
 from tensorflow.keras.losses import CategoricalCrossentropy
 from tensorflow.keras.metrics import Precision, Recall
 from tensorflow.keras.optimizers import Adam
 from transformers import TFPreTrainedModel, PretrainedConfig, \
     PreTrainedTokenizerFast, AutoConfig, AutoTokenizer, TFAutoModel, \
     BatchEncoding
+from transformers.modeling_outputs import BaseModelOutputWithPooling
 
 from modern_talking.matchers import Matcher
 from modern_talking.matchers.encoding import encode_labels, decode_labels
@@ -30,40 +31,37 @@ def create_model(pretrained_model: TFPreTrainedModel) -> Model:
         shape=(512,),
         dtype=int32,
     )
-    attention_masks = Input(
+    attention_mask = Input(
         name="attention_mask",
         shape=(512,),
         dtype=int32,
     )
-    # token_type_ids = Input(
-    #     name="token_type_ids",
-    #     shape=(512,),
-    #     dtype=int32,
-    # )
+    token_type_ids = Input(
+        name="token_type_ids",
+        shape=(512,),
+        dtype=int32,
+    )
 
     # Encode with pretrained transformer model.
-    encoding = pretrained_model(
+    encoding: BaseModelOutputWithPooling = pretrained_model(
         input_ids,
-        attention_mask=attention_masks,
+        attention_mask=attention_mask,
         # token_type_ids=token_type_ids,
     )
-    encoding_sequence = encoding.last_hidden_state
+    pooled = encoding.pooler_output
 
-    bilstm = Bidirectional(LSTM(64, return_sequences=True))(encoding_sequence)
-    avg_pool = GlobalAveragePooling1D()(bilstm)
-    max_pool = GlobalMaxPooling1D()(bilstm)
-    concat = Concatenate()([avg_pool, max_pool])
-    dropout = Dropout(0.3)(concat)
+    # Hidden dense layer.
+    pooled = Dense(256, activation=relu)(pooled)
 
     # Classify (one-hot using softmax).
-    output = Dense(3, activation="softmax")(dropout)
+    output = Dense(3, activation=softmax)(pooled)
 
     # Define model.
     model = Model(
         inputs=[
             input_ids,
-            attention_masks,
-            # token_type_ids,
+            attention_mask,
+            token_type_ids,
         ],
         outputs=output
     )
@@ -74,11 +72,11 @@ def _prepare_encodings(
         arg_kp_pairs: List[ArgumentKeyPointPair],
         tokenizer: PreTrainedTokenizerFast,
 ) -> BatchEncoding:
-    encodings: BatchEncoding = tokenizer.__call__(
+    encodings: BatchEncoding = tokenizer(
         [arg.text for arg, kp in arg_kp_pairs],
         [kp.text for arg, kp in arg_kp_pairs],
-        max_length=512,
-        pad_to_max_length=True,
+        padding=True,
+        truncation=True,
         return_tensors="tf",
         return_attention_mask=True,
         return_token_type_ids=True,
@@ -165,12 +163,7 @@ class PretrainedMatcher(Matcher):
                f"-epochs-{self.epochs}"
 
     def prepare(self) -> None:
-        self.config = AutoConfig.from_pretrained(
-            self.pretrained_model_name,
-            output_hidden_states=False,
-            output_attentions=False,
-            return_dict=True,
-        )
+        self.config = AutoConfig.from_pretrained(self.pretrained_model_name)
 
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.pretrained_model_name,
@@ -180,7 +173,7 @@ class PretrainedMatcher(Matcher):
 
         self.pretrained_model = TFAutoModel.from_pretrained(
             self.pretrained_model_name,
-            config=self.config
+            config=self.config,
         )
         self.pretrained_model.trainable = False
 

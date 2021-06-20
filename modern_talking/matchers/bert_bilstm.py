@@ -17,6 +17,7 @@ from tensorflow import data, int32
 from transformers import TFPreTrainedModel, PretrainedConfig, \
     PreTrainedTokenizerFast, AutoConfig, AutoTokenizer, TFAutoModel, \
     BatchEncoding
+from transformers.modeling_outputs import BaseModelOutputWithPooling
 
 from modern_talking.matchers import Matcher
 from modern_talking.matchers.encoding import encode_labels, decode_labels
@@ -31,30 +32,6 @@ Dataset = data.Dataset
 class MergeType(Enum):
     concatenate = 1
     subtract = 2
-
-
-class PretrainedTokenizer(Layer):
-    tokenizer: PreTrainedTokenizerFast
-    config: PretrainedConfig
-
-    def __init__(
-            self,
-            tokenizer: PreTrainedTokenizerFast,
-            config: PretrainedConfig,
-            **kwargs
-    ):
-        super().__init__(**kwargs)
-        self.tokenizer = tokenizer
-        self.config = config
-
-    def call(self, inputs, **kwargs):
-        return self.tokenizer(
-            inputs.numpy().tolist(),
-            padding=True,
-            truncation=True,
-            max_length=self.config.max_length,
-            return_tensors="tf",
-        )
 
 
 def create_model(
@@ -97,7 +74,7 @@ def create_model(
     )
 
     # Encode with pretrained transformer model.
-    argument_encoding = pretrained_model(
+    argument_encoding: BaseModelOutputWithPooling = pretrained_model(
         argument_input_ids,
         attention_mask=argument_attention_mask,
         # token_type_ids=argument_token_type_ids,
@@ -106,7 +83,7 @@ def create_model(
     argument_encoding_sequence = SpatialDropout1D(encoding_dropout)(
         argument_encoding_sequence
     )
-    key_point_encoding = pretrained_model(
+    key_point_encoding: BaseModelOutputWithPooling = pretrained_model(
         key_point_input_ids,
         attention_mask=key_point_attention_mask,
         # token_type_ids=key_point_token_type_ids,
@@ -173,7 +150,8 @@ def _prepare_encodings(
     encodings: BatchEncoding = tokenizer(
         texts,
         max_length=512,
-        pad_to_max_length=True,
+        padding=True,
+        truncation=True,
         return_tensors="tf",
         return_attention_mask=True,
         return_token_type_ids=True,
@@ -291,12 +269,7 @@ class BertBilstmMatcher(Matcher):
 
     def prepare(self) -> None:
         # Load pretrained model config.
-        self.config = AutoConfig.from_pretrained(
-            self.pretrained_model_name,
-            output_hidden_states=False,
-            output_attentions=False,
-            return_dict=True,
-        )
+        self.config = AutoConfig.from_pretrained(self.pretrained_model_name)
 
         # Load pretrained tokenizer.
         self.tokenizer = AutoTokenizer.from_pretrained(
