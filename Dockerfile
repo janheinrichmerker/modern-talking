@@ -1,20 +1,12 @@
 FROM tensorflow/tensorflow:latest-gpu-py3
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install Pyenv and Python 3.9.
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
-    libsqlite3-dev wget ca-certificates curl llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev \
-    libffi-dev liblzma-dev mecab-ipadic-utf8 git
-RUN git clone --branch v2.0.1 --depth 1 https://github.com/pyenv/pyenv.git /.pyenv
-WORKDIR /.pyenv
-ENV PYENV_ROOT /.pyenv
-ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
-RUN src/configure && make -C src
-RUN pyenv update && \
-    pyenv install 3.9 && \
-    pyenv global 3.9 && \
-    pyenv rehash
+# Install Python 3.9.
+RUN apt-get update &&
+    apt-get install software-properties-common &&
+    add-apt-repository ppa:deadsnakes/ppa &&
+    apt-get install python3.9 &&
+    update-alternatives --install /usr/local/bin/python python /usr/bin/python3 40
 
 # Set working directory.
 WORKDIR /workspace
