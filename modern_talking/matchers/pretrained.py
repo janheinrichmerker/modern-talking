@@ -1,15 +1,14 @@
 from os import PathLike
 from typing import Union, Tuple, List
 
-from keras import Input, Model
-from keras.layers import Dense, Dropout, Concatenate, \
-    GlobalMaxPooling1D, GlobalAveragePooling1D, Bidirectional, LSTM
-from keras.losses import CategoricalCrossentropy
-from keras.metrics import Precision, Recall
-from keras.optimizer_v2.adam import Adam
 from numpy import ndarray
-from tensorflow import data
-from tensorflow import int32
+from tensorflow import data, int32
+from tensorflow.keras import Input, Model
+from tensorflow.keras.layers import Dense, Dropout, Concatenate, \
+    GlobalMaxPooling1D, GlobalAveragePooling1D, Bidirectional, LSTM
+from tensorflow.keras.losses import CategoricalCrossentropy
+from tensorflow.keras.metrics import Precision, Recall
+from tensorflow.keras.optimizers import Adam
 from transformers import TFPreTrainedModel, PretrainedConfig, \
     PreTrainedTokenizerFast, AutoConfig, AutoTokenizer, TFAutoModel, \
     BatchEncoding

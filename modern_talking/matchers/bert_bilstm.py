@@ -1,15 +1,15 @@
 from enum import Enum
 from typing import Tuple, List
 
-from keras import Input, Model
-from keras.activations import relu, softmax
-from keras.callbacks import ModelCheckpoint
-from keras.layers import Dense, Dropout, Concatenate, Layer, Subtract, \
+from tensorflow.keras import Model, Input
+from tensorflow.keras.activations import relu, softmax
+from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow.keras.layers import Dense, Dropout, Concatenate, Layer, Subtract, \
     GlobalMaxPooling1D, GlobalAveragePooling1D, Bidirectional, LSTM, \
     SpatialDropout1D
-from keras.losses import CategoricalCrossentropy
-from keras.metrics import Precision, Recall
-from keras.optimizer_v2.adam import Adam
+from tensorflow.keras.losses import CategoricalCrossentropy
+from tensorflow.keras.metrics import Precision, Recall
+from tensorflow.keras.optimizers import Adam
 from numpy import ndarray
 from tensorflow import data, int32
 from transformers import TFPreTrainedModel, PretrainedConfig, \
@@ -180,14 +180,14 @@ def _prepare_encodings(
 
 
 def _prepare_unlabelled_data(
-        dataset: UnlabelledDataset,
+        unlabelled_data: UnlabelledDataset,
         tokenizer: PreTrainedTokenizerFast,
         config: PretrainedConfig
 ) -> Tuple[Dataset, List[ArgumentKeyPointIdPair]]:
     pairs = [
         (arg, kp)
-        for arg in dataset.arguments
-        for kp in dataset.key_points
+        for arg in unlabelled_data.arguments
+        for kp in unlabelled_data.key_points
         if arg.topic == kp.topic and arg.stance == kp.stance
     ]
     ids = [(arg.id, kp.id) for arg, kp in pairs]
@@ -209,21 +209,21 @@ def _prepare_unlabelled_data(
 
 
 def _prepare_labelled_data(
-        dataset: LabelledDataset,
+        labelled_data: LabelledDataset,
         tokenizer: PreTrainedTokenizerFast,
         config: PretrainedConfig
 ) -> Dataset:
     pairs = [
         (arg, kp)
-        for arg in dataset.arguments
-        for kp in dataset.key_points
+        for arg in labelled_data.arguments
+        for kp in labelled_data.key_points
     ]
     arg_texts = [arg.text for arg, kp in pairs]
     kp_texts = [kp.text for arg, kp in pairs]
     arg_encodings = _prepare_encodings(arg_texts, tokenizer, config)
     kp_encodings = _prepare_encodings(kp_texts, tokenizer, config)
     labels = encode_labels(
-        dataset.labels.get((arg.id, kp.id)) for arg, kp in pairs
+        labelled_data.labels.get((arg.id, kp.id)) for arg, kp in pairs
     )
     dataset = Dataset.from_tensor_slices((
         {

@@ -1,8 +1,9 @@
 from typing import List
 
-from keras.initializers.initializers_v2 import Constant
-from keras.layers import Embedding
-from keras.layers.preprocessing.text_vectorization import TextVectorization
+from tensorflow.keras.initializers import Constant
+from tensorflow.keras.layers import Embedding
+from tensorflow.keras.layers.experimental.preprocessing import \
+    TextVectorization
 from tensorflow import data
 
 from modern_talking.data.glove import get_glove_embedding_matrix

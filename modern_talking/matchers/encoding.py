@@ -1,8 +1,8 @@
 from typing import Optional, List, Iterable
 
 from numpy import ndarray
-from keras.backend import argmax
-from keras.utils.np_utils import to_categorical
+from tensorflow.keras.backend import argmax
+from tensorflow.keras.utils import to_categorical
 
 from modern_talking.model import Label
 

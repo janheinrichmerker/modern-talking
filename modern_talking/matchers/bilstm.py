@@ -2,15 +2,14 @@ from pathlib import Path
 from typing import List, Tuple
 
 from numpy import ndarray, array
-from tensorflow import string
-from keras import Model, Input
-from keras.layers import Bidirectional, \
+from tensorflow import string, data
+from tensorflow.keras import Model, Input
+from tensorflow.keras.layers import Bidirectional, \
     LSTM, Dense, Concatenate
-from keras.losses import CategoricalCrossentropy
-from keras.metrics import Precision, Recall
-from keras.models import load_model
-from keras.optimizer_v2.adam import Adam
-from tensorflow import data
+from tensorflow.keras.losses import CategoricalCrossentropy
+from tensorflow.keras.metrics import Precision, Recall
+from tensorflow.keras.models import load_model
+from tensorflow.keras.optimizers import Adam
 
 from modern_talking.data.glove import download_glove_embeddings
 from modern_talking.matchers import Matcher
@@ -79,12 +78,12 @@ def create_bilstm_model(
 
 
 def _prepare_unlabelled_data(
-        data: UnlabelledDataset
+        unlabelled_data: UnlabelledDataset
 ) -> Tuple[Dataset, List[ArgumentKeyPointIdPair]]:
     pairs = [
         (arg, kp)
-        for arg in data.arguments
-        for kp in data.key_points
+        for arg in unlabelled_data.arguments
+        for kp in unlabelled_data.key_points
         if arg.topic == kp.topic and arg.stance == kp.stance
     ]
     ids = [(arg.id, kp.id) for arg, kp in pairs]
@@ -100,17 +99,17 @@ def _prepare_unlabelled_data(
 
 
 def _prepare_labelled_data(
-        data: LabelledDataset,
+        labelled_data: LabelledDataset,
 ) -> Tuple[Dataset, List[str]]:
     pairs = [
         (arg, kp)
-        for arg in data.arguments
-        for kp in data.key_points
+        for arg in labelled_data.arguments
+        for kp in labelled_data.key_points
     ]
     arg_texts = [arg.text for arg, kp in pairs]
     kp_texts = [kp.text for arg, kp in pairs]
     labels = encode_labels(
-        data.labels.get((arg.id, kp.id)) for arg, kp in pairs
+        labelled_data.labels.get((arg.id, kp.id)) for arg, kp in pairs
     )
     dataset = Dataset.from_tensor_slices((
         {
@@ -171,8 +170,8 @@ class BidirectionalLstmMatcher(Matcher):
         )
         self.model.evaluate(dev_dataset)
 
-    def predict(self, data: UnlabelledDataset) -> Labels:
-        dataset, ids = _prepare_unlabelled_data(data)
+    def predict(self, test_data: UnlabelledDataset) -> Labels:
+        dataset, ids = _prepare_unlabelled_data(test_data)
         dataset = dataset.batch(self.batch_size)
         predictions: ndarray = self.model.predict(dataset)
         labels = decode_labels(predictions)
