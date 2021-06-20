@@ -6,7 +6,7 @@ RUN apt-get update \
     && apt-get install -y software-properties-common \
     && add-apt-repository ppa:deadsnakes/ppa \
     && apt-get install -y python3.9 \
-    && update-alternatives --install /usr/local/bin/python python /usr/bin/python3 40
+    && update-alternatives --install /usr/local/bin/python python /usr/bin/python3.9 40
 
 # Set working directory.
 WORKDIR /workspace
