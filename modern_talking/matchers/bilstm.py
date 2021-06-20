@@ -6,12 +6,13 @@ from typing import List, Tuple
 from numpy import ndarray, array
 from tensorflow import string, data
 from tensorflow.keras import Model, Input
-from tensorflow.keras.layers import Bidirectional, \
-    LSTM, Dense, Concatenate
+from tensorflow.keras.layers import Bidirectional, LSTM, Dense, Subtract, \
+    SpatialDropout1D, Dropout
 from tensorflow.keras.losses import CategoricalCrossentropy
 from tensorflow.keras.metrics import Precision, Recall
 from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.activations import softmax, relu
 
 from modern_talking.data.glove import download_glove_embeddings
 from modern_talking.matchers import Matcher
@@ -57,19 +58,23 @@ def create_bilstm_model(
         bilstm_units,
         return_sequences=True
     ))(argument_text_embedding)
+    argument_text_bilstm = SpatialDropout1D(0.1)(argument_text_bilstm)
     key_point_bilstm = Bidirectional(LSTM(
         bilstm_units,
         return_sequences=True
     ))(key_point_embedding)
+    key_point_bilstm = SpatialDropout1D(0.1)(key_point_bilstm)
 
     # Merge vectors by concatenating.
-    concatenated = Concatenate(1)([argument_text_bilstm, key_point_bilstm])
+    concatenated = Subtract()([argument_text_bilstm, key_point_bilstm])
 
-    # Apply Bidirectional LSTM separately.
+    # Apply Bidirectional LSTM on merged sequence.
     bilstm = Bidirectional(LSTM(bilstm_units))(concatenated)
+    bilstm = Dropout(0.1)(bilstm)
+    bilstm = Dense(bilstm_units, activation=relu)(bilstm)
 
     # Classify (one-hot using softmax).
-    outputs = Dense(3, activation="softmax")(bilstm)
+    outputs = Dense(3, activation=softmax)(bilstm)
 
     # Define model.
     model = Model(
@@ -164,7 +169,7 @@ class BidirectionalLstmMatcher(Matcher):
             self.bilstm_units,
         )
         self.model.compile(
-            optimizer=Adam(),
+            optimizer=Adam(1e-4),
             loss=CategoricalCrossentropy(),
             metrics=[Precision(), Recall()],
         )
