@@ -1,3 +1,5 @@
+# pylint: disable=no-name-in-module
+
 from typing import Optional, List, Iterable
 
 from numpy import ndarray

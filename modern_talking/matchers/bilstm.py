@@ -1,3 +1,5 @@
+# pylint: disable=no-name-in-module
+
 from pathlib import Path
 from typing import List, Tuple
 

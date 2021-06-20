@@ -1,3 +1,5 @@
+# pylint: disable=no-name-in-module
+
 from os import PathLike
 from typing import Union, Tuple, List
 

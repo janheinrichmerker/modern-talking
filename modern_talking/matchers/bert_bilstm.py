@@ -1,3 +1,5 @@
+# pylint: disable=no-name-in-module
+
 from enum import Enum
 from typing import Tuple, List
 
