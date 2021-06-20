@@ -1,4 +1,4 @@
-FROM python:3.8
+FROM tensorflow/tensorflow:latest-gpu-py3
 
 WORKDIR /workspace
 
@@ -6,7 +6,8 @@ RUN pip install pipenv
 COPY Pipfile Pipfile.lock /workspace/
 RUN pipenv install --system --deploy
 
-# TODO Build project source and dependencies.
+COPY modern_talking/ /workspace/modern_talking/
+COPY main.py /workspace/
 
-VOLUME /workspace/results.ipynb
-CMD jupyter notebook --ip=0.0.0.0 --no-browser --allow-root /workspace/results.ipynb
+ENTRYPOINT ["python", "main.py"]
+CMD ["traineval", "distilbert-base-uncased-dropout-0.2-bilstm-64-dropout-0.2-subtract", "map-strict"]
