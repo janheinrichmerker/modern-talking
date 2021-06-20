@@ -1,31 +1,43 @@
+from sklearn.metrics import f1_score
+
 from modern_talking.evaluation import Metric
-from modern_talking.evaluation.precision import Precision
-from modern_talking.evaluation.recall import Recall
-from modern_talking.model import Label, Labels
+from modern_talking.model import Labels
 
 
-class FMeasure(Metric):
-    alpha: float
-    precision: Metric
-    recall: Metric
-
-    @property
-    def name(self) -> str:
-        return f"f{self.alpha}"
-
-    def __init__(self, alpha: float = 1, default: Label = 0,
-                 threshold: Label = 0.5):
-        self.alpha = alpha
-        self.precision = Precision(default, threshold)
-        self.recall = Recall(default, threshold)
+class F1Score(Metric):
+    name = "f1-score"
 
     def evaluate(
             self,
             predicted_labels: Labels,
             ground_truth_labels: Labels
     ) -> float:
-        precision = self.precision.evaluate(
-            predicted_labels, ground_truth_labels)
-        recall = self.recall.evaluate(
-            predicted_labels, ground_truth_labels)
-        return (1 + self.alpha) / (1 / precision + self.alpha / recall)
+        y_true, y_pred = Metric.get_binary_labels(
+            predicted_labels,
+            ground_truth_labels
+        )
+        return f1_score(
+            y_true, y_pred,
+            pos_label=1,
+            zero_division=0,
+        )
+
+
+class MacroF1Score(Metric):
+    name = "macro-f1-score"
+
+    def evaluate(
+            self,
+            predicted_labels: Labels,
+            ground_truth_labels: Labels
+    ) -> float:
+        y_true, y_pred = Metric.get_discrete_labels(
+            predicted_labels,
+            ground_truth_labels
+        )
+        return f1_score(
+            y_true, y_pred,
+            labels=[0, 1, 2],
+            average="macro",
+            zero_division=0,
+        )

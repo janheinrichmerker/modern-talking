@@ -1,34 +1,43 @@
+from sklearn.metrics import recall_score
+
 from modern_talking.evaluation import Metric
-from modern_talking.model import Label, Labels
+from modern_talking.model import Labels
 
 
 class Recall(Metric):
     name = "recall"
-    default: Label
-    threshold: Label
-
-    def __init__(self, default: Label = 0, threshold: Label = 0.5):
-        self.default = default
-        self.threshold = threshold
 
     def evaluate(
             self,
             predicted_labels: Labels,
             ground_truth_labels: Labels
     ) -> float:
-        ids = Metric.get_all_ids(predicted_labels, ground_truth_labels)
-        true_positives = sum(
-            1
-            for arg, kp in ids
-            if predicted_labels.get(
-                (arg, kp), self.default) >= self.threshold
-            and ground_truth_labels.get(
-                (arg, kp), self.default) >= self.threshold
+        y_true, y_pred = Metric.get_binary_labels(
+            predicted_labels,
+            ground_truth_labels
         )
-        ground_truth_positives = sum(
-            1
-            for arg, kp in ids
-            if ground_truth_labels.get(
-                (arg, kp), self.default) >= self.threshold
+        return recall_score(
+            y_true, y_pred,
+            pos_label=1,
+            zero_division=0,
         )
-        return true_positives / ground_truth_positives
+
+
+class MacroRecall(Metric):
+    name = "macro-recall"
+
+    def evaluate(
+            self,
+            predicted_labels: Labels,
+            ground_truth_labels: Labels
+    ) -> float:
+        y_true, y_pred = Metric.get_discrete_labels(
+            predicted_labels,
+            ground_truth_labels
+        )
+        return recall_score(
+            y_true, y_pred,
+            labels=[0, 1, 2],
+            average="macro",
+            zero_division=0,
+        )
