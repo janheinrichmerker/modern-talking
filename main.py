@@ -81,7 +81,7 @@ matchers = (
         memory_dropout=0.2,
         merge_memories=MergeType.concatenate,
         batch_size=32,
-        epochs=15,
+        epochs=5,
     ),
 )
 
