@@ -107,6 +107,7 @@ def _prepare_labelled_data(
         (arg, kp)
         for arg in labelled_data.arguments
         for kp in labelled_data.key_points
+        if arg.topic == kp.topic and arg.stance == kp.stance
     ]
     arg_texts = [arg.text for arg, kp in pairs]
     kp_texts = [kp.text for arg, kp in pairs]
@@ -144,7 +145,10 @@ class BidirectionalLstmMatcher(Matcher):
 
     @property
     def name(self) -> str:
-        return f"bilstm-{self.bilstm_units}-glove"
+        return f"bilstm-{self.bilstm_units}" \
+               f"-glove" \
+               f"-batch-{self.batch_size}" \
+               f"-epochs-{self.epochs}"
 
     def prepare(self) -> None:
         download_glove_embeddings()

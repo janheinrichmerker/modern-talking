@@ -1,7 +1,6 @@
 # pylint: disable=no-name-in-module
 
-from os import PathLike
-from typing import Union, Tuple, List
+from typing import Tuple, List
 
 from numpy import ndarray
 from tensorflow import data, int32
@@ -115,6 +114,7 @@ def _prepare_labelled_data(
         (arg, kp)
         for arg in labelled_data.arguments
         for kp in labelled_data.key_points
+        if arg.topic == kp.topic and arg.stance == kp.stance
     ]
     encodings = _prepare_encodings(pairs, tokenizer, config)
     labels = encode_labels([
@@ -139,41 +139,47 @@ class PretrainedMatcher(Matcher):
     or GPT-3.
     """
 
-    batch_size = 32
-    epochs = 1  # 0
+    pretrained_model_name: str
+    batch_size: int
+    epochs: int
 
-    model_name: str
     config: PretrainedConfig
-
     tokenizer: PreTrainedTokenizerFast
     pretrained_model: TFPreTrainedModel
+
     model: Model
 
     def __init__(
             self,
-            pretrained_model_name_or_path: Union[str, PathLike]
+            pretrained_model_name: str,
+            batch_size: int = 64,
+            epochs: int = 1,
     ):
-        self.model_name = pretrained_model_name_or_path
+        self.pretrained_model_name = pretrained_model_name
+        self.batch_size = batch_size
+        self.epochs = epochs
 
     @property
     def name(self) -> str:
-        return f"pretrained-{self.model_name}"
+        return f"pretrained-{self.pretrained_model_name}" \
+               f"-batch-{self.batch_size}" \
+               f"-epochs-{self.epochs}"
 
     def prepare(self) -> None:
         self.config = AutoConfig.from_pretrained(
-            self.model_name,
+            self.pretrained_model_name,
             output_hidden_states=False,
             output_attentions=False,
             return_dict=True,
         )
 
         self.tokenizer = AutoTokenizer.from_pretrained(
-            self.model_name,
+            self.pretrained_model_name,
             config=self.config
         )
 
         self.pretrained_model = TFAutoModel.from_pretrained(
-            self.model_name,
+            self.pretrained_model_name,
             config=self.config
         )
         self.pretrained_model.trainable = False
@@ -194,7 +200,7 @@ class PretrainedMatcher(Matcher):
 
         self.model = create_model(self.pretrained_model)
         self.model.compile(
-            optimizer=Adam(),
+            optimizer=Adam(1e-4),
             loss=CategoricalCrossentropy(),
             metrics=[Precision(), Recall()],
         )

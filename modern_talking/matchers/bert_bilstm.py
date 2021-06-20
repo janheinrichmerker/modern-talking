@@ -221,6 +221,7 @@ def _prepare_labelled_data(
         (arg, kp)
         for arg in labelled_data.arguments
         for kp in labelled_data.key_points
+        if arg.topic == kp.topic and arg.stance == kp.stance
     ]
     arg_texts = [arg.text for arg, kp in pairs]
     kp_texts = [kp.text for arg, kp in pairs]
@@ -249,14 +250,13 @@ class BertBilstmMatcher(Matcher):
     with a pretrained BERT model and classifying the merged outputs.
     """
 
-    batch_size = 16
-    epochs = 1
-
     pretrained_model_name: str
     encoding_dropout: float
     bilstm_units: int
     memory_dropout: float
     merge_memories: MergeType
+    batch_size: int
+    epochs: int
 
     config: PretrainedConfig
     tokenizer: PreTrainedTokenizerFast
@@ -271,20 +271,26 @@ class BertBilstmMatcher(Matcher):
             bilstm_units: int,
             memory_dropout: float,
             merge_memories: MergeType,
+            batch_size: int = 64,
+            epochs: int = 1,
     ):
         self.pretrained_model_name = pretrained_model_name
         self.encoding_dropout = encoding_dropout
         self.bilstm_units = bilstm_units
         self.memory_dropout = memory_dropout
         self.merge_memories = merge_memories
+        self.batch_size = batch_size
+        self.epochs = epochs
 
     @property
     def name(self) -> str:
-        return f"{self.pretrained_model_name}-" \
-               f"dropout-{self.encoding_dropout}-" \
-               f"bilstm-{self.bilstm_units}-" \
-               f"dropout-{self.memory_dropout}-" \
-               f"{self.merge_memories.name}"
+        return f"{self.pretrained_model_name}" \
+               f"-dropout-{self.encoding_dropout}" \
+               f"-bilstm-{self.bilstm_units}" \
+               f"-dropout-{self.memory_dropout}" \
+               f"-{self.merge_memories.name}" \
+               f"-batch-{self.batch_size}" \
+               f"-epochs-{self.epochs}"
 
     def prepare(self) -> None:
         # Load pretrained model config.
@@ -344,7 +350,7 @@ class BertBilstmMatcher(Matcher):
 
         # Compile model.
         self.model.compile(
-            optimizer=Adam(2e-5),
+            optimizer=Adam(1e-4),
             loss=CategoricalCrossentropy(),
             metrics=[Precision(), Recall()],
         )

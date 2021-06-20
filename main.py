@@ -40,22 +40,47 @@ matchers = (
     EnsemblePartOfSpeechMatcher(),
     SVCPartOfSpeechMatcher(),
     SVCBagOfWordsMatcher(),
-    PretrainedMatcher("bert-base-uncased"),
-    PretrainedMatcher("distilbert-base-uncased"),
-    BidirectionalLstmMatcher(),
+    BidirectionalLstmMatcher(
+        bilstm_units=32,
+        batch_size=64,
+        epochs=5,
+    ),
+    PretrainedMatcher(
+        "bert-base-uncased",
+        batch_size=64,
+        epochs=1,
+    ),
+    PretrainedMatcher(
+        "distilbert-base-uncased",
+        batch_size=64,
+        epochs=1,
+    ),
     BertBilstmMatcher(
         "bert-base-uncased",
         encoding_dropout=0.2,
         bilstm_units=32,
         memory_dropout=0.2,
-        merge_memories=MergeType.subtract
+        merge_memories=MergeType.subtract,
+        batch_size=64,
+        epochs=1,
+    ),
+    BertBilstmMatcher(
+        "bert-base-uncased",
+        encoding_dropout=0.2,
+        bilstm_units=32,
+        memory_dropout=0.2,
+        merge_memories=MergeType.subtract,
+        batch_size=64,
+        epochs=1,
     ),
     BertBilstmMatcher(
         "distilbert-base-uncased",
         encoding_dropout=0.2,
         bilstm_units=32,
         memory_dropout=0.2,
-        merge_memories=MergeType.subtract
+        merge_memories=MergeType.subtract,
+        batch_size=64,
+        epochs=1,
     ),
     BertBilstmMatcher(
         "distilbert-base-uncased",
