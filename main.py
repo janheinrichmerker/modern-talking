@@ -44,6 +44,13 @@ matchers = (
     PretrainedMatcher("distilbert-base-uncased"),
     BidirectionalLstmMatcher(),
     BertBilstmMatcher(
+        "bert-base-uncased",
+        encoding_dropout=0.2,
+        bilstm_units=32,
+        memory_dropout=0.2,
+        merge_memories=MergeType.subtract
+    ),
+    BertBilstmMatcher(
         "distilbert-base-uncased",
         encoding_dropout=0.2,
         bilstm_units=32,
