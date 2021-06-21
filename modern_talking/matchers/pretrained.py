@@ -2,22 +2,21 @@
 
 from typing import Tuple, List
 
-from numpy import ndarray
+from numpy import ndarray, clip
 from tensorflow import data, int32, config
 from tensorflow.keras import Input, Model
 from tensorflow.keras.activations import relu, softmax
+from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.layers import Dense
-from tensorflow.keras.losses import CategoricalCrossentropy
+from tensorflow.keras.losses import BinaryCrossentropy
 from tensorflow.keras.metrics import Precision, Recall
 from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.callbacks import ModelCheckpoint
 from transformers import TFPreTrainedModel, PretrainedConfig, \
     PreTrainedTokenizerFast, AutoConfig, AutoTokenizer, TFAutoModel, \
     BatchEncoding
 from transformers.modeling_tf_outputs import TFBaseModelOutputWithPooling
 
 from modern_talking.matchers import Matcher
-from modern_talking.matchers.encoding import encode_labels, decode_labels
 from modern_talking.model import Dataset as UnlabelledDataset, Labels, \
     LabelledDataset, ArgumentKeyPointPair, ArgumentKeyPointIdPair
 
@@ -113,12 +112,11 @@ def _prepare_labelled_data(
         (arg, kp)
         for arg in labelled_data.arguments
         for kp in labelled_data.key_points
-        if arg.topic == kp.topic and arg.stance == kp.stance
+        if (arg.topic == kp.topic and arg.stance == kp.stance
+            and (arg.id, kp.id) in labelled_data.labels.keys())
     ]
     encodings = _prepare_encodings(pairs, tokenizer)
-    labels = encode_labels([
-        labelled_data.labels.get((arg.id, kp.id)) for arg, kp in pairs
-    ])
+    labels = [labelled_data.labels[arg.id, kp.id] for arg, kp in pairs]
     dataset = Dataset.from_tensor_slices((
         dict(encodings),
         labels,
@@ -194,7 +192,7 @@ class PretrainedMatcher(Matcher):
         self.model = create_model(self.pretrained_model)
         self.model.compile(
             optimizer=Adam(1e-4),
-            loss=CategoricalCrossentropy(),
+            loss=BinaryCrossentropy(),
             metrics=[Precision(), Recall()],
         )
         self.model.summary()
@@ -222,9 +220,8 @@ class PretrainedMatcher(Matcher):
         dataset, ids = _prepare_unlabelled_data(test_data, self.tokenizer)
         dataset = dataset.batch(self.batch_size)
         predictions: ndarray = self.model.predict(dataset)
-        labels = decode_labels(predictions)
+        predictions = clip(predictions, 0, 1)
         return {
             arg_kp_id: label
-            for arg_kp_id, label in zip(ids, labels)
-            if label is not None
+            for arg_kp_id, label in zip(ids, predictions)
         }

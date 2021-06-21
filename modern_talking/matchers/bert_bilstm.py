@@ -3,7 +3,7 @@
 from enum import Enum
 from typing import Tuple, List
 
-from numpy import ndarray
+from numpy import ndarray, clip
 from tensorflow import data, int32, config
 from tensorflow.keras import Model, Input
 from tensorflow.keras.activations import relu, softmax
@@ -11,7 +11,7 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.layers import Dense, Dropout, Concatenate, Layer, \
     Subtract, GlobalMaxPooling1D, GlobalAveragePooling1D, Bidirectional, \
     LSTM, SpatialDropout1D
-from tensorflow.keras.losses import CategoricalCrossentropy
+from tensorflow.keras.losses import BinaryCrossentropy
 from tensorflow.keras.metrics import Precision, Recall
 from tensorflow.keras.optimizers import Adam
 from transformers import TFPreTrainedModel, PretrainedConfig, \
@@ -20,7 +20,6 @@ from transformers import TFPreTrainedModel, PretrainedConfig, \
 from transformers.modeling_tf_outputs import TFBaseModelOutputWithPooling
 
 from modern_talking.matchers import Matcher
-from modern_talking.matchers.encoding import encode_labels, decode_labels
 from modern_talking.model import Dataset as UnlabelledDataset, Labels, \
     LabelledDataset, ArgumentKeyPointIdPair
 
@@ -197,15 +196,14 @@ def _prepare_labelled_data(
         (arg, kp)
         for arg in labelled_data.arguments
         for kp in labelled_data.key_points
-        if arg.topic == kp.topic and arg.stance == kp.stance
+        if (arg.topic == kp.topic and arg.stance == kp.stance
+            and (arg.id, kp.id) in labelled_data.labels.keys())
     ]
     arg_texts = [arg.text for arg, kp in pairs]
     kp_texts = [kp.text for arg, kp in pairs]
     arg_encodings = _prepare_encodings(arg_texts, tokenizer)
     kp_encodings = _prepare_encodings(kp_texts, tokenizer)
-    labels = encode_labels(
-        labelled_data.labels.get((arg.id, kp.id)) for arg, kp in pairs
-    )
+    labels = [labelled_data.labels[arg.id, kp.id] for arg, kp in pairs]
     dataset = Dataset.from_tensor_slices((
         {
             "argument_input_ids": arg_encodings["input_ids"],
@@ -307,7 +305,7 @@ class BertBilstmMatcher(Matcher):
         )
         self.model.compile(
             optimizer=Adam(1e-4),
-            loss=CategoricalCrossentropy(),
+            loss=BinaryCrossentropy(),
             metrics=[Precision(), Recall()],
         )
         self.model.summary()
@@ -343,11 +341,10 @@ class BertBilstmMatcher(Matcher):
         # Predict and decode labels (one-cold).
         print("\tPredict and decode labels.")
         predictions: ndarray = self.model.predict(test_dataset)
-        labels = decode_labels(predictions)
+        predictions = clip(predictions, 0, 1)
 
         # Return predictions.
         return {
             arg_kp_id: label
-            for arg_kp_id, label in zip(test_ids, labels)
-            if label is not None
+            for arg_kp_id, label in zip(test_ids, predictions)
         }

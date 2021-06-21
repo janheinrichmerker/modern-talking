@@ -2,23 +2,20 @@ from pathlib import Path
 from subprocess import run
 from tempfile import TemporaryDirectory
 
-from modern_talking.evaluation import Metric
+from modern_talking.evaluation import Metric, EvaluationMode
 from modern_talking.model import Labels
 from modern_talking.pipeline import Pipeline
 
 
 class Track1Metric(Metric):
+    name = "map"
 
-    def __init__(self, relaxed: bool = False):
-        self.relaxed = relaxed
-
-    @property
-    def name(self) -> str:
-        variant = "relaxed" if self.relaxed else "strict"
-        return f"map-{variant}"
-
-    def evaluate(self, predicted_labels: Labels,
-                 ground_truth_labels: Labels) -> float:
+    def evaluate(
+            self,
+            predicted_labels: Labels,
+            ground_truth_labels: Labels,
+            mode: EvaluationMode,
+    ) -> float:
         script_dir = Path(__file__).parent
         evaluation_script = script_dir / "track_1_kp_matching.py"
         gold_data_dir = script_dir.parent.parent / "data"
@@ -44,4 +41,7 @@ class Track1Metric(Metric):
             result_strict = float(result[0].split("=")[1].strip())
             result_relaxed = float(result[1].split("=")[1].strip())
 
-        return result_relaxed if self.relaxed else result_strict
+        if mode == EvaluationMode.relaxed:
+            return result_relaxed
+        else:
+            return result_strict

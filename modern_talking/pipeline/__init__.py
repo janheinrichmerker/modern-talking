@@ -4,7 +4,7 @@ from math import isnan
 from pathlib import Path
 from typing import Set
 
-from modern_talking.evaluation import Metric
+from modern_talking.evaluation import Metric, EvaluationMode
 from modern_talking.matchers import Matcher
 from modern_talking.model import Argument, KeyPoint, Labels, LabelledDataset, \
     DatasetType
@@ -186,18 +186,80 @@ class Pipeline:
 
         # Evaluate labels.
         print("Evaluate labels.")
-        train_result = self.metric.evaluate(train_labels, train_data.labels)
-        print(f"Metric {self.metric.name} on train dataset: {train_result}")
-        dev_result = self.metric.evaluate(dev_labels, dev_data.labels)
-        print(f"Metric {self.metric.name} on dev dataset:   {dev_result}")
-        test_result = self.metric.evaluate(test_labels, test_data.labels)
-        saved_test_result = self.metric.evaluate(
-            saved_test_labels,
-            test_data.labels
+        train_result_strict = self.metric.evaluate(
+            train_labels,
+            train_data.labels,
+            EvaluationMode.strict,
         )
-        assert (saved_test_result == test_result
-                or isnan(saved_test_result) and isnan(test_result))
-        print(f"Metric {self.metric.name} on test dataset:  {test_result} "
-              f"(verified on exported JSON file)")
+        train_result_relaxed = self.metric.evaluate(
+            train_labels,
+            train_data.labels,
+            EvaluationMode.relaxed,
+        )
+        train_result_average = (train_result_strict + train_result_relaxed) / 2
+        print(
+            f"Metric {self.metric.name} on train dataset:"
+            f" {train_result_strict:.4f} (strict)"
+            f" {train_result_relaxed:.4f} (relaxed)"
+            f" {train_result_average:.4f} (average)"
+        )
 
-        return test_result
+        dev_result_strict = self.metric.evaluate(
+            dev_labels,
+            dev_data.labels,
+            EvaluationMode.strict,
+        )
+        dev_result_relaxed = self.metric.evaluate(
+            dev_labels,
+            dev_data.labels,
+            EvaluationMode.relaxed,
+        )
+        dev_result_average = (dev_result_strict + dev_result_relaxed) / 2
+        print(
+            f"Metric {self.metric.name} on dev dataset:"
+            f" {dev_result_strict:.4f} (strict)"
+            f" {dev_result_relaxed:.4f} (relaxed)"
+            f" {dev_result_average:.4f} (average)"
+        )
+
+        test_result_strict = self.metric.evaluate(
+            test_labels,
+            test_data.labels,
+            EvaluationMode.strict,
+        )
+        test_result_relaxed = self.metric.evaluate(
+            test_labels,
+            test_data.labels,
+            EvaluationMode.relaxed,
+        )
+        test_result_average = (test_result_strict + test_result_relaxed) / 2
+        saved_test_result_strict = self.metric.evaluate(
+            dev_labels,
+            dev_data.labels,
+            EvaluationMode.strict,
+        )
+        saved_test_result_relaxed = self.metric.evaluate(
+            saved_test_labels,
+            test_data.labels,
+            EvaluationMode.relaxed,
+        )
+        saved_test_result_average = (saved_test_result_strict
+                                     + saved_test_result_relaxed) / 2
+        assert (saved_test_result_strict == test_result_strict
+                or (isnan(saved_test_result_strict)
+                    and isnan(test_result_strict)))
+        assert (saved_test_result_relaxed == test_result_relaxed
+                or (isnan(saved_test_result_relaxed)
+                    and isnan(test_result_relaxed)))
+        assert (saved_test_result_average == test_result_average
+                or (isnan(saved_test_result_average)
+                    and isnan(test_result_average)))
+        print(
+            f"Metric {self.metric.name} on test dataset:"
+            f" {test_result_strict:.4f} (strict)"
+            f" {test_result_relaxed:.4f} (relaxed)"
+            f" {test_result_average:.4f} (average)"
+            f" (Results verified on exported predictions JSON file.)"
+        )
+
+        return test_result_average
