@@ -24,6 +24,7 @@ class TermOverlapMatcher(UntrainedMatcher):
     use_synonyms: bool
     use_antonyms: bool
     use_stop_words: bool
+    use_custom_stop_words: bool
     stop_words: Optional[Set[str]] = None
     stemmer: Optional[StemmerI] = None
 
@@ -31,12 +32,14 @@ class TermOverlapMatcher(UntrainedMatcher):
             self,
             stemming: bool = False,
             stop_words: bool = False,
+            custom_stop_words: bool = False,
             synonyms: bool = False,
             antonyms: bool = False,
             language: str = "english",
     ):
         self.language = language
         self.use_stop_words = stop_words
+        self.use_custom_stop_words = custom_stop_words
         self.use_synonyms = synonyms and language == "english"
         self.use_antonyms = antonyms and language == "english"
         if stemming:
@@ -46,11 +49,13 @@ class TermOverlapMatcher(UntrainedMatcher):
     def name(self) -> str:
         stemming_suffix = "-stemming" if self.stemmer is not None else ""
         stop_words_suffix = "-stopwords" if self.use_stop_words else ""
+        custom_stop_words_suffix = "-custom" if self.use_custom_stop_words else ""
         synonyms_suffix = "-synonyms" if self.use_synonyms else ""
         antonyms_suffix = "-antonyms" if self.use_antonyms else ""
         return f"term-overlap-{self.language}" \
                f"{stemming_suffix}" \
                f"{stop_words_suffix}" \
+               f"{custom_stop_words_suffix}"\
                f"{synonyms_suffix}" \
                f"{antonyms_suffix}"
 
@@ -66,7 +71,9 @@ class TermOverlapMatcher(UntrainedMatcher):
             if not downloader.is_installed("stopwords"):
                 downloader.download("stopwords")
             self.stop_words = set(stopwords.words(self.language))
-
+            if self.use_custom_stop_words:
+                self.stop_words.remove("not")
+        
         # Download WordNet database.
         if self.use_synonyms:
             if not downloader.is_installed("wordnet"):

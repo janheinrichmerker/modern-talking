@@ -35,6 +35,13 @@ matchers = (
         synonyms=True,
         antonyms=True
     ),
+    TermOverlapMatcher(
+        stemming=True,
+        stop_words=True,
+        custom_stop_words = True,
+        synonyms=True,
+        antonyms=True
+    ),
     RegressionBagOfWordsMatcher(),
     RegressionTfidfMatcher(),
     RegressionPartOfSpeechMatcher(),
