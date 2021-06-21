@@ -7,13 +7,16 @@ from numpy import ndarray, array
 from tensorflow import string, data, config
 from tensorflow.keras import Model, Input
 from tensorflow.keras.activations import sigmoid
-from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 from tensorflow.keras.layers import Bidirectional, LSTM, Dense, Subtract, \
     SpatialDropout1D, Dropout
 from tensorflow.keras.losses import BinaryCrossentropy
 from tensorflow.keras.metrics import Precision, Recall
 from tensorflow.keras.models import load_model
-from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.optimizers import Adam, Optimizer
+from tensorflow.python.keras.layers import GlobalAveragePooling1D, \
+    GlobalMaxPooling1D, Concatenate
+from tensorflow_addons.optimizers import AdamW
 
 from modern_talking.data.glove import download_glove_embeddings
 from modern_talking.matchers import Matcher
@@ -30,7 +33,9 @@ list_physical_devices = config.list_physical_devices
 
 def create_bilstm_model(
         texts: List[str],
-        bilstm_units: int,
+        units: int,
+        max_length: int,
+        dropout: float,
 ) -> Model:
     # Specify model inputs.
     argument_text = Input(
@@ -47,7 +52,7 @@ def create_bilstm_model(
     # Convert texts to vectors.
     vectorize = text_vectorization_layer(
         texts,
-        output_sequence_length=512
+        output_sequence_length=max_length
     )
     argument_text_vector = vectorize(argument_text)
     key_point_text_vector = vectorize(key_point_text)
@@ -59,25 +64,32 @@ def create_bilstm_model(
 
     # Apply Bidirectional LSTM separately.
     argument_text_bilstm = Bidirectional(LSTM(
-        bilstm_units,
-        return_sequences=True
+        units,
+        return_sequences=True,
     ))(argument_text_embedding)
-    argument_text_bilstm = SpatialDropout1D(0.1)(argument_text_bilstm)
+    argument_text_bilstm = SpatialDropout1D(dropout)(argument_text_bilstm)
     key_point_bilstm = Bidirectional(LSTM(
-        bilstm_units,
-        return_sequences=True
+        units,
+        return_sequences=True,
     ))(key_point_embedding)
-    key_point_bilstm = SpatialDropout1D(0.1)(key_point_bilstm)
+    key_point_bilstm = SpatialDropout1D(dropout)(key_point_bilstm)
 
     # Merge vectors by concatenating.
     concatenated = Subtract()([argument_text_bilstm, key_point_bilstm])
 
     # Apply Bidirectional LSTM on merged sequence.
-    bilstm = Bidirectional(LSTM(bilstm_units))(concatenated)
-    bilstm = Dropout(0.1)(bilstm)
+    bilstm = Bidirectional(LSTM(
+        units,
+        return_sequences=True,
+    ))(concatenated)
+    bilstm = SpatialDropout1D(dropout)(bilstm)
+    sequence_max = GlobalMaxPooling1D()(bilstm)
+    sequence_avg = GlobalAveragePooling1D()(bilstm)
+    pooled = Concatenate()([sequence_max, sequence_avg])
+    pooled = Dropout(dropout)(pooled)
 
     # Classify argument key point match.
-    outputs = Dense(1, activation=sigmoid)(bilstm)
+    outputs = Dense(1, activation=sigmoid)(pooled)
 
     # Define model.
     model = Model(
@@ -133,29 +145,51 @@ def _prepare_labelled_data(
 
 
 class BidirectionalLstmMatcher(Matcher):
-    max_features: int
-    bilstm_units: int
+    units: int
+    max_length: int
+    dropout: float
+    learning_rate: float
+    weight_decay: float
     batch_size: int
     epochs: int
+    early_stopping: bool
 
     model: Model = None
 
     def __init__(
             self,
-            bilstm_units: int = 16,
+            units: int = 16,
+            max_length: int = 512,
+            dropout: float = 0,
+            learning_rate: float = 1e-5,
+            weight_decay: float = 0,
             batch_size: int = 16,
             epochs: int = 10,
+            early_stopping: bool = False,
     ):
-        self.bilstm_units = bilstm_units
+        self.units = units
+        self.max_length = max_length
+        self.dropout = dropout
+        self.learning_rate = learning_rate
+        self.weight_decay = weight_decay
         self.batch_size = batch_size
         self.epochs = epochs
+        self.early_stopping = early_stopping
 
     @property
     def name(self) -> str:
-        return f"bilstm-{self.bilstm_units}" \
+        weight_decay_suffix = f"-weight-decay-{self.weight_decay}" \
+            if self.weight_decay is not None else ""
+        early_stopping_suffix = "-early-stopping" \
+            if self.early_stopping else ""
+        return f"bilstm-{self.units}" \
                f"-glove" \
+               f"-max-length-{self.max_length}" \
+               f"-learn-{self.learning_rate}" \
+               f"{weight_decay_suffix}" \
                f"-batch-{self.batch_size}" \
-               f"-epochs-{self.epochs}"
+               f"-epochs-{self.epochs}" \
+               f"{early_stopping_suffix}"
 
     def prepare(self) -> None:
         download_glove_embeddings()
@@ -178,9 +212,24 @@ class BidirectionalLstmMatcher(Matcher):
 
         # Build model.
         print("\tBuild and compile model.")
-        self.model = create_bilstm_model(train_texts, self.bilstm_units)
+        self.model = create_bilstm_model(
+            train_texts,
+            self.units,
+            self.max_length,
+            self.dropout
+        )
+        optimizer: Optimizer
+        if self.weight_decay > 0:
+            optimizer = AdamW(
+                learning_rate=self.learning_rate,
+                weight_decay=self.weight_decay,
+            )
+        else:
+            optimizer = Adam(
+                learning_rate=self.learning_rate,
+            )
         self.model.compile(
-            optimizer=Adam(1e-5),
+            optimizer=optimizer,
             loss=BinaryCrossentropy(),
             metrics=[Precision(), Recall()],
         )
@@ -197,11 +246,20 @@ class BidirectionalLstmMatcher(Matcher):
             save_weights_only=True,
             mode='max'
         )
+        callbacks = [checkpoint]
+        if self.early_stopping:
+            callbacks.append(
+                EarlyStopping(
+                    monitor="val_loss",
+                    patience=5,
+                    restore_best_weights=True
+                )
+            )
         self.model.fit(
             train_dataset,
             validation_data=dev_dataset,
             epochs=self.epochs,
-            callbacks=[checkpoint],
+            callbacks=callbacks,
         )
 
         # Evaluate model on dev set.
