@@ -90,6 +90,16 @@ class UntrainedMatcher(Matcher, ABC):
     """
 
     @final
+    def load_model(self, path: Path) -> bool:
+        # Nothing to load.
+        return True
+
+    @final
+    def save_model(self, path: Path):
+        # Nothing to save.
+        return
+
+    @final
     def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
-        # Skip training.
+        # Nothing to train.
         return
