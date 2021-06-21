@@ -232,6 +232,7 @@ class RegressionPartOfSpeechMatcher(Matcher):
     language: Language
 
     def prepare(self) -> None:
+        print("checked preprare")
         if not is_package("en_core_web_sm"):
             system("python -m spacy download en_core_web_sm")
         self.language = spacy_load("en_core_web_sm")
