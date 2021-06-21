@@ -141,19 +141,17 @@ def _prepare_labelled_data(
     kp_texts: List[str] = []
     labels: List[Label] = []
     augmenter: Optional[WordAugmenter] = SynonymAug("wordnet") \
-        if augment > 0 else None
+        if augment >= 2 else None
     for arg, kp in pairs:
         current_arg_texts = [arg.text]
         current_kp_texts = [kp.text]
         if augmenter is not None:
-            current_arg_texts.extend(augmenter.augment(arg.text, augment))
-            current_kp_texts.extend(augmenter.augment(kp.text, augment))
-        for arg_text in current_arg_texts:
-            for kp_text in current_kp_texts:
-                arg_texts.append(arg_text)
-                kp_texts.append(kp_text)
-                labels.append(labelled_data.labels[arg.id, kp.id])
-
+            current_arg_texts.extend(augmenter.augment(arg.text, n=augment))
+            current_kp_texts.extend(augmenter.augment(kp.text, n=augment))
+        for arg_text, kp_text in zip(current_arg_texts, current_kp_texts):
+            arg_texts.append(arg_text)
+            kp_texts.append(kp_text)
+            labels.append(labelled_data.labels[arg.id, kp.id])
     dataset = Dataset.from_tensor_slices((
         {
             "argument_text": array(arg_texts),
