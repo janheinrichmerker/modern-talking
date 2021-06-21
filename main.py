@@ -134,7 +134,7 @@ def train_eval() -> None:
     pipeline = Pipeline(matcher, metric)
     result = pipeline.train_evaluate(ignore_test=True)
 
-    print(f"Final score for metric {metric.name} on test dataset: {result}")
+    print(f"Final score for metric {metric.name} on test dataset: {result:.4f}")
 
 
 def list_matchers() -> None:
