@@ -20,6 +20,7 @@
 \usepackage{biblatex}
 \usepackage{tabularx}
 \usepackage{booktabs}
+\usepackage{graphics,graphicx}
 
 \newcommand{\Bert}{\textsc{Bert}\xspace}
 \newcommand{\ArgKP}{\mbox{ArgKP}\xspace}
@@ -70,30 +71,43 @@
 
 \begin{frame}
   \frametitle{What did not work ?}
-
-  \begin{figure}
-    \centering
-    \begin{tabular}{lll}
-      \toprule
-      \multicolumn{1}{c}{\textbf{Approach}} & \multicolumn{1}{c}{\textbf{mAP (str)}} & \multicolumn{1}{c}{\textbf{mAP (rel)}}\\
-      \midrule
-      term overlap (no preprocessing) &	0.52 & 0.70 \\
-      term overlap (stemming) &	0.60 & 0.75\\
-      \textbf{term overlap (stemming, stop words)} & \textbf{0.65} & \textbf{0.81}\\
-      regression (C=1, TF/IDF) & 0.32 & 0.55\\
-      regression (C=14, BOW) & 0.44 & 0.70\\
-      regression (C=14, BOW, POS) & 0.47 & 0.66\\
-      SVC (BOW) & 0.46 & 0.70\\
-      SVC (BOW, POS) & 0.48 & 0.74\\
-      ensemble (LG=0.55, SVC=0.45, BOW) & 0.43 & 0.64\\
-      ensemble (LG=0.55, SVC=0.45, BOW, POS) & 0.50 & 0.70\\
-      ensemble (LG=0.45, SVC=0.55, BOW) & 0.45 & 0.65\\
-      ensemble (LG=0.45, SVC=0.55, BOW, POS) & 0.51 & 0.71\\
-      BiLSTM (GloVe embeddings) & 0.27 & 0.50\\
-      \bottomrule
-    \end{tabular}
-  \end{figure}
+    \begin{itemize}
+      \item All approaches performed mediocre
+      \item Regression 
+      \item SVC 
+      \item Ensemble 
+    \end{itemize}
   
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{What did work ?}
+  \framesubtitle{Term Overlap}
+    
+    \begin{itemize}
+      \item Without preprocessing already high relaxed mAP
+      \item Using stemming, stop words etc. increased both scores by up to 12 pp 
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{What did work ? cont.}
+  \framesubtitle{Term Overlap - Why is that the case ?}
+    
+    \begin{itemize}
+      \item A lot of arguments contain the same words as the key points
+        \begin{itemize}
+          \item Makes sense because key points summarize the arguments
+          \item Reducing further to stems makes much more words overlap
+        \end{itemize}
+    \end{itemize}
+
+    \begin{example}
+      \textbf{Argument:} \textit{people reach their limit when it comes to their quality of life and should be able to end their suffering. this can be done with little or no suffering by assistance and the person is able to say good bye.}\\
+      \textbf{Key Point:} \textit{Assisted suicide reduces suffering}
+    \end{example}
 
 \end{frame}
 
@@ -168,6 +182,36 @@
 
 
     \end{tikzpicture}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{What does that mean in Scores ?}
+
+  \begin{figure}
+    \centering
+    \scalebox{.75}{
+      \begin{tabular}{lll}
+        \toprule
+        \multicolumn{1}{c}{\textbf{Approach}} & \multicolumn{1}{c}{\textbf{mAP (str)}} & \multicolumn{1}{c}{\textbf{mAP (rel)}}\\
+        \midrule
+        term overlap (no preprocessing) &	0.52 & 0.70 \\
+        term overlap (stemming) &	0.60 & 0.75\\
+        term overlap (stemming, stop words) & 0.64 & 0.81\\
+        \textbf{term overlap (stemming, stop words, synonyms, antonyms)}	&	\textbf{0.64}	& \textbf{0.82}\\
+        regression (C=1, TF/IDF) & 0.32 & 0.55\\
+        regression (C=14, BOW) & 0.44 & 0.70\\
+        regression (C=14, BOW, POS) & 0.47 & 0.66\\
+        SVC (BOW) & 0.46 & 0.70\\
+        SVC (BOW, POS) & 0.48 & 0.74\\
+        ensemble (LG=0.55, SVC=0.45, BOW) & 0.43 & 0.64\\
+        ensemble (LG=0.55, SVC=0.45, BOW, POS) & 0.50 & 0.70\\
+        ensemble (LG=0.45, SVC=0.55, BOW) & 0.45 & 0.65\\
+        ensemble (LG=0.45, SVC=0.55, BOW, POS) & 0.51 & 0.71\\
+        BiLSTM (GloVe embeddings) & 0.27 & 0.50\\
+        \bottomrule
+      \end{tabular}
+    }
   \end{figure}
 \end{frame}
 
