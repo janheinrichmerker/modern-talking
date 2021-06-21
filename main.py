@@ -94,8 +94,7 @@ metrics = (
     MacroRecall(),
     F1Score(),
     MacroF1Score(),
-    Track1Metric(relaxed=True),
-    Track1Metric(relaxed=False),
+    Track1Metric(),
     ManualErrors(),
 )
 
