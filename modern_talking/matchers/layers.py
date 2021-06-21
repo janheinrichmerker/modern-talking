@@ -26,7 +26,8 @@ def text_vectorization_layer(
     """
     layer = TextVectorization(
         max_tokens,
-        output_sequence_length=output_sequence_length
+        output_sequence_length=output_sequence_length,
+        trainable=False,
     )
     text_dataset = Dataset.from_tensor_slices(texts)
     layer.adapt(text_dataset)
