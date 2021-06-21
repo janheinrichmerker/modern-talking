@@ -188,8 +188,10 @@ class BidirectionalLstmMatcher(Matcher):
 
         # Train model.
         print("\tTrain compiled model.")
+        checkpoint_name = "weights-improvement" \
+                          "-{epoch:02d}-{val_precision:.3f}.tf"
         checkpoint = ModelCheckpoint(
-            "weights-improvement-{epoch:02d}-{val_precision:.3f}.hdf5",
+            checkpoint_path / checkpoint_name,
             monitor='val_precision',
             save_best_only=True,
             save_weights_only=True,
@@ -209,7 +211,6 @@ class BidirectionalLstmMatcher(Matcher):
         dataset, ids = _prepare_unlabelled_data(test_data)
         dataset = dataset.batch(self.batch_size)
         predictions: ndarray = self.model.predict(dataset)[:, 0]
-        print(predictions)
         return {
             arg_kp_id: float(label)
             for arg_kp_id, label in zip(ids, predictions)
@@ -226,5 +227,8 @@ class BidirectionalLstmMatcher(Matcher):
             return True
 
     def save_model(self, path: Path):
-        model_path = path / "model.tf"
-        self.model.save(model_path, overwrite=True)
+        self.model.save(
+            path / "model.tf",
+            save_format="tf",
+            overwrite=True,
+        )
