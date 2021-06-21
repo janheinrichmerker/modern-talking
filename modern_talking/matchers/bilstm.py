@@ -14,6 +14,8 @@ from tensorflow.keras.losses import BinaryCrossentropy
 from tensorflow.keras.metrics import Precision, Recall
 from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam, Optimizer
+from tensorflow.python.keras.layers import GlobalAveragePooling1D, \
+    GlobalMaxPooling1D, Concatenate
 from tensorflow_addons.optimizers import AdamW
 
 from modern_talking.data.glove import download_glove_embeddings
@@ -63,12 +65,12 @@ def create_bilstm_model(
     # Apply Bidirectional LSTM separately.
     argument_text_bilstm = Bidirectional(LSTM(
         units,
-        return_sequences=True
+        return_sequences=True,
     ))(argument_text_embedding)
     argument_text_bilstm = SpatialDropout1D(dropout)(argument_text_bilstm)
     key_point_bilstm = Bidirectional(LSTM(
         units,
-        return_sequences=True
+        return_sequences=True,
     ))(key_point_embedding)
     key_point_bilstm = SpatialDropout1D(dropout)(key_point_bilstm)
 
@@ -76,11 +78,18 @@ def create_bilstm_model(
     concatenated = Subtract()([argument_text_bilstm, key_point_bilstm])
 
     # Apply Bidirectional LSTM on merged sequence.
-    bilstm = Bidirectional(LSTM(units))(concatenated)
-    bilstm = Dropout(dropout)(bilstm)
+    bilstm = Bidirectional(LSTM(
+        units,
+        return_sequences=True,
+    ))(concatenated)
+    bilstm = SpatialDropout1D(dropout)(bilstm)
+    sequence_max = GlobalMaxPooling1D()(bilstm)
+    sequence_avg = GlobalAveragePooling1D()(bilstm)
+    pooled = Concatenate()([sequence_max, sequence_avg])
+    pooled = Dropout(dropout)(pooled)
 
     # Classify argument key point match.
-    outputs = Dense(1, activation=sigmoid)(bilstm)
+    outputs = Dense(1, activation=sigmoid)(pooled)
 
     # Define model.
     model = Model(
@@ -169,12 +178,13 @@ class BidirectionalLstmMatcher(Matcher):
 
     @property
     def name(self) -> str:
-        weight_decay_suffix = f"-weight-decay{self.weight_decay}" \
+        weight_decay_suffix = f"-weight-decay-{self.weight_decay}" \
             if self.weight_decay is not None else ""
         early_stopping_suffix = "-early-stopping" \
             if self.early_stopping else ""
         return f"bilstm-{self.units}" \
                f"-glove" \
+               f"-max-length-{self.max_length}" \
                f"-learn-{self.learning_rate}" \
                f"{weight_decay_suffix}" \
                f"-batch-{self.batch_size}" \
