@@ -112,7 +112,8 @@ def _prepare_labelled_data(
         (arg, kp)
         for arg in labelled_data.arguments
         for kp in labelled_data.key_points
-        if arg.topic == kp.topic and arg.stance == kp.stance
+        if (arg.topic == kp.topic and arg.stance == kp.stance
+            and (arg.id, kp.id) in labelled_data.labels.keys())
     ]
     encodings = _prepare_encodings(pairs, tokenizer)
     labels = [labelled_data.labels[arg.id, kp.id] for arg, kp in pairs]
