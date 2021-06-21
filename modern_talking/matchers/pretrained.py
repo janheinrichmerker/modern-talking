@@ -177,7 +177,6 @@ class PretrainedMatcher(Matcher):
             self.pretrained_model_name,
             config=self.config,
         )
-        self.pretrained_model.trainable = False
 
     def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
         # Check GPU availability.
