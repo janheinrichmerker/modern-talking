@@ -6,7 +6,7 @@ from typing import Tuple, List
 from numpy import ndarray, clip
 from tensorflow import data, int32, config
 from tensorflow.keras import Model, Input
-from tensorflow.keras.activations import tanh
+from tensorflow.keras.activations import sigmoid
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.layers import Dense, Dropout, Concatenate, Layer, \
     Subtract, GlobalMaxPooling1D, GlobalAveragePooling1D, Bidirectional, \
@@ -124,7 +124,7 @@ def create_model(
     memory = merge_layer([argument_memory, key_point_memory])
 
     # Classify argument key point match.
-    output = Dense(1, activation=tanh)(memory)
+    output = Dense(1, activation=sigmoid)(memory)
 
     # Define model.
     pretrained_model = Model(

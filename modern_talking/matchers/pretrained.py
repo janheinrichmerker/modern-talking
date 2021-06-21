@@ -5,7 +5,7 @@ from typing import Tuple, List
 from numpy import ndarray, clip
 from tensorflow import data, int32, config
 from tensorflow.keras import Input, Model
-from tensorflow.keras.activations import tanh
+from tensorflow.keras.activations import sigmoid
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.losses import BinaryCrossentropy
@@ -52,7 +52,7 @@ def create_model(pretrained_model: TFPreTrainedModel) -> Model:
     pooled = encoding.pooler_output
 
     # Classify argument key point match.
-    output = Dense(1, activation=tanh)(pooled)
+    output = Dense(1, activation=sigmoid)(pooled)
 
     # Define model.
     model = Model(
