@@ -22,10 +22,10 @@ class Cascade(Matcher):
 
     @property
     def name(self) -> str:
-        return f"combined" \
+        return f"cascade" \
+               f"-{self.threshold}" \
                f"-{self.matcher_a.name}" \
-               f"-{self.matcher_b.name}" \
-               f"-{self.threshold}"
+               f"-{self.matcher_b.name}"
 
     def prepare(self) -> None:
         self.matcher_a.prepare()
