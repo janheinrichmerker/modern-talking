@@ -73,9 +73,18 @@
   \frametitle{What did not work ?}
     \begin{itemize}
       \item All approaches performed mediocre
-      \item Regression 
-      \item SVC 
-      \item Ensemble 
+      \item Machine Learning methods: Regression, SVC, Ensemble(Regression, SVC)
+      \item Feature Extraction methods: Bag of Words, TFIDF
+      \item Used technologies
+      		\begin{itemize}
+    		\item Feature extraction
+    		\begin{itemize}
+    			\item NTLK: Stemming, Stopwords
+    			\item spaCy: Part of Speech
+    			\item sklearn: CountVectorizer, TFIDFVectorizer
+    		\end{itemize}
+    		\item Learning methods from sklearn
+    	\end{itemize}
     \end{itemize}
   
 
@@ -86,7 +95,7 @@
   \framesubtitle{Feature Extraction and Machine Learning methods}
     
     	\begin{itemize}
-      \item high-dimensional data 
+      \item high-dimensional data (> 4000 for basis feature extraction)
       	\begin{itemize}
       		\item Regression: not robust for high-dimensional data
       		\item SVC: better results then regression
@@ -110,7 +119,6 @@
       \textbf{Prediction:} No Matching
     \end{example}
 
-	
 \end{frame}
 
 \begin{frame}
