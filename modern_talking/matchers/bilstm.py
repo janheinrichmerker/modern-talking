@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import List, Tuple, Optional
 
 from nlpaug.augmenter.word import WordAugmenter, SynonymAug
+from nltk.downloader import Downloader
 from numpy import ndarray, array
 from tensorflow import string, data, config
 from tensorflow.keras import Model, Input
@@ -220,6 +221,16 @@ class BidirectionalLstmMatcher(Matcher):
     def prepare(self) -> None:
         download_glove_embeddings()
 
+        if self.augment > 0:
+            downloader = Downloader()
+            # Download dependencies for augmenter.
+            if not downloader.is_installed("punkt"):
+                downloader.download("punkt")
+            if not downloader.is_installed("wordnet"):
+                downloader.download("wordnet")
+            if not downloader.is_installed("averaged_perceptron_tagger"):
+                downloader.download("averaged_perceptron_tagger")
+
     def train(
             self,
             train_data: LabelledDataset,
@@ -231,7 +242,8 @@ class BidirectionalLstmMatcher(Matcher):
 
         # Load and prepare datasets as tensors.
         print("\tLoad and prepare datasets for model.")
-        train_dataset, train_texts = _prepare_labelled_data(train_data, self.augment)
+        train_dataset, train_texts = _prepare_labelled_data(train_data,
+                                                            self.augment)
         train_dataset = train_dataset.batch(self.batch_size)
         dev_dataset, dev_texts = _prepare_labelled_data(dev_data, self.augment)
         dev_dataset = dev_dataset.batch(self.batch_size)
