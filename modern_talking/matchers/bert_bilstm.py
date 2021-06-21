@@ -151,7 +151,7 @@ def _prepare_encodings(
         texts,
         max_length=512,
         padding="max_length",
-        truncation="max_length",
+        truncation=True,
         return_tensors="tf",
         return_attention_mask=True,
         return_token_type_ids=True,
