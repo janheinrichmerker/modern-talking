@@ -11,8 +11,8 @@ from modern_talking.evaluation.map import Track1Metric
 from modern_talking.matchers import Matcher
 from modern_talking.matchers.baselines import AllMatcher, RandomMatcher, \
     NoneMatcher
-from modern_talking.matchers.bert_bilstm import BertBilstmMatcher, MergeType
-from modern_talking.matchers.pretrained import PretrainedMatcher
+from modern_talking.matchers.distillbert_bilstm import BertBilstmMatcher, MergeType
+from modern_talking.matchers.bert import PretrainedMatcher
 from modern_talking.matchers.bilstm import BidirectionalLstmMatcher
 from modern_talking.matchers.regression import EnsembleVotingMatcher, \
     RegressionTfidfMatcher, RegressionBagOfWordsMatcher, \

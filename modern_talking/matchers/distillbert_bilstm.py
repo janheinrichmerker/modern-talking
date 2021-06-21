@@ -14,11 +14,11 @@ from tensorflow.keras.layers import Dense, Dropout, Concatenate, Layer, \
     LSTM, SpatialDropout1D
 from tensorflow.keras.losses import BinaryCrossentropy
 from tensorflow.keras.metrics import Precision, Recall
+from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam
-from transformers import TFPreTrainedModel, PretrainedConfig, \
-    PreTrainedTokenizerFast, AutoConfig, AutoTokenizer, TFAutoModel, \
-    BatchEncoding
-from transformers.modeling_tf_outputs import TFBaseModelOutputWithPooling
+from transformers import TFDistilBertModel, DistilBertConfig, \
+    DistilBertTokenizerFast, BatchEncoding
+from transformers.modeling_tf_outputs import TFBaseModelOutput
 
 from modern_talking.matchers import Matcher
 from modern_talking.model import Dataset as UnlabelledDataset, Labels, \
@@ -36,7 +36,7 @@ class MergeType(Enum):
 
 
 def create_model(
-        pretrained_model: TFPreTrainedModel,
+        pretrained_model: TFDistilBertModel,
         encoding_dropout: float = 0.2,
         bilstm_units: int = 64,
         memory_dropout: float = 0.2,
@@ -75,7 +75,7 @@ def create_model(
     )
 
     # Encode with pretrained transformer model.
-    argument_encoding: TFBaseModelOutputWithPooling = pretrained_model(
+    argument_encoding: TFBaseModelOutput = pretrained_model.distilbert(
         argument_input_ids,
         attention_mask=argument_attention_mask,
         # token_type_ids=argument_token_type_ids,
@@ -84,7 +84,7 @@ def create_model(
     argument_encoding_sequence = SpatialDropout1D(encoding_dropout)(
         argument_encoding_sequence
     )
-    key_point_encoding: TFBaseModelOutputWithPooling = pretrained_model(
+    key_point_encoding: TFBaseModelOutput = pretrained_model.distilbert(
         key_point_input_ids,
         attention_mask=key_point_attention_mask,
         # token_type_ids=key_point_token_type_ids,
@@ -144,7 +144,7 @@ def create_model(
 
 def _prepare_encodings(
         texts: List[str],
-        tokenizer: PreTrainedTokenizerFast,
+        tokenizer: DistilBertTokenizerFast,
 ) -> BatchEncoding:
     # Tokenize using pretrained tokenizer (e.g., WordPiece)
     encodings: BatchEncoding = tokenizer(
@@ -162,7 +162,7 @@ def _prepare_encodings(
 
 def _prepare_unlabelled_data(
         unlabelled_data: UnlabelledDataset,
-        tokenizer: PreTrainedTokenizerFast,
+        tokenizer: DistilBertTokenizerFast,
 ) -> Tuple[Dataset, List[ArgumentKeyPointIdPair]]:
     pairs = [
         (arg, kp)
@@ -190,7 +190,7 @@ def _prepare_unlabelled_data(
 
 def _prepare_labelled_data(
         labelled_data: LabelledDataset,
-        tokenizer: PreTrainedTokenizerFast,
+        tokenizer: DistilBertTokenizerFast,
 ) -> Dataset:
     pairs = [
         (arg, kp)
@@ -224,7 +224,7 @@ class BertBilstmMatcher(Matcher):
     with a pretrained BERT model and classifying the merged outputs.
     """
 
-    pretrained_model_name: str
+    distilbert_model_name: str
     encoding_dropout: float
     bilstm_units: int
     memory_dropout: float
@@ -232,11 +232,11 @@ class BertBilstmMatcher(Matcher):
     batch_size: int
     epochs: int
 
-    config: PretrainedConfig
-    tokenizer: PreTrainedTokenizerFast
-    pretrained_model: TFPreTrainedModel
+    config: DistilBertConfig
+    tokenizer: DistilBertTokenizerFast
+    distilbert_model: TFDistilBertModel
 
-    model: Model
+    model: Model = None
 
     def __init__(
             self,
@@ -246,9 +246,9 @@ class BertBilstmMatcher(Matcher):
             memory_dropout: float,
             merge_memories: MergeType,
             batch_size: int = 64,
-            epochs: int = 1,
+            epochs: int = 3,
     ):
-        self.pretrained_model_name = pretrained_model_name
+        self.distilbert_model_name = pretrained_model_name
         self.encoding_dropout = encoding_dropout
         self.bilstm_units = bilstm_units
         self.memory_dropout = memory_dropout
@@ -258,7 +258,7 @@ class BertBilstmMatcher(Matcher):
 
     @property
     def name(self) -> str:
-        return f"{self.pretrained_model_name}" \
+        return f"{self.distilbert_model_name}" \
                f"-dropout-{self.encoding_dropout}" \
                f"-bilstm-{self.bilstm_units}" \
                f"-dropout-{self.memory_dropout}" \
@@ -268,18 +268,20 @@ class BertBilstmMatcher(Matcher):
 
     def prepare(self) -> None:
         # Load pretrained model config.
-        self.config = AutoConfig.from_pretrained(self.pretrained_model_name)
+        self.config = DistilBertConfig.from_pretrained(
+            self.distilbert_model_name
+        )
 
         # Load pretrained tokenizer.
-        self.tokenizer = AutoTokenizer.from_pretrained(
-            self.pretrained_model_name,
+        self.tokenizer = DistilBertTokenizerFast.from_pretrained(
+            self.distilbert_model_name,
             config=self.config,
             do_lower_case=True,
         )
 
         # Load pretrained encoder model.
-        self.pretrained_model = TFAutoModel.from_pretrained(
-            self.pretrained_model_name,
+        self.distilbert_model = TFDistilBertModel.from_pretrained(
+            self.distilbert_model_name,
             config=self.config
         )
 
@@ -302,7 +304,7 @@ class BertBilstmMatcher(Matcher):
         # Build model.
         print("\tBuild and compile model.")
         self.model = create_model(
-            self.pretrained_model,
+            self.distilbert_model,
             self.encoding_dropout,
             self.bilstm_units,
             self.memory_dropout,
@@ -317,8 +319,10 @@ class BertBilstmMatcher(Matcher):
 
         # Train model.
         print("\tTrain compiled model.")
+        checkpoint_name = "weights-improvement" \
+                          "-{epoch:02d}-{val_precision:.3f}.tf"
         checkpoint = ModelCheckpoint(
-            "weights-improvement-{epoch:02d}-{val_precision:.3f}.hdf5",
+            checkpoint_path / checkpoint_name,
             monitor='val_precision',
             save_best_only=True,
             save_weights_only=True,
@@ -352,3 +356,20 @@ class BertBilstmMatcher(Matcher):
             arg_kp_id: float(label)
             for arg_kp_id, label in zip(test_ids, predictions)
         }
+
+    def load_model(self, path: Path) -> bool:
+        model_path = path / "model.tf"
+        if self.model is not None:
+            return True
+        elif not model_path.exists() or not model_path.is_dir():
+            return False
+        else:
+            self.model = load_model(model_path)
+            return True
+
+    def save_model(self, path: Path):
+        self.model.save(
+            path / "model.tf",
+            save_format="tf",
+            overwrite=True,
+        )
