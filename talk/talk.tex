@@ -125,8 +125,9 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{What did work ? cont.}
+  \frametitle{Baseline}
   \framesubtitle{Term Overlap - Why is that the case ?}
+    %TODO Cite paper or lecture which inspired to use models
     
     \begin{itemize}
       \item A lot of arguments contain the same words as the key points
@@ -144,6 +145,48 @@
 \end{frame}
 
 \begin{frame}
+  \frametitle{Term Overlap}
+  \framesubtitle{Used technologies}
+    \begin{itemize}
+      \item NLTK 
+        \begin{itemize}
+          \item Stemming
+          \item Tokenization
+          \item Stopword Removal
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Term Overlap cont.}
+  \framesubtitle{Preprocessing}
+    \begin{itemize}
+      \item Stemming 
+        \begin{itemize}
+          \item Removing unnecessary pre - and suffixes for generalization
+        \end{itemize}
+      \item Tokenization
+        \begin{itemize}
+          \item Necessary for counting ovaerlapping words
+        \end{itemize}
+      \item Stopword Removal
+        \begin{itemize}
+          \item Reduces the load and removes clutter from sentences
+          \item Makes key words more prominent
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Term Overlap cont.}
+  \framesubtitle{Features}
+    
+    
+\end{frame}
+
+\begin{frame}
+  \frametitle{Term Overlap}
+  \framesubtitle{Evaluation}
   \begin{figure}
     \centering
     \scalebox{0.70}{
@@ -168,9 +211,9 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{What did work ?}
+  \frametitle{Approach}
   \framesubtitle{BERT + BiLSTM}
-
+    %TODO cite paper which inspired to use blstm
   \begin{figure}
     \begin{tikzpicture}[x=1.5cm, y=1.5cm, >=stealth, scale = 1]
       \node [every neuron] (arg) at (0,2.5) {arg};
