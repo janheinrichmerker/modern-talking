@@ -6,7 +6,7 @@ from typing import Tuple, List
 from numpy import ndarray, clip
 from tensorflow import data, int32, config
 from tensorflow.keras import Model, Input
-from tensorflow.keras.activations import relu, softmax
+from tensorflow.keras.activations import tanh
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.layers import Dense, Dropout, Concatenate, Layer, \
     Subtract, GlobalMaxPooling1D, GlobalAveragePooling1D, Bidirectional, \
@@ -122,10 +122,9 @@ def create_model(
     else:
         raise Exception("Must specify merge layer.")
     memory = merge_layer([argument_memory, key_point_memory])
-    memory = Dense(256, activation=relu)(memory)
 
-    # Classify (one-hot using softmax).
-    output = Dense(3, activation=softmax)(memory)
+    # Classify argument key point match.
+    output = Dense(1, activation=tanh)(memory)
 
     # Define model.
     pretrained_model = Model(

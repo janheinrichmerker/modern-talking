@@ -5,7 +5,7 @@ from typing import Tuple, List
 from numpy import ndarray, clip
 from tensorflow import data, int32, config
 from tensorflow.keras import Input, Model
-from tensorflow.keras.activations import relu, softmax
+from tensorflow.keras.activations import tanh
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.losses import BinaryCrossentropy
@@ -51,11 +51,8 @@ def create_model(pretrained_model: TFPreTrainedModel) -> Model:
     )
     pooled = encoding.pooler_output
 
-    # Hidden dense layer.
-    pooled = Dense(256, activation=relu)(pooled)
-
-    # Classify (one-hot using softmax).
-    output = Dense(3, activation=softmax)(pooled)
+    # Classify argument key point match.
+    output = Dense(1, activation=tanh)(pooled)
 
     # Define model.
     model = Model(

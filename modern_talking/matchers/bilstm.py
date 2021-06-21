@@ -6,7 +6,7 @@ from typing import List, Tuple
 from numpy import ndarray, array, clip
 from tensorflow import string, data, config
 from tensorflow.keras import Model, Input
-from tensorflow.keras.activations import softmax, relu
+from tensorflow.keras.activations import tanh
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.layers import Bidirectional, LSTM, Dense, Subtract, \
     SpatialDropout1D, Dropout
@@ -75,10 +75,9 @@ def create_bilstm_model(
     # Apply Bidirectional LSTM on merged sequence.
     bilstm = Bidirectional(LSTM(bilstm_units))(concatenated)
     bilstm = Dropout(0.1)(bilstm)
-    bilstm = Dense(bilstm_units, activation=relu)(bilstm)
 
-    # Classify (one-hot using softmax).
-    outputs = Dense(3, activation=softmax)(bilstm)
+    # Classify argument key point match.
+    outputs = Dense(1, activation=tanh)(bilstm)
 
     # Define model.
     model = Model(
