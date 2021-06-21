@@ -17,4 +17,5 @@ Keep up-to-date and mark best approach bold.
 | ensemble (LG=0.55, SVC=0.45, BOW, POS) | ? | ? | 0.50 | 0.70 |
 | ensemble (LG=0.45, SVC=0.55, BOW) | ? | ? | 0.45 | 0.65 |
 | ensemble (LG=0.45, SVC=0.55, BOW, POS) | ? | ? | 0.51 | 0.71 |
-| BiLSTM (GloVe embeddings) | ? | ? | 0.27 | 0.50 |
+| BiLSTM (GloVe embeddings) | ? | ? | ? | ? |
+| BERT pretrained | ? | ? | ? | ? |

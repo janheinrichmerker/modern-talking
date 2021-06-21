@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import List, Tuple
 
-from numpy import ndarray, array, clip
+from numpy import ndarray, array
 from tensorflow import string, data, config
 from tensorflow.keras import Model, Input
 from tensorflow.keras.activations import sigmoid
@@ -203,10 +203,10 @@ class BidirectionalLstmMatcher(Matcher):
     def predict(self, test_data: UnlabelledDataset) -> Labels:
         dataset, ids = _prepare_unlabelled_data(test_data)
         dataset = dataset.batch(self.batch_size)
-        predictions: ndarray = self.model.predict(dataset)
-        predictions = clip(predictions, 0, 1)
+        predictions: ndarray = self.model.predict(dataset)[:, 0]
+        print(predictions)
         return {
-            arg_kp_id: label
+            arg_kp_id: float(label)
             for arg_kp_id, label in zip(ids, predictions)
         }
 

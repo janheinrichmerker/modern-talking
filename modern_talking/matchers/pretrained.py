@@ -2,7 +2,7 @@
 
 from typing import Tuple, List
 
-from numpy import ndarray, clip
+from numpy import ndarray
 from tensorflow import data, int32, config
 from tensorflow.keras import Input, Model
 from tensorflow.keras.activations import sigmoid
@@ -216,9 +216,8 @@ class PretrainedMatcher(Matcher):
     def predict(self, test_data: UnlabelledDataset) -> Labels:
         dataset, ids = _prepare_unlabelled_data(test_data, self.tokenizer)
         dataset = dataset.batch(self.batch_size)
-        predictions: ndarray = self.model.predict(dataset)
-        predictions = clip(predictions, 0, 1)
+        predictions: ndarray = self.model.predict(dataset)[:, 0]
         return {
-            arg_kp_id: label
+            arg_kp_id: float(label)
             for arg_kp_id, label in zip(ids, predictions)
         }

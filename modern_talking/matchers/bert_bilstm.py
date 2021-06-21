@@ -3,7 +3,7 @@
 from enum import Enum
 from typing import Tuple, List
 
-from numpy import ndarray, clip
+from numpy import ndarray
 from tensorflow import data, int32, config
 from tensorflow.keras import Model, Input
 from tensorflow.keras.activations import sigmoid
@@ -339,11 +339,10 @@ class BertBilstmMatcher(Matcher):
 
         # Predict and decode labels (one-cold).
         print("\tPredict and decode labels.")
-        predictions: ndarray = self.model.predict(test_dataset)
-        predictions = clip(predictions, 0, 1)
+        predictions: ndarray = self.model.predict(test_dataset)[:, 0]
 
         # Return predictions.
         return {
-            arg_kp_id: label
+            arg_kp_id: float(label)
             for arg_kp_id, label in zip(test_ids, predictions)
         }
