@@ -18,7 +18,7 @@ from modern_talking.matchers.regression import EnsembleVotingMatcher, \
     RegressionTfidfMatcher, RegressionBagOfWordsMatcher, \
     EnsemblePartOfSpeechMatcher, RegressionPartOfSpeechMatcher, \
     SVCPartOfSpeechMatcher, SVCBagOfWordsMatcher
-from modern_talking.matchers.combiner import CombinedMatcher
+from modern_talking.matchers.combine import Cascade
 from modern_talking.matchers.term_overlap import TermOverlapMatcher
 from modern_talking.pipeline import Pipeline
 
@@ -75,15 +75,6 @@ matchers = (
         epochs=1,
     ),
     DistilBertBilstmMatcher(
-        "bert-base-uncased",
-        encoding_dropout=0.2,
-        bilstm_units=128,
-        memory_dropout=0.2,
-        merge_memories=MergeType.subtract,
-        batch_size=32,
-        epochs=5,
-    ),
-    DistilBertBilstmMatcher(
         "distilbert-base-uncased",
         encoding_dropout=0.2,
         bilstm_units=128,
@@ -110,15 +101,24 @@ matchers = (
         batch_size=32,
         epochs=1,
     ),
-    CombinedMatcher(
+    Cascade(
+        TermOverlapMatcher(
+            stemming=True,
+            stop_words=True,
+            custom_stop_words = True,
+            synonyms=True,
+            antonyms=True
+        ),
+        DistilBertBilstmMatcher(
+            "distilbert-base-uncased",
+            encoding_dropout=0.2,
+            bilstm_units=128,
+            memory_dropout=0.2,
+            merge_memories=MergeType.subtract,
+            batch_size=32,
+            epochs=5,
+        ),
         0.7,
-        TermOverlapMatcher(),
-        RegressionBagOfWordsMatcher()
-    ),
-    CombinedMatcher(
-        0.7,
-        TermOverlapMatcher(stemming=True, stop_words=True),
-        RegressionBagOfWordsMatcher(),
     ),
 )
 
