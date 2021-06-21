@@ -127,7 +127,7 @@ def _prepare_unlabelled_data(
 
 def _prepare_labelled_data(
         labelled_data: LabelledDataset,
-        augment: bool = False,
+        augment: int,
 ) -> Tuple[Dataset, List[str]]:
     pairs = [
         (arg, kp)
@@ -140,13 +140,13 @@ def _prepare_labelled_data(
     kp_texts: List[str] = []
     labels: List[Label] = []
     augmenter: Optional[WordAugmenter] = SynonymAug("wordnet") \
-        if augment else None
+        if augment > 0 else None
     for arg, kp in pairs:
         current_arg_texts = [arg.text]
         current_kp_texts = [kp.text]
         if augmenter is not None:
-            current_arg_texts.extend(augmenter.augment(arg.text, 3))
-            current_kp_texts.extend(augmenter.augment(kp.text, 3))
+            current_arg_texts.extend(augmenter.augment(arg.text, augment))
+            current_kp_texts.extend(augmenter.augment(kp.text, augment))
         for arg_text in current_arg_texts:
             for kp_text in current_kp_texts:
                 arg_texts.append(arg_text)
@@ -173,7 +173,7 @@ class BidirectionalLstmMatcher(Matcher):
     batch_size: int
     epochs: int
     early_stopping: bool
-    augment: bool
+    augment: int
 
     model: Model = None
 
@@ -187,7 +187,7 @@ class BidirectionalLstmMatcher(Matcher):
             batch_size: int = 16,
             epochs: int = 10,
             early_stopping: bool = False,
-            augment: bool = False,
+            augment: int = 0,
     ):
         self.units = units
         self.max_length = max_length
@@ -202,11 +202,11 @@ class BidirectionalLstmMatcher(Matcher):
     @property
     def name(self) -> str:
         weight_decay_suffix = f"-weight-decay-{self.weight_decay}" \
-            if self.weight_decay is not None else ""
+            if self.weight_decay > 0 else ""
         early_stopping_suffix = "-early-stopping" \
             if self.early_stopping else ""
-        augment_suffix = "-augment" \
-            if self.augment else ""
+        augment_suffix = f"-augment-{self.augment}" \
+            if self.augment > 0 else ""
         return f"bilstm-{self.units}" \
                f"-glove" \
                f"-max-length-{self.max_length}" \
@@ -231,9 +231,9 @@ class BidirectionalLstmMatcher(Matcher):
 
         # Load and prepare datasets as tensors.
         print("\tLoad and prepare datasets for model.")
-        train_dataset, train_texts = _prepare_labelled_data(train_data)
+        train_dataset, train_texts = _prepare_labelled_data(train_data, self.augment)
         train_dataset = train_dataset.batch(self.batch_size)
-        dev_dataset, dev_texts = _prepare_labelled_data(dev_data)
+        dev_dataset, dev_texts = _prepare_labelled_data(dev_data, self.augment)
         dev_dataset = dev_dataset.batch(self.batch_size)
 
         # Build model.

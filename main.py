@@ -75,7 +75,17 @@ matchers = (
         batch_size=32,
         epochs=100,
         early_stopping=True,
-        augment=True,
+        augment=5,
+    ),
+    BidirectionalLstmMatcher(
+        units=128,
+        max_length=512,
+        dropout=0.4,
+        weight_decay=1e-6,
+        batch_size=32,
+        epochs=100,
+        early_stopping=True,
+        augment=10,
     ),
     BidirectionalLstmMatcher(
         units=2,
