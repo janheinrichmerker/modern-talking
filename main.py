@@ -52,11 +52,6 @@ matchers = (
         batch_size=32,
         epochs=5,
     ),
-    PretrainedMatcher(
-        "distilbert-base-uncased",
-        batch_size=32,
-        epochs=5,
-    ),
     BertBilstmMatcher(
         "bert-base-uncased",
         encoding_dropout=0.2,
