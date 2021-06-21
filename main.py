@@ -11,7 +11,7 @@ from modern_talking.evaluation.map import Track1Metric
 from modern_talking.matchers import Matcher
 from modern_talking.matchers.baselines import AllMatcher, RandomMatcher, \
     NoneMatcher
-from modern_talking.matchers.distillbert_bilstm import BertBilstmMatcher, MergeType
+from modern_talking.matchers.distillbert_bilstm import DistilBertBilstmMatcher, MergeType
 from modern_talking.matchers.bert import PretrainedMatcher
 from modern_talking.matchers.bilstm import BidirectionalLstmMatcher
 from modern_talking.matchers.regression import EnsembleVotingMatcher, \
@@ -59,12 +59,22 @@ matchers = (
         batch_size=32,
         epochs=100,
     ),
+    BidirectionalLstmMatcher(
+        bilstm_units=2,
+        batch_size=2,
+        epochs=1,
+    ),
     PretrainedMatcher(
         "bert-base-uncased",
         batch_size=32,
         epochs=5,
     ),
-    BertBilstmMatcher(
+    PretrainedMatcher(
+        "bert-base-uncased",
+        batch_size=32,
+        epochs=1,
+    ),
+    DistilBertBilstmMatcher(
         "bert-base-uncased",
         encoding_dropout=0.2,
         bilstm_units=128,
@@ -73,7 +83,7 @@ matchers = (
         batch_size=32,
         epochs=5,
     ),
-    BertBilstmMatcher(
+    DistilBertBilstmMatcher(
         "distilbert-base-uncased",
         encoding_dropout=0.2,
         bilstm_units=128,
@@ -82,7 +92,7 @@ matchers = (
         batch_size=32,
         epochs=5,
     ),
-    BertBilstmMatcher(
+    DistilBertBilstmMatcher(
         "distilbert-base-uncased",
         encoding_dropout=0.2,
         bilstm_units=32,
@@ -90,6 +100,15 @@ matchers = (
         merge_memories=MergeType.concatenate,
         batch_size=32,
         epochs=5,
+    ),
+    DistilBertBilstmMatcher(
+        "distilbert-base-uncased",
+        encoding_dropout=0.2,
+        bilstm_units=2,
+        memory_dropout=0.2,
+        merge_memories=MergeType.subtract,
+        batch_size=32,
+        epochs=1,
     ),
     Combiner(),
 )

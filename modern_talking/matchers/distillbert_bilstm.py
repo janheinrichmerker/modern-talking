@@ -218,7 +218,7 @@ def _prepare_labelled_data(
     return dataset
 
 
-class BertBilstmMatcher(Matcher):
+class DistilBertBilstmMatcher(Matcher):
     """
     Label argument key point matches by encoding arguments and key points
     with a pretrained BERT model and classifying the merged outputs.
