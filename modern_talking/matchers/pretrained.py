@@ -206,6 +206,7 @@ class PretrainedMatcher(Matcher):
             "weights-improvement-{epoch:02d}-{val_precision:.3f}.hdf5",
             monitor='val_precision',
             save_best_only=True,
+            save_weights_only=True,
             mode='max'
         )
         self.model.fit(
