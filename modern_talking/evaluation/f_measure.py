@@ -12,7 +12,7 @@ class F1Score(Metric):
             predicted_labels: Labels,
             ground_truth_labels: Labels
     ) -> float:
-        y_true, y_pred = Metric.get_binary_labels(
+        y_true, y_pred = Metric.get_discrete_labels(
             predicted_labels,
             ground_truth_labels
         )

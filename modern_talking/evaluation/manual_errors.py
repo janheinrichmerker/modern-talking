@@ -16,14 +16,9 @@ class ManualErrors(Metric):
         ids = Metric.get_all_ids(predicted_labels, ground_truth_labels)
         samples: List[Tuple[ArgumentKeyPointIdPair, Label, Label, float]] = []
         for arg, kp in ids:
-            true_label = ground_truth_labels.get((arg, kp), None)
-            pred_label = predicted_labels.get((arg, kp), None)
-            if true_label is None:
-                continue
-            elif pred_label is None:
-                error = 2
-            else:
-                error = abs(true_label - pred_label)
+            true_label = ground_truth_labels[arg, kp]
+            pred_label = predicted_labels[arg, kp]
+            error = abs(true_label - pred_label)
             samples.append(((arg, kp), true_label, pred_label, error))
         samples = list(sorted(
             samples,

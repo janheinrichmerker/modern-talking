@@ -72,16 +72,6 @@ class Matcher(ABC):
         """
         pass
 
-    @staticmethod
-    def filter_none(
-            optional_labels: Dict[ArgumentKeyPointIdPair, Optional[Label]]
-    ) -> Labels:
-        return {
-            arg_kp: label
-            for arg_kp, label in optional_labels.items()
-            if label is not None
-        }
-
 
 class UntrainedMatcher(Matcher, ABC):
     """

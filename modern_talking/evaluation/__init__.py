@@ -44,49 +44,21 @@ class Metric(ABC):
         return ids
 
     @staticmethod
-    def get_binary_labels(
-            predicted_labels: Labels,
-            ground_truth_labels: Labels
-    ) -> Tuple[List[int], List[int]]:
-        """
-        Return true and predicted labels as
-        0 (no match or no decision) and 1 (match).
-        """
-
-        ids = Metric.get_all_ids(predicted_labels, ground_truth_labels)
-        y_true = []
-        y_pred = []
-        for arg, kp in ids:
-            true_label = ground_truth_labels.get((arg, kp), 0)
-            y_true.append(1 if true_label >= 0.5 else 0)
-            pred_label = predicted_labels.get((arg, kp), 0)
-            y_pred.append(1 if pred_label >= 0.5 else 0)
-        return y_true, y_pred
-
-    @staticmethod
     def get_discrete_labels(
             predicted_labels: Labels,
             ground_truth_labels: Labels
     ) -> Tuple[List[int], List[int]]:
         """
-        Return true and predicted labels as
-        0 (no match), 1 (match), and 2 (no decision).
+        Return true and predicted labels as 0 (no match), 1 (match).
         """
 
         ids = Metric.get_all_ids(predicted_labels, ground_truth_labels)
-        y_true = []
-        y_pred = []
-        for arg, kp in ids:
-            true_label = ground_truth_labels.get((arg, kp), None)
-            y_true.append(
-                2 if true_label is None else
-                1 if true_label >= 0.5 else
-                0
-            )
-            pred_label = predicted_labels.get((arg, kp), None)
-            y_pred.append(
-                2 if pred_label is None else
-                1 if pred_label >= 0.5 else
-                0
-            )
+        y_true = [
+            1 if ground_truth_labels[arg, kp] >= 0.5 else 0
+            for arg, kp in ids
+        ]
+        y_pred = [
+            1 if predicted_labels[arg, kp] >= 0.5 else 0
+            for arg, kp in ids
+        ]
         return y_true, y_pred
