@@ -47,6 +47,11 @@ matchers = (
         batch_size=32,
         epochs=10,
     ),
+    BidirectionalLstmMatcher(
+        bilstm_units=128,
+        batch_size=32,
+        epochs=100,
+    ),
     PretrainedMatcher(
         "bert-base-uncased",
         batch_size=32,
