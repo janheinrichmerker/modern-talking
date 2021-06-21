@@ -25,6 +25,7 @@ tensorflow = "*"
 tensorflow-addons = "*"
 pydot = "*"
 nlpaug = "*"
+torch = "*"
 
 [requires]
 python_version = "3.9"
