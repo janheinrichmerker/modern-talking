@@ -3,13 +3,14 @@
 from typing import Tuple, List
 
 from numpy import ndarray
-from tensorflow import data, int32
+from tensorflow import data, int32, config
 from tensorflow.keras import Input, Model
 from tensorflow.keras.activations import relu, softmax
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.losses import CategoricalCrossentropy
 from tensorflow.keras.metrics import Precision, Recall
 from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.callbacks import ModelCheckpoint
 from transformers import TFPreTrainedModel, PretrainedConfig, \
     PreTrainedTokenizerFast, AutoConfig, AutoTokenizer, TFAutoModel, \
     BatchEncoding
@@ -23,6 +24,7 @@ from modern_talking.model import Dataset as UnlabelledDataset, Labels, \
 # Workaround as we cannot import directly like this:
 # `from tensorflow.data import Dataset`
 Dataset = data.Dataset
+list_physical_devices = config.list_physical_devices
 
 
 def create_model(pretrained_model: TFPreTrainedModel) -> Model:
@@ -178,11 +180,18 @@ class PretrainedMatcher(Matcher):
         self.pretrained_model.trainable = False
 
     def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
+        # Check GPU availability.
+        print("\tGPUs available: ", len(list_physical_devices("GPU")))
+
+        # Load and prepare datasets as tensors.
+        print("\tLoad and prepare datasets for model.")
         train_dataset = _prepare_labelled_data(train_data, self.tokenizer)
         train_dataset = train_dataset.batch(self.batch_size)
         dev_dataset = _prepare_labelled_data(dev_data, self.tokenizer)
         dev_dataset = dev_dataset.batch(self.batch_size)
 
+        # Build model.
+        print("\tBuild and compile model.")
         self.model = create_model(self.pretrained_model)
         self.model.compile(
             optimizer=Adam(1e-4),
@@ -190,11 +199,23 @@ class PretrainedMatcher(Matcher):
             metrics=[Precision(), Recall()],
         )
         self.model.summary()
+
+        # Train model.
+        print("\tTrain compiled model.")
+        checkpoint = ModelCheckpoint(
+            "weights-improvement-{epoch:02d}-{val_precision:.3f}.hdf5",
+            monitor='val_precision',
+            save_best_only=True,
+            mode='max'
+        )
         self.model.fit(
             train_dataset,
             validation_data=dev_dataset,
             epochs=self.epochs,
+            callbacks=[checkpoint],
         )
+
+        # Evaluate model on dev set.
         self.model.evaluate(dev_dataset)
 
     def predict(self, test_data: UnlabelledDataset) -> Labels:

@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import List, Tuple
 
 from numpy import ndarray, array
-from tensorflow import string, data
+from tensorflow import string, data, config
 from tensorflow.keras import Model, Input
 from tensorflow.keras.layers import Bidirectional, LSTM, Dense, Subtract, \
     SpatialDropout1D, Dropout
@@ -13,6 +13,7 @@ from tensorflow.keras.metrics import Precision, Recall
 from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.activations import softmax, relu
+from tensorflow.keras.callbacks import ModelCheckpoint
 
 from modern_talking.data.glove import download_glove_embeddings
 from modern_talking.matchers import Matcher
@@ -25,6 +26,7 @@ from modern_talking.model import Dataset as UnlabelledDataset, Labels, \
 # Workaround as we cannot import directly like this:
 # `from tensorflow.data import Dataset`
 Dataset = data.Dataset
+list_physical_devices = config.list_physical_devices
 
 
 def create_bilstm_model(
@@ -162,26 +164,42 @@ class BidirectionalLstmMatcher(Matcher):
         download_glove_embeddings()
 
     def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
+        # Check GPU availability.
+        print("\tGPUs available: ", len(list_physical_devices("GPU")))
+
+        # Load and prepare datasets as tensors.
+        print("\tLoad and prepare datasets for model.")
         train_dataset, train_texts = _prepare_labelled_data(train_data)
         train_dataset = train_dataset.batch(self.batch_size)
         dev_dataset, dev_texts = _prepare_labelled_data(dev_data)
         dev_dataset = dev_dataset.batch(self.batch_size)
 
-        self.model = create_bilstm_model(
-            train_texts,
-            self.bilstm_units,
-        )
+        # Build model.
+        print("\tBuild and compile model.")
+        self.model = create_bilstm_model(train_texts, self.bilstm_units)
         self.model.compile(
             optimizer=Adam(1e-5),
             loss=CategoricalCrossentropy(),
             metrics=[Precision(), Recall()],
         )
         self.model.summary()
+
+        # Train model.
+        print("\tTrain compiled model.")
+        checkpoint = ModelCheckpoint(
+            "weights-improvement-{epoch:02d}-{val_precision:.3f}.hdf5",
+            monitor='val_precision',
+            save_best_only=True,
+            mode='max'
+        )
         self.model.fit(
             train_dataset,
             validation_data=dev_dataset,
             epochs=self.epochs,
+            callbacks=[checkpoint],
         )
+
+        # Evaluate model on dev set.
         self.model.evaluate(dev_dataset)
 
     def predict(self, test_data: UnlabelledDataset) -> Labels:

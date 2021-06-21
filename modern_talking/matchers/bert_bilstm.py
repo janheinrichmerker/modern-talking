@@ -4,7 +4,7 @@ from enum import Enum
 from typing import Tuple, List
 
 from numpy import ndarray
-from tensorflow import data, int32
+from tensorflow import data, int32, config
 from tensorflow.keras import Model, Input
 from tensorflow.keras.activations import relu, softmax
 from tensorflow.keras.callbacks import ModelCheckpoint
@@ -27,6 +27,7 @@ from modern_talking.model import Dataset as UnlabelledDataset, Labels, \
 # Workaround as we cannot import directly like this:
 # `from tensorflow.data import Dataset`
 Dataset = data.Dataset
+list_physical_devices = config.list_physical_devices
 
 
 class MergeType(Enum):
@@ -286,6 +287,9 @@ class BertBilstmMatcher(Matcher):
         self.pretrained_model.trainable = False
 
     def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
+        # Check GPU availability.
+        print("\tGPUs available: ", len(list_physical_devices("GPU")))
+
         # Load and prepare datasets as tensors.
         print("\tLoad and prepare datasets for model.")
         train_dataset = _prepare_labelled_data(train_data, self.tokenizer)
@@ -302,16 +306,6 @@ class BertBilstmMatcher(Matcher):
             self.memory_dropout,
             self.merge_memories
         )
-
-        # Setup checkpointing for model weights
-        checkpoint = ModelCheckpoint(
-            "weights-improvement-{epoch:02d}-{val_precision:.3f}.hdf5",
-            monitor='val_precision',
-            save_best_only=True,
-            mode='max'
-        )
-
-        # Compile model.
         self.model.compile(
             optimizer=Adam(1e-4),
             loss=CategoricalCrossentropy(),
@@ -321,6 +315,12 @@ class BertBilstmMatcher(Matcher):
 
         # Train model.
         print("\tTrain compiled model.")
+        checkpoint = ModelCheckpoint(
+            "weights-improvement-{epoch:02d}-{val_precision:.3f}.hdf5",
+            monitor='val_precision',
+            save_best_only=True,
+            mode='max'
+        )
         self.model.fit(
             train_dataset,
             validation_data=dev_dataset,
