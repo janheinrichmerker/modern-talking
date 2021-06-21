@@ -1,8 +1,9 @@
 # pylint: disable=no-name-in-module
 
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
+from nlpaug.augmenter.word import WordAugmenter, SynonymAug
 from numpy import ndarray, array
 from tensorflow import string, data, config
 from tensorflow.keras import Model, Input
@@ -23,7 +24,7 @@ from modern_talking.matchers import Matcher
 from modern_talking.matchers.layers import text_vectorization_layer, \
     glove_embedding_layer
 from modern_talking.model import Dataset as UnlabelledDataset, Labels, \
-    LabelledDataset, ArgumentKeyPointIdPair
+    LabelledDataset, ArgumentKeyPointIdPair, Label
 
 # Workaround as we cannot import directly like this:
 # `from tensorflow.data import Dataset`
@@ -108,9 +109,13 @@ def _prepare_unlabelled_data(
         for kp in unlabelled_data.key_points
         if arg.topic == kp.topic and arg.stance == kp.stance
     ]
-    ids = [(arg.id, kp.id) for arg, kp in pairs]
-    arg_texts = [arg.text for arg, kp in pairs]
-    kp_texts = [kp.text for arg, kp in pairs]
+    ids: List[ArgumentKeyPointIdPair] = []
+    arg_texts: List[str] = []
+    kp_texts: List[str] = []
+    for arg, kp in pairs:
+        ids.append((arg.id, kp.id))
+        arg_texts.append(arg.text)
+        kp_texts.append(kp.text)
     dataset = Dataset.from_tensor_slices((
         {
             "argument_text": array(arg_texts),
@@ -122,6 +127,7 @@ def _prepare_unlabelled_data(
 
 def _prepare_labelled_data(
         labelled_data: LabelledDataset,
+        augment: bool = False,
 ) -> Tuple[Dataset, List[str]]:
     pairs = [
         (arg, kp)
@@ -130,9 +136,23 @@ def _prepare_labelled_data(
         if (arg.topic == kp.topic and arg.stance == kp.stance
             and (arg.id, kp.id) in labelled_data.labels.keys())
     ]
-    arg_texts = [arg.text for arg, kp in pairs]
-    kp_texts = [kp.text for arg, kp in pairs]
-    labels = [labelled_data.labels[arg.id, kp.id] for arg, kp in pairs]
+    arg_texts: List[str] = []
+    kp_texts: List[str] = []
+    labels: List[Label] = []
+    augmenter: Optional[WordAugmenter] = SynonymAug("wordnet") \
+        if augment else None
+    for arg, kp in pairs:
+        current_arg_texts = [arg.text]
+        current_kp_texts = [kp.text]
+        if augmenter is not None:
+            current_arg_texts.extend(augmenter.augment(arg.text, 3))
+            current_kp_texts.extend(augmenter.augment(kp.text, 3))
+        for arg_text in current_arg_texts:
+            for kp_text in current_kp_texts:
+                arg_texts.append(arg_text)
+                kp_texts.append(kp_text)
+                labels.append(labelled_data.labels[arg.id, kp.id])
+
     dataset = Dataset.from_tensor_slices((
         {
             "argument_text": array(arg_texts),
@@ -153,6 +173,7 @@ class BidirectionalLstmMatcher(Matcher):
     batch_size: int
     epochs: int
     early_stopping: bool
+    augment: bool
 
     model: Model = None
 
@@ -166,6 +187,7 @@ class BidirectionalLstmMatcher(Matcher):
             batch_size: int = 16,
             epochs: int = 10,
             early_stopping: bool = False,
+            augment: bool = False,
     ):
         self.units = units
         self.max_length = max_length
@@ -175,6 +197,7 @@ class BidirectionalLstmMatcher(Matcher):
         self.batch_size = batch_size
         self.epochs = epochs
         self.early_stopping = early_stopping
+        self.augment = augment
 
     @property
     def name(self) -> str:
@@ -182,6 +205,8 @@ class BidirectionalLstmMatcher(Matcher):
             if self.weight_decay is not None else ""
         early_stopping_suffix = "-early-stopping" \
             if self.early_stopping else ""
+        augment_suffix = "-augment" \
+            if self.augment else ""
         return f"bilstm-{self.units}" \
                f"-glove" \
                f"-max-length-{self.max_length}" \
@@ -189,7 +214,8 @@ class BidirectionalLstmMatcher(Matcher):
                f"{weight_decay_suffix}" \
                f"-batch-{self.batch_size}" \
                f"-epochs-{self.epochs}" \
-               f"{early_stopping_suffix}"
+               f"{early_stopping_suffix}" \
+               f"{augment_suffix}"
 
     def prepare(self) -> None:
         download_glove_embeddings()

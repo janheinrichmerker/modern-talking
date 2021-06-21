@@ -24,6 +24,7 @@ keras = "*"
 tensorflow = "*"
 tensorflow-addons = "*"
 pydot = "*"
+nlpaug = "*"
 
 [requires]
 python_version = "3.9"
