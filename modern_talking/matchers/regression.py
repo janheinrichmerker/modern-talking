@@ -76,7 +76,12 @@ class SVCPartOfSpeechMatcher(Matcher):
             train_texts.append(text)
         return train_texts
 
-    def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
+    def train(
+            self,
+            train_data: LabelledDataset,
+            dev_data: LabelledDataset,
+            checkpoint_path: Path,
+    ):
 
         self.train_encoder(train_data)
 
@@ -174,7 +179,12 @@ class EnsemblePartOfSpeechMatcher(Matcher):
             train_texts.append(text)
         return train_texts
 
-    def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
+    def train(
+            self,
+            train_data: LabelledDataset,
+            dev_data: LabelledDataset,
+            checkpoint_path: Path,
+    ):
 
         self.train_encoder(train_data)
 
@@ -279,7 +289,12 @@ class RegressionPartOfSpeechMatcher(Matcher):
             train_texts.append(text)
         return train_texts
 
-    def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
+    def train(
+            self,
+            train_data: LabelledDataset,
+            dev_data: LabelledDataset,
+            checkpoint_path: Path,
+    ):
 
         self.train_encoder(train_data)
 
@@ -348,7 +363,12 @@ class EnsembleVotingMatcher(Matcher):
         with path.open("wb") as file:
             dump((self.model, self.encoder), file)
 
-    def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
+    def train(
+            self,
+            train_data: LabelledDataset,
+            dev_data: LabelledDataset,
+            checkpoint_path: Path,
+    ):
         """
         Encode training data with bag of words to get numeric features.
         Then use ensemble of two classifiers: Logistic Regression and SVM
@@ -438,7 +458,12 @@ class RegressionTfidfMatcher(Matcher):
         with path.open("wb") as file:
             dump((self.model, self.encoder), file)
 
-    def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
+    def train(
+            self,
+            train_data: LabelledDataset,
+            dev_data: LabelledDataset,
+            checkpoint_path: Path,
+    ):
         """
         Encode training data with bag of words to get numeric features.
         Then use ensemble of two classifiers: Logistic Regression and SVM
@@ -515,7 +540,12 @@ class RegressionBagOfWordsMatcher(Matcher):
         with path.open("wb") as file:
             dump((self.model, self.encoder), file)
 
-    def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
+    def train(
+            self,
+            train_data: LabelledDataset,
+            dev_data: LabelledDataset,
+            checkpoint_path: Path,
+    ):
         """
         Encode training data with bag of words to get numeric features.
         Then use ensemble of two classifiers: Logistic Regression and SVM
@@ -582,7 +612,12 @@ class SVCBagOfWordsMatcher(Matcher):
         with path.open("wb") as file:
             dump((self.model, self.encoder), file)
 
-    def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
+    def train(
+            self,
+            train_data: LabelledDataset,
+            dev_data: LabelledDataset,
+            checkpoint_path: Path,
+    ):
         """
         Encode training data with bag of words to get numeric features.
         Then use ensemble of two classifiers: Logistic Regression and SVM

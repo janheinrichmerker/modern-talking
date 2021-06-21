@@ -29,7 +29,12 @@ class Matcher(ABC):
         return
 
     @abstractmethod
-    def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
+    def train(
+            self,
+            train_data: LabelledDataset,
+            dev_data: LabelledDataset,
+            checkpoint_path: Path,
+    ):
         """
         Train the matcher given a training dataset and a development dataset
         that can be used for tuning hyper-parameters.
@@ -89,6 +94,11 @@ class UntrainedMatcher(Matcher, ABC):
         return
 
     @final
-    def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
+    def train(
+            self,
+            train_data: LabelledDataset,
+            dev_data: LabelledDataset,
+            checkpoint_path: Path,
+    ):
         # Nothing to train.
         return

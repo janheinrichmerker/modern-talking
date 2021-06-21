@@ -160,7 +160,12 @@ class BidirectionalLstmMatcher(Matcher):
     def prepare(self) -> None:
         download_glove_embeddings()
 
-    def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
+    def train(
+            self,
+            train_data: LabelledDataset,
+            dev_data: LabelledDataset,
+            checkpoint_path: Path,
+    ):
         # Check GPU availability.
         print("\tGPUs available: ", len(list_physical_devices("GPU")))
 

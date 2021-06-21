@@ -1,5 +1,5 @@
 # pylint: disable=no-name-in-module
-
+from pathlib import Path
 from typing import Tuple, List
 
 from numpy import ndarray
@@ -173,7 +173,12 @@ class PretrainedMatcher(Matcher):
             config=self.config,
         )
 
-    def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
+    def train(
+            self,
+            train_data: LabelledDataset,
+            dev_data: LabelledDataset,
+            checkpoint_path: Path,
+    ):
         # Check GPU availability.
         print("\tGPUs available: ", len(list_physical_devices("GPU")))
 

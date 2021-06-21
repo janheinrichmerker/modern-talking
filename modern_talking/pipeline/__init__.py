@@ -164,11 +164,13 @@ class Pipeline:
             if not ignore_test else dev_data
 
         # Load/train model.
-        model_path = cache_dir / f"model-{self.matcher.name}"
+        matcher_path = cache_dir / self.matcher.name
+        model_path = matcher_path / "model"
+        checkpoint_path = matcher_path / "checkpoint"
         print("Load model.")
         if not self.matcher.load_model(model_path):
             print("Train model.")
-            self.matcher.train(train_data, dev_data)
+            self.matcher.train(train_data, dev_data, checkpoint_path)
             print("Save model.")
             self.matcher.save_model(model_path)
 
