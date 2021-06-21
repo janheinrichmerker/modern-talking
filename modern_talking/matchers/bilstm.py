@@ -3,21 +3,20 @@
 from pathlib import Path
 from typing import List, Tuple
 
-from numpy import ndarray, array
+from numpy import ndarray, array, clip
 from tensorflow import string, data, config
 from tensorflow.keras import Model, Input
+from tensorflow.keras.activations import sigmoid
+from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.layers import Bidirectional, LSTM, Dense, Subtract, \
     SpatialDropout1D, Dropout
-from tensorflow.keras.losses import CategoricalCrossentropy
+from tensorflow.keras.losses import BinaryCrossentropy
 from tensorflow.keras.metrics import Precision, Recall
 from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.activations import softmax, relu
-from tensorflow.keras.callbacks import ModelCheckpoint
 
 from modern_talking.data.glove import download_glove_embeddings
 from modern_talking.matchers import Matcher
-from modern_talking.matchers.encoding import encode_labels, decode_labels
 from modern_talking.matchers.layers import text_vectorization_layer, \
     glove_embedding_layer
 from modern_talking.model import Dataset as UnlabelledDataset, Labels, \
@@ -76,10 +75,9 @@ def create_bilstm_model(
     # Apply Bidirectional LSTM on merged sequence.
     bilstm = Bidirectional(LSTM(bilstm_units))(concatenated)
     bilstm = Dropout(0.1)(bilstm)
-    bilstm = Dense(bilstm_units, activation=relu)(bilstm)
 
-    # Classify (one-hot using softmax).
-    outputs = Dense(3, activation=softmax)(bilstm)
+    # Classify argument key point match.
+    outputs = Dense(1, activation=sigmoid)(bilstm)
 
     # Define model.
     model = Model(
@@ -117,13 +115,12 @@ def _prepare_labelled_data(
         (arg, kp)
         for arg in labelled_data.arguments
         for kp in labelled_data.key_points
-        if arg.topic == kp.topic and arg.stance == kp.stance
+        if (arg.topic == kp.topic and arg.stance == kp.stance
+            and (arg.id, kp.id) in labelled_data.labels.keys())
     ]
     arg_texts = [arg.text for arg, kp in pairs]
     kp_texts = [kp.text for arg, kp in pairs]
-    labels = encode_labels(
-        labelled_data.labels.get((arg.id, kp.id)) for arg, kp in pairs
-    )
+    labels = [labelled_data.labels[arg.id, kp.id] for arg, kp in pairs]
     dataset = Dataset.from_tensor_slices((
         {
             "argument_text": array(arg_texts),
@@ -179,7 +176,7 @@ class BidirectionalLstmMatcher(Matcher):
         self.model = create_bilstm_model(train_texts, self.bilstm_units)
         self.model.compile(
             optimizer=Adam(1e-5),
-            loss=CategoricalCrossentropy(),
+            loss=BinaryCrossentropy(),
             metrics=[Precision(), Recall()],
         )
         self.model.summary()
@@ -207,11 +204,10 @@ class BidirectionalLstmMatcher(Matcher):
         dataset, ids = _prepare_unlabelled_data(test_data)
         dataset = dataset.batch(self.batch_size)
         predictions: ndarray = self.model.predict(dataset)
-        labels = decode_labels(predictions)
+        predictions = clip(predictions, 0, 1)
         return {
             arg_kp_id: label
-            for arg_kp_id, label in zip(ids, labels)
-            if label is not None
+            for arg_kp_id, label in zip(ids, predictions)
         }
 
     def load_model(self, path: Path) -> bool:

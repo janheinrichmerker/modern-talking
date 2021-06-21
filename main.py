@@ -54,13 +54,13 @@ matchers = (
         batch_size=32,
         epochs=10,
     ),
-    PretrainedMatcher(
-        "bert-base-uncased",
+    BidirectionalLstmMatcher(
+        bilstm_units=128,
         batch_size=32,
-        epochs=5,
+        epochs=100,
     ),
     PretrainedMatcher(
-        "distilbert-base-uncased",
+        "bert-base-uncased",
         batch_size=32,
         epochs=5,
     ),
@@ -101,8 +101,7 @@ metrics = (
     MacroRecall(),
     F1Score(),
     MacroF1Score(),
-    Track1Metric(relaxed=True),
-    Track1Metric(relaxed=False),
+    Track1Metric(),
     ManualErrors(),
 )
 
@@ -142,7 +141,7 @@ def train_eval() -> None:
     pipeline = Pipeline(matcher, metric)
     result = pipeline.train_evaluate(ignore_test=True)
 
-    print(f"Final score for metric {metric.name} on test dataset: {result}")
+    print(f"Final score for metric {metric.name} on test dataset: {result:.4f}")
 
 
 def list_matchers() -> None:

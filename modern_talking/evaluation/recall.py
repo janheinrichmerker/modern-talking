@@ -1,6 +1,6 @@
 from sklearn.metrics import recall_score
 
-from modern_talking.evaluation import Metric
+from modern_talking.evaluation import Metric, EvaluationMode
 from modern_talking.model import Labels
 
 
@@ -10,11 +10,13 @@ class Recall(Metric):
     def evaluate(
             self,
             predicted_labels: Labels,
-            ground_truth_labels: Labels
+            ground_truth_labels: Labels,
+            mode: EvaluationMode,
     ) -> float:
-        y_true, y_pred = Metric.get_binary_labels(
+        y_true, y_pred = Metric.get_discrete_labels(
             predicted_labels,
-            ground_truth_labels
+            ground_truth_labels,
+            mode,
         )
         return recall_score(
             y_true, y_pred,
@@ -29,11 +31,13 @@ class MacroRecall(Metric):
     def evaluate(
             self,
             predicted_labels: Labels,
-            ground_truth_labels: Labels
+            ground_truth_labels: Labels,
+            mode: EvaluationMode,
     ) -> float:
         y_true, y_pred = Metric.get_discrete_labels(
             predicted_labels,
-            ground_truth_labels
+            ground_truth_labels,
+            mode,
         )
         return recall_score(
             y_true, y_pred,

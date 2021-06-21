@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import final, Optional, Dict
+from typing import final
 
-from modern_talking.model import Labels, Dataset, \
-    LabelledDataset, Label, ArgumentKeyPointIdPair
+from modern_talking.model import Labels, Dataset, LabelledDataset
 
 
 class Matcher(ABC):
@@ -72,16 +71,6 @@ class Matcher(ABC):
         """
         pass
 
-    @staticmethod
-    def filter_none(
-            optional_labels: Dict[ArgumentKeyPointIdPair, Optional[Label]]
-    ) -> Labels:
-        return {
-            arg_kp: label
-            for arg_kp, label in optional_labels.items()
-            if label is not None
-        }
-
 
 class UntrainedMatcher(Matcher, ABC):
     """
@@ -90,6 +79,16 @@ class UntrainedMatcher(Matcher, ABC):
     """
 
     @final
+    def load_model(self, path: Path) -> bool:
+        # Nothing to load.
+        return True
+
+    @final
+    def save_model(self, path: Path):
+        # Nothing to save.
+        return
+
+    @final
     def train(self, train_data: LabelledDataset, dev_data: LabelledDataset):
-        # Skip training.
+        # Nothing to train.
         return
