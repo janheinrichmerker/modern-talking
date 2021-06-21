@@ -18,6 +18,7 @@ from modern_talking.matchers.regression import EnsembleVotingMatcher, \
     RegressionTfidfMatcher, RegressionBagOfWordsMatcher, \
     EnsemblePartOfSpeechMatcher, RegressionPartOfSpeechMatcher, \
     SVCPartOfSpeechMatcher, SVCBagOfWordsMatcher
+from modern_talking.matchers.combiner import Combiner
 from modern_talking.matchers.term_overlap import TermOverlapMatcher
 from modern_talking.pipeline import Pipeline
 
@@ -83,6 +84,7 @@ matchers = (
         batch_size=32,
         epochs=5,
     ),
+    Combiner(),
 )
 
 metrics = (
