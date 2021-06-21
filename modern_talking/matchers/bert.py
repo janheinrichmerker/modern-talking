@@ -10,10 +10,10 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.losses import BinaryCrossentropy
 from tensorflow.keras.metrics import Precision, Recall
+from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam
-from transformers import TFPreTrainedModel, PretrainedConfig, \
-    PreTrainedTokenizerFast, AutoConfig, AutoTokenizer, TFAutoModel, \
-    BatchEncoding
+from transformers import PreTrainedTokenizerFast, BatchEncoding, BertConfig, \
+    BertTokenizerFast, TFBertModel
 from transformers.modeling_tf_outputs import TFBaseModelOutputWithPooling
 
 from modern_talking.matchers import Matcher
@@ -26,7 +26,7 @@ Dataset = data.Dataset
 list_physical_devices = config.list_physical_devices
 
 
-def create_model(pretrained_model: TFPreTrainedModel) -> Model:
+def create_model(bert_model: TFBertModel) -> Model:
     input_ids = Input(
         name="input_ids",
         shape=(512,),
@@ -44,7 +44,7 @@ def create_model(pretrained_model: TFPreTrainedModel) -> Model:
     )
 
     # Encode with pretrained transformer model.
-    encoding: TFBaseModelOutputWithPooling = pretrained_model(
+    encoding: TFBaseModelOutputWithPooling = bert_model.bert(
         input_ids,
         attention_mask=attention_mask,
         # token_type_ids=token_type_ids,
@@ -133,43 +133,43 @@ class PretrainedMatcher(Matcher):
     or GPT-3.
     """
 
-    pretrained_model_name: str
+    bert_model_name: str
     batch_size: int
     epochs: int
 
-    config: PretrainedConfig
-    tokenizer: PreTrainedTokenizerFast
-    pretrained_model: TFPreTrainedModel
+    config: BertConfig
+    tokenizer: BertTokenizerFast
+    bert_model: TFBertModel
 
-    model: Model
+    model: Model = None
 
     def __init__(
             self,
             pretrained_model_name: str,
             batch_size: int = 64,
-            epochs: int = 1,
+            epochs: int = 3,
     ):
-        self.pretrained_model_name = pretrained_model_name
+        self.bert_model_name = pretrained_model_name
         self.batch_size = batch_size
         self.epochs = epochs
 
     @property
     def name(self) -> str:
-        return f"pretrained-{self.pretrained_model_name}" \
+        return f"{self.bert_model_name}" \
                f"-batch-{self.batch_size}" \
                f"-epochs-{self.epochs}"
 
     def prepare(self) -> None:
-        self.config = AutoConfig.from_pretrained(self.pretrained_model_name)
+        self.config = BertConfig.from_pretrained(self.bert_model_name)
 
-        self.tokenizer = AutoTokenizer.from_pretrained(
-            self.pretrained_model_name,
+        self.tokenizer = BertTokenizerFast.from_pretrained(
+            self.bert_model_name,
             config=self.config,
             do_lower_case=True,
         )
 
-        self.pretrained_model = TFAutoModel.from_pretrained(
-            self.pretrained_model_name,
+        self.bert_model = TFBertModel.from_pretrained(
+            self.bert_model_name,
             config=self.config,
         )
 
@@ -191,7 +191,7 @@ class PretrainedMatcher(Matcher):
 
         # Build model.
         print("\tBuild and compile model.")
-        self.model = create_model(self.pretrained_model)
+        self.model = create_model(self.bert_model)
         self.model.compile(
             optimizer=Adam(1e-4),
             loss=BinaryCrossentropy(),
@@ -201,8 +201,10 @@ class PretrainedMatcher(Matcher):
 
         # Train model.
         print("\tTrain compiled model.")
+        checkpoint_name = "weights-improvement" \
+                          "-{epoch:02d}-{val_precision:.3f}.tf"
         checkpoint = ModelCheckpoint(
-            "weights-improvement-{epoch:02d}-{val_precision:.3f}.hdf5",
+            checkpoint_path / checkpoint_name,
             monitor='val_precision',
             save_best_only=True,
             save_weights_only=True,
@@ -226,3 +228,20 @@ class PretrainedMatcher(Matcher):
             arg_kp_id: float(label)
             for arg_kp_id, label in zip(ids, predictions)
         }
+
+    def load_model(self, path: Path) -> bool:
+        model_path = path / "model.tf"
+        if self.model is not None:
+            return True
+        elif not model_path.exists() or not model_path.is_dir():
+            return False
+        else:
+            self.model = load_model(model_path)
+            return True
+
+    def save_model(self, path: Path):
+        self.model.save(
+            path / "model.tf",
+            save_format="tf",
+            overwrite=True,
+        )
