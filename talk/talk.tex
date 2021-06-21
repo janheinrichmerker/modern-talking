@@ -82,6 +82,38 @@
 \end{frame}
 
 \begin{frame}
+  \frametitle{What did not work ? cont. }
+  \framesubtitle{Feature Extraction and Machine Learning methods}
+    
+    	\begin{itemize}
+      \item high-dimensional data 
+      	\begin{itemize}
+      		\item Regression: not robust for high-dimensional data
+      		\item SVC: better results then regression
+      	\end{itemize}
+	\end{itemize}
+	
+    \begin{itemize}
+      \item problematic with semantic meaning
+      \item prediction based on the existence of words
+	\end{itemize}
+   
+    \begin{example}
+      \textbf{Argument:} \textit{School uniforms violate the right to freedom of expression.}\\
+      \textbf{Key Point:} \textit{School uniforms are often uncomfortable/sexist}\\
+      \textbf{Prediction:} Matching
+    \end{example}
+    
+     \begin{example}
+      \textbf{Argument:} \textit{it is not fair to not allow children to express their personality through dress as long as it is appropriate.}\\
+      \textbf{Key Point:} \textit{School uniform is harming the student's self expression.}\\
+      \textbf{Prediction:} No Matching
+    \end{example}
+
+	
+\end{frame}
+
+\begin{frame}
   \frametitle{What did work ?}
   \framesubtitle{Term Overlap}
     
