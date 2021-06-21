@@ -11,7 +11,8 @@ from modern_talking.evaluation.map import Track1Metric
 from modern_talking.matchers import Matcher
 from modern_talking.matchers.baselines import AllMatcher, RandomMatcher, \
     NoneMatcher
-from modern_talking.matchers.distillbert_bilstm import DistilBertBilstmMatcher, MergeType
+from modern_talking.matchers.distillbert_bilstm import MergeType, \
+    DistilBertBilstmMatcher
 from modern_talking.matchers.bert import PretrainedMatcher
 from modern_talking.matchers.bilstm import BidirectionalLstmMatcher
 from modern_talking.matchers.regression import EnsembleVotingMatcher, \
@@ -38,7 +39,7 @@ matchers = (
     TermOverlapMatcher(
         stemming=True,
         stop_words=True,
-        custom_stop_words = True,
+        custom_stop_words=True,
         synonyms=True,
         antonyms=True
     ),
@@ -105,7 +106,7 @@ matchers = (
         TermOverlapMatcher(
             stemming=True,
             stop_words=True,
-            custom_stop_words = True,
+            custom_stop_words=True,
             synonyms=True,
             antonyms=True
         ),
@@ -173,7 +174,8 @@ def train_eval() -> None:
     pipeline = Pipeline(matcher, metric)
     result = pipeline.train_evaluate(ignore_test=True)
 
-    print(f"Final score for metric {metric.name} on test dataset: {result:.4f}")
+    print(
+        f"Final score for metric {metric.name} on test dataset: {result:.4f}")
 
 
 def list_matchers() -> None:
