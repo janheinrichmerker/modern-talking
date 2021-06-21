@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import final, Optional, Dict
+from typing import final
 
-from modern_talking.model import Labels, Dataset, \
-    LabelledDataset, Label, ArgumentKeyPointIdPair
+from modern_talking.model import Labels, Dataset, LabelledDataset
 
 
 class Matcher(ABC):
