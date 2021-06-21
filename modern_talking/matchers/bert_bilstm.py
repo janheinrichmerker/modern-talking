@@ -3,6 +3,8 @@
 from enum import Enum
 from typing import Tuple, List
 
+from numpy import ndarray
+from tensorflow import data, int32
 from tensorflow.keras import Model, Input
 from tensorflow.keras.activations import relu, softmax
 from tensorflow.keras.callbacks import ModelCheckpoint
@@ -12,8 +14,6 @@ from tensorflow.keras.layers import Dense, Dropout, Concatenate, Layer, \
 from tensorflow.keras.losses import CategoricalCrossentropy
 from tensorflow.keras.metrics import Precision, Recall
 from tensorflow.keras.optimizers import Adam
-from numpy import ndarray
-from tensorflow import data, int32
 from transformers import TFPreTrainedModel, PretrainedConfig, \
     PreTrainedTokenizerFast, AutoConfig, AutoTokenizer, TFAutoModel, \
     BatchEncoding
@@ -150,8 +150,8 @@ def _prepare_encodings(
     encodings: BatchEncoding = tokenizer(
         texts,
         max_length=512,
-        padding=True,
-        truncation=True,
+        padding="max_length",
+        truncation="max_length",
         return_tensors="tf",
         return_attention_mask=True,
         return_token_type_ids=True,

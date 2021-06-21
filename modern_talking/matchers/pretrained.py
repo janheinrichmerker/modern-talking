@@ -75,8 +75,8 @@ def _prepare_encodings(
     encodings: BatchEncoding = tokenizer(
         [arg.text for arg, kp in arg_kp_pairs],
         [kp.text for arg, kp in arg_kp_pairs],
-        padding=True,
-        truncation=True,
+        padding="max_length",
+        truncation="max_length",
         return_tensors="tf",
         return_attention_mask=True,
         return_token_type_ids=True,
