@@ -77,6 +77,7 @@ args: Namespace = parser.parse_args()
 
 matcher = BidirectionalLstmMatcher(
     units=args.units,
+    layers=args.layers,
     max_length=args.max_length,
     dropout=args.dropout,
     learning_rate=args.learning_rate,
@@ -89,6 +90,7 @@ matcher = BidirectionalLstmMatcher(
 )
 print("Training & evaluating BiLSTM model with GloVe embeddings:")
 print(f"BiLSTM units: {matcher.units}")
+print(f"BiLSTM layers: {matcher.layers}")
 print(f"Maximum sequence length: {matcher.max_length}")
 print(f"Dropout: {matcher.dropout}")
 print(f"Learning rate: {matcher.learning_rate}")
