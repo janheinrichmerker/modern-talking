@@ -308,7 +308,9 @@ class DistilBertBilstmMatcher(Matcher):
         print("\tLoad and prepare datasets for model.")
         train_dataset = _prepare_labelled_data(train_data, self.tokenizer)
         train_dataset = train_dataset.batch(self.batch_size)
+        train_dataset = train_dataset.shuffle(1000)
         dev_dataset = _prepare_labelled_data(dev_data, self.tokenizer)
+        dev_dataset = dev_dataset.shuffle(1000)
         dev_dataset = dev_dataset.batch(self.batch_size)
 
         # Build model.

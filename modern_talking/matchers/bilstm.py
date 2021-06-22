@@ -248,10 +248,17 @@ class BidirectionalLstmMatcher(Matcher):
 
         # Load and prepare datasets as tensors.
         print("\tLoad and prepare datasets for model.")
-        train_dataset, train_texts = _prepare_labelled_data(train_data,
-                                                            self.augment)
+        train_dataset, train_texts = _prepare_labelled_data(
+            train_data,
+            self.augment,
+        )
+        train_dataset = train_dataset.shuffle(1000)
         train_dataset = train_dataset.batch(self.batch_size)
-        dev_dataset, dev_texts = _prepare_labelled_data(dev_data, self.augment)
+        dev_dataset, dev_texts = _prepare_labelled_data(
+            dev_data,
+            self.augment,
+        )
+        dev_dataset = dev_dataset.shuffle(1000)
         dev_dataset = dev_dataset.batch(self.batch_size)
 
         # Build model.
