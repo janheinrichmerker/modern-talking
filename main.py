@@ -13,7 +13,7 @@ from modern_talking.matchers.baselines import AllMatcher, RandomMatcher, \
     NoneMatcher
 from modern_talking.matchers.distillbert_bilstm import MergeType, \
     DistilBertBilstmMatcher
-from modern_talking.matchers.bert import PretrainedMatcher
+from modern_talking.matchers.bert import BertMatcher
 from modern_talking.matchers.bilstm import BidirectionalLstmMatcher
 from modern_talking.matchers.regression import EnsembleVotingMatcher, \
     RegressionTfidfMatcher, RegressionBagOfWordsMatcher, \
@@ -93,12 +93,12 @@ matchers = (
         batch_size=2,
         epochs=1,
     ),
-    PretrainedMatcher(
+    BertMatcher(
         "bert-base-uncased",
         batch_size=32,
         epochs=5,
     ),
-    PretrainedMatcher(
+    BertMatcher(
         "bert-base-uncased",
         batch_size=32,
         epochs=1,

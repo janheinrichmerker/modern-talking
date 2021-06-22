@@ -122,7 +122,7 @@ def _prepare_labelled_data(
     return dataset
 
 
-class PretrainedMatcher(Matcher):
+class BertMatcher(Matcher):
     """
     Label argument key point matches by predicting co-occurrence
     of the argument with the key point (like next sentence prediction).
