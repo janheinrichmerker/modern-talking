@@ -250,7 +250,7 @@ class BidirectionalLstmMatcher(Matcher):
         print("\tLoad and prepare datasets for model.")
         train_dataset, train_texts = _prepare_labelled_data(train_data,
                                                             self.augment)
-        train_dataset = train_dataset.batch(self.batch_size).shuffle(1000)
+        train_dataset = train_dataset.batch(self.batch_size)
         dev_dataset, dev_texts = _prepare_labelled_data(dev_data, self.augment)
         dev_dataset = dev_dataset.batch(self.batch_size)
 
