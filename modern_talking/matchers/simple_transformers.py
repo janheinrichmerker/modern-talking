@@ -3,10 +3,12 @@ from typing import List
 
 from pandas import DataFrame
 from simpletransformers.classification import ClassificationModel
+from simpletransformers.config.model_args import ClassificationArgs
 from torch.cuda import is_available as is_cuda_available
 
 from modern_talking.matchers import Matcher
-from modern_talking.model import Dataset, Labels, LabelledDataset
+from modern_talking.model import Dataset, Labels, LabelledDataset, \
+    ArgumentKeyPointPair
 
 
 class SimpleTransformer(Matcher):
@@ -23,48 +25,22 @@ class SimpleTransformer(Matcher):
         return f"simple-{self.model_type}-{self.model_name}"
 
     def prepare(self) -> None:
+        base_dir = (Path(__file__).parent.parent.parent
+                     / "data" / "cache" / self.name)
+
+        args = ClassificationArgs()
+        args.cache_dir = str((base_dir / "cache").absolute())
+        args.output_dir = str((base_dir / "out").absolute())
+        args.overwrite_output_dir = True
+        args.tensorboard_dir = str((base_dir / "runs").absolute())
+        args.best_model_dir = str((base_dir / "best_model").absolute())
+
         self.model = ClassificationModel(
-            self.model_type,
-            self.model_name,
+            model_type=self.model_type,
+            model_name=self.model_name,
+            args=args,
             use_cuda=is_cuda_available(),
         )
-
-    @staticmethod
-    def _prepare_labelled_data(data: LabelledDataset) -> DataFrame:
-        pairs = [
-            (arg, kp)
-            for arg in data.arguments
-            for kp in data.key_points
-            if arg.topic == kp.topic and arg.stance == kp.stance
-        ]
-        return DataFrame(
-            data=[
-                [
-                    arg.text,
-                    kp.text,
-                    (
-                        data.labels[arg.id, kp.id]
-                        if (arg.id, kp.id) in data.labels
-                        else 0  # strict
-                    )
-                ]
-                for arg, kp in pairs
-            ],
-            columns=["text_a", "text_b", "labels"]
-        )
-
-    @staticmethod
-    def _prepare_unlabelled_data(data: Dataset) -> List[List[str]]:
-        pairs = [
-            (arg, kp)
-            for arg in data.arguments
-            for kp in data.key_points
-            if arg.topic == kp.topic and arg.stance == kp.stance
-        ]
-        return [
-            [arg.text, kp.text]
-            for arg, kp in pairs
-        ]
 
     def train(
             self,
@@ -73,8 +49,8 @@ class SimpleTransformer(Matcher):
             checkpoint_path: Path,
     ):
         # Load data.
-        train_df = self._prepare_labelled_data(train_data)
-        dev_df = self._prepare_labelled_data(dev_data)
+        train_df = _text_pair_df(train_data)
+        dev_df = _text_pair_df(dev_data)
 
         # Train model.
         self.model.train_model(train_df)
@@ -84,13 +60,44 @@ class SimpleTransformer(Matcher):
 
     def predict(self, data: Dataset) -> Labels:
         # Load data.
-        inputs = self._prepare_unlabelled_data(data)
+        pairs = _arg_kp_pairs(data)
+        inputs = [[arg.text, kp.text] for arg, kp in pairs]
 
         # Predict labels.
         predictions, _ = self.model.predict(inputs)
 
         # Return predictions.
         return {
-            (arg.id, kp.id): label
-            for [arg, kp], label in zip(inputs, predictions)
+            (arg.id, kp.id): float(label)
+            for (arg, kp), label in zip(pairs, predictions)
         }
+
+
+def _text_pair_df(data: LabelledDataset) -> DataFrame:
+    pairs = _arg_kp_pairs(data)
+    return DataFrame(
+        data=[
+            [
+                arg.text,
+                kp.text,
+                (
+                    data.labels[arg.id, kp.id]
+                    if (arg.id, kp.id) in data.labels
+                    else 0  # strict
+                )
+            ]
+            for arg, kp in pairs
+        ],
+        columns=["text_a", "text_b", "labels"]
+    )
+
+
+def _arg_kp_pairs(data: Dataset) -> List[ArgumentKeyPointPair]:
+    pairs = [
+        (arg, kp)
+        for arg in data.arguments
+        for kp in data.key_points
+        if arg.topic == kp.topic and arg.stance == kp.stance
+    ]
+    pairs = pairs[:10]
+    return pairs
