@@ -202,6 +202,8 @@ class BidirectionalLstmMatcher(Matcher):
 
     @property
     def name(self) -> str:
+        dropout_suffix = f"-dropout-{self.dropout}" \
+            if self.dropout > 0 else ""
         weight_decay_suffix = f"-weight-decay-{self.weight_decay}" \
             if self.weight_decay > 0 else ""
         early_stopping_suffix = "-early-stopping" \
@@ -211,6 +213,7 @@ class BidirectionalLstmMatcher(Matcher):
         return f"bilstm-{self.units}" \
                f"-glove" \
                f"-max-length-{self.max_length}" \
+               f"{dropout_suffix}" \
                f"-learn-{self.learning_rate}" \
                f"{weight_decay_suffix}" \
                f"-batch-{self.batch_size}" \
