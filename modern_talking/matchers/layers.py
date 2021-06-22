@@ -27,7 +27,6 @@ def text_vectorization_layer(
     layer = TextVectorization(
         max_tokens,
         output_sequence_length=output_sequence_length,
-        trainable=False,
     )
     text_dataset = Dataset.from_tensor_slices(texts)
     layer.adapt(text_dataset)
@@ -49,6 +48,5 @@ def glove_embedding_layer(
         len(vocabulary) + 2,
         dimension,
         embeddings_initializer=Constant(initial_matrix),
-        trainable=False,
     )
     return layer
