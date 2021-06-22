@@ -5,9 +5,6 @@ from modern_talking.evaluation.map import MeanAveragePrecision
 from modern_talking.matchers.bilstm import BidirectionalLstmMatcher
 from modern_talking.pipeline import Pipeline
 
-if __name__ != "__main__":
-    exit(1)
-
 parser: ArgumentParser = ArgumentParser()
 parser.add_argument(
     "--units",
@@ -61,7 +58,7 @@ parser.add_argument(
     "--augment",
     dest="augment",
     type=int,
-    default=10,
+    default=0,
 )
 args: Namespace = parser.parse_args()
 
