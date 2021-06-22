@@ -14,7 +14,7 @@ parser.add_argument(
     help="Number of units in each BiLSTM module."
 )
 parser.add_argument(
-    "--layers",
+    "--layers", "--depth",
     dest="layers",
     type=int,
     default=1,

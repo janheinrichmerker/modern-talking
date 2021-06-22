@@ -17,7 +17,6 @@ from tensorflow.keras.metrics import BinaryAccuracy, AUC, \
     MeanSquaredError
 from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam, Optimizer
-from tensorflow.keras import Sequential
 from tensorflow_addons.optimizers import AdamW
 
 from modern_talking.data.glove import download_glove_embeddings
@@ -68,35 +67,32 @@ def create_bilstm_model(
     key_point_embedding = embed(key_point_text_vector)
 
     # Apply Bidirectional LSTMs separately.
-    argument_text_bilstm = Sequential([
-        Bidirectional(LSTM(
+    argument_text_bilstm = argument_text_embedding
+    for _ in range(layers):
+        argument_text_bilstm = Bidirectional(LSTM(
             units,
             dropout=dropout,
             return_sequences=True,
-        ))
-        for _ in range(layers)
-    ])(argument_text_embedding)
-    key_point_bilstm = Sequential([
-        Bidirectional(LSTM(
+        ))(argument_text_embedding)
+    key_point_bilstm = key_point_embedding
+    for _ in range(layers):
+        key_point_bilstm = Bidirectional(LSTM(
             units,
             dropout=dropout,
             return_sequences=True,
-        ))
-        for _ in range(layers)
-    ])(key_point_embedding)
+        ))(key_point_embedding)
 
     # Merge vectors by concatenating.
     concatenated = Subtract()([argument_text_bilstm, key_point_bilstm])
 
     # Apply Bidirectional LSTM on merged sequence.
-    bilstm = Sequential([
-        Bidirectional(LSTM(
+    bilstm = concatenated
+    for _ in range(layers):
+        bilstm = Bidirectional(LSTM(
             units,
             dropout=dropout,
             return_sequences=True,
-        ))
-        for _ in range(layers)
-    ])(concatenated)
+        ))(bilstm)
     sequence_max = GlobalMaxPooling1D()(bilstm)
     sequence_avg = GlobalAveragePooling1D()(bilstm)
     pooled = Concatenate()([sequence_max, sequence_avg])
