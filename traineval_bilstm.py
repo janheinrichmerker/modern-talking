@@ -38,6 +38,12 @@ parser.add_argument(
     default=1e-4,
 )
 parser.add_argument(
+    "--shuffle",
+    dest="shuffle",
+    type=int,
+    default=1000,
+)
+parser.add_argument(
     "--batch-size", "--batch",
     dest="batch_size",
     type=int,
@@ -68,6 +74,7 @@ matcher = BidirectionalLstmMatcher(
     dropout=args.dropout,
     learning_rate=args.learning_rate,
     weight_decay=args.weight_decay,
+    shuffle=args.shuffle,
     batch_size=args.batch_size,
     epochs=args.epochs,
     early_stopping=args.early_stopping,
@@ -79,6 +86,7 @@ print(f"Maximum sequence length: {matcher.max_length}")
 print(f"Dropout: {matcher.dropout}")
 print(f"Learning rate: {matcher.learning_rate}")
 print(f"Weight decay: {matcher.weight_decay}")
+print(f"Shuffle size: {matcher.shuffle}")
 print(f"Batch size: {matcher.batch_size}")
 print(f"Epochs: {matcher.epochs}")
 print(f"Stop early: {'yes' if matcher.early_stopping else 'no'}")

@@ -172,6 +172,7 @@ class BidirectionalLstmMatcher(Matcher):
     dropout: float
     learning_rate: float
     weight_decay: float
+    shuffle: int
     batch_size: int
     epochs: int
     early_stopping: bool
@@ -186,6 +187,7 @@ class BidirectionalLstmMatcher(Matcher):
             dropout: float = 0,
             learning_rate: float = 1e-5,
             weight_decay: float = 0,
+            shuffle: int = 1000,
             batch_size: int = 16,
             epochs: int = 10,
             early_stopping: bool = False,
@@ -196,6 +198,7 @@ class BidirectionalLstmMatcher(Matcher):
         self.dropout = dropout
         self.learning_rate = learning_rate
         self.weight_decay = weight_decay
+        self.shuffle = shuffle
         self.batch_size = batch_size
         self.epochs = epochs
         self.early_stopping = early_stopping
@@ -207,6 +210,8 @@ class BidirectionalLstmMatcher(Matcher):
             if self.dropout > 0 else ""
         weight_decay_suffix = f"-weight-decay-{self.weight_decay}" \
             if self.weight_decay > 0 else ""
+        shuffle_suffix = f"-shuffle-{self.shuffle}" \
+            if self.shuffle > 0 else ""
         early_stopping_suffix = "-early-stopping" \
             if self.early_stopping else ""
         augment_suffix = f"-augment-{self.augment}" \
@@ -217,6 +222,7 @@ class BidirectionalLstmMatcher(Matcher):
                f"{dropout_suffix}" \
                f"-learn-{self.learning_rate}" \
                f"{weight_decay_suffix}" \
+               f"{shuffle_suffix}" \
                f"-batch-{self.batch_size}" \
                f"-epochs-{self.epochs}" \
                f"{early_stopping_suffix}" \
@@ -252,13 +258,12 @@ class BidirectionalLstmMatcher(Matcher):
             train_data,
             self.augment,
         )
-        train_dataset = train_dataset.shuffle(1000)
+        train_dataset = train_dataset.shuffle(self.shuffle)
         train_dataset = train_dataset.batch(self.batch_size)
         dev_dataset, dev_texts = _prepare_labelled_data(
             dev_data,
             self.augment,
         )
-        dev_dataset = dev_dataset.shuffle(1000)
         dev_dataset = dev_dataset.batch(self.batch_size)
 
         # Build model.

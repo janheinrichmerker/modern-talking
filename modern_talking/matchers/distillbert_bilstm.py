@@ -237,6 +237,7 @@ class DistilBertBilstmMatcher(Matcher):
     bilstm_units: int
     bilstm_dropout: float
     merge_memories: MergeType
+    shuffle: int
     batch_size: int
     epochs: int
 
@@ -253,6 +254,7 @@ class DistilBertBilstmMatcher(Matcher):
             bilstm_units: int,
             bilstm_dropout: float,
             merge_memories: MergeType,
+            shuffle: int = 1000,
             batch_size: int = 64,
             epochs: int = 3,
     ):
@@ -261,6 +263,7 @@ class DistilBertBilstmMatcher(Matcher):
         self.bilstm_units = bilstm_units
         self.bilstm_dropout = bilstm_dropout
         self.merge_memories = merge_memories
+        self.shuffle = shuffle
         self.batch_size = batch_size
         self.epochs = epochs
 
@@ -271,6 +274,7 @@ class DistilBertBilstmMatcher(Matcher):
                f"-bilstm-{self.bilstm_units}" \
                f"-dropout-{self.bilstm_dropout}" \
                f"-{self.merge_memories.name}" \
+               f"-shuffle-{self.shuffle}" \
                f"-batch-{self.batch_size}" \
                f"-epochs-{self.epochs}"
 
@@ -308,9 +312,8 @@ class DistilBertBilstmMatcher(Matcher):
         print("\tLoad and prepare datasets for model.")
         train_dataset = _prepare_labelled_data(train_data, self.tokenizer)
         train_dataset = train_dataset.batch(self.batch_size)
-        train_dataset = train_dataset.shuffle(1000)
+        train_dataset = train_dataset.shuffle(self.shuffle)
         dev_dataset = _prepare_labelled_data(dev_data, self.tokenizer)
-        dev_dataset = dev_dataset.shuffle(1000)
         dev_dataset = dev_dataset.batch(self.batch_size)
 
         # Build model.

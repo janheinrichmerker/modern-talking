@@ -138,6 +138,7 @@ class BertMatcher(Matcher):
     """
 
     bert_model_name: str
+    shuffle: int
     batch_size: int
     epochs: int
 
@@ -150,16 +151,19 @@ class BertMatcher(Matcher):
     def __init__(
             self,
             pretrained_model_name: str,
+            shuffle: int = 1000,
             batch_size: int = 64,
             epochs: int = 3,
     ):
         self.bert_model_name = pretrained_model_name
+        self.shuffle = shuffle
         self.batch_size = batch_size
         self.epochs = epochs
 
     @property
     def name(self) -> str:
         return f"{self.bert_model_name}" \
+               f"-shuffle-{self.shuffle}" \
                f"-batch-{self.batch_size}" \
                f"-epochs-{self.epochs}"
 
@@ -192,9 +196,8 @@ class BertMatcher(Matcher):
         print("\tLoad and prepare datasets for model.")
         train_dataset = _prepare_labelled_data(train_data, self.tokenizer)
         train_dataset = train_dataset.batch(self.batch_size)
-        train_dataset = train_dataset.shuffle(1000)
+        train_dataset = train_dataset.shuffle(self.shuffle)
         dev_dataset = _prepare_labelled_data(dev_data, self.tokenizer)
-        dev_dataset = dev_dataset.shuffle(1000)
         dev_dataset = dev_dataset.batch(self.batch_size)
 
         # Build model.
