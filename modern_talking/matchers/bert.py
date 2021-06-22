@@ -120,6 +120,8 @@ def _prepare_labelled_data(
         dict(encodings),
         labels,
     ))
+    dataset = dataset.shuffle(10000)
+    dataset = dataset.repeat()
     return dataset
 
 
@@ -200,6 +202,7 @@ class BertMatcher(Matcher):
             optimizer=Adam(1e-4),
             loss=BinaryCrossentropy(),
             metrics=[Precision(), Recall()],
+            steps_per_execution=50
         )
         self.model.summary()
 
@@ -214,10 +217,14 @@ class BertMatcher(Matcher):
             save_weights_only=True,
             mode='max'
         )
+        steps_per_epoch = 60000
+        validation_steps = 10000
         self.model.fit(
             train_dataset,
-            validation_data=dev_dataset,
             epochs=self.epochs,
+            steps_per_epoch=steps_per_epoch,
+            validation_data=dev_dataset,
+            validation_steps=validation_steps,
             callbacks=[checkpoint],
         )
 
