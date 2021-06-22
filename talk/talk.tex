@@ -71,6 +71,7 @@
 
 \begin{frame}
   \frametitle{What did not work ?}
+  \framesubtitle{Regression, SVC, Ensemble}
     \begin{itemize}
       \item All approaches performed mediocre
       \item Machine Learning methods: Regression, SVC, Ensemble(Regression, SVC)
@@ -126,22 +127,61 @@
   \framesubtitle{Term Overlap}
     
     \begin{itemize}
-      \item Without preprocessing already high relaxed mAP
-      \item Using stemming, stop words etc. increased both scores by up to 12 pp 
+      \item Term Overlap in different variations
+      \begin{itemize}
+        \item Without preprocessing already high relaxed mAP
+        \item Using stemming, stop words etc. increased both scores by up to 12 pp 
+      \end{itemize} 
+      \item BiLSTM with GloVe embeddings
+      \item Pretrained BERT model
     \end{itemize}
 
 \end{frame}
 
 \begin{frame}
-  \frametitle{Baseline}
-  \framesubtitle{Term Overlap - Why is that the case ?}
+  \frametitle{Term Overlap}
+  \framesubtitle{Used technologies + Preprocessing}
+    \begin{itemize}
+      \item NLTK 
+        \begin{itemize}
+          \item Stemming
+          \begin{itemize}
+            \item Removing unnecessary Pre - and Suffixes for Generalization
+          \end{itemize}
+          \item Tokenization
+          \begin{itemize}
+            \item Necessary for Vounting Overlapping Words
+          \end{itemize}
+          \item Stopword Removal (with Standard and Modified Stopword List)
+          \begin{itemize}
+            \item Reduces the Load and removes Clutter from Sentences
+            \item Makes Key Words more prominent
+          \end{itemize}
+          
+          \begin{example}
+            \textbf{Arg:} \textit{homeschooling a child denies them valuable lifeskills, particularly interaction with their own age group and all experiences stemming from this.}\\
+            \textbf{New Arg:} \textit{homeschool child deni valuabl lifeskil , particular interact age group experi stem .}
+          \end{example}
+
+          \item Synonyms and Antonyms for Overlap Calculation
+          \begin{itemize}
+            \item Child $\rightarrow$ Kid, Youngster, nestling etc.
+          \end{itemize}
+        \end{itemize}
+    \end{itemize}
+    
+\end{frame}
+
+\begin{frame}
+  \frametitle{Term Overlap cont.}
+  \framesubtitle{Why is Performance so good overall?}
     %TODO Cite paper or lecture which inspired to use models
     
     \begin{itemize}
       \item A lot of arguments contain the same words as the key points
         \begin{itemize}
-          \item Makes sense because key points summarize the arguments
-          \item Reducing further to stems makes much more words overlap
+          \item Fits our Intuition that Key Points summarize Arguments
+          \item Stemming and Synonyms/Antonyms make it much more likely for Words to overlap
         \end{itemize}
     \end{itemize}
 
@@ -153,53 +193,23 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Term Overlap}
-  \framesubtitle{Used technologies}
-    \begin{itemize}
-      \item NLTK 
-        \begin{itemize}
-          \item Stemming
-          \item Tokenization
-          \item Stopword Removal
-        \end{itemize}
-    \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Term Overlap cont.}
-  \framesubtitle{Preprocessing}
-    \begin{itemize}
-      \item Stemming 
-        \begin{itemize}
-          \item Removing unnecessary pre - and suffixes for generalization
-        \end{itemize}
-      \item Tokenization
-        \begin{itemize}
-          \item Necessary for counting ovaerlapping words
-        \end{itemize}
-      \item Stopword Removal
-        \begin{itemize}
-          \item Reduces the load and removes clutter from sentences
-          \item Makes key words more prominent
-        \end{itemize}
-    \end{itemize}
-\end{frame}
-
-\begin{frame}
   \frametitle{Term Overlap cont.}
   \framesubtitle{Features}
     
     
 \end{frame}
 
+% EVALUATION OF BASELINE
+
 \begin{frame}
-  \frametitle{Term Overlap}
+  \frametitle{Term Overlap cont.}
   \framesubtitle{Evaluation}
   \begin{figure}
     \centering
     \scalebox{0.70}{
       \begin{tabular}{lrrrlrrr}
-          \multicolumn{8}{c}{Precision}\\
+          \multicolumn{8}{c}{\textbf{\Large Mean Average Precision}}\\
+          \hspace{1em}\\
         \toprule
           Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cline{2-4} \cline{6-8}
           & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
@@ -211,12 +221,183 @@
           Term Overlap (stem, stowo)          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
           Term Overlap (stem, stowo, syn, ant)& 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
         \midrule
-          BERT + BiLSTM)                      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          BiLSTM (GloVe embeddings)           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          BERT pretrained                     & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
         \bottomrule
       \end{tabular}
     }
   \end{figure}
 \end{frame}
+
+\begin{frame}
+  \frametitle{Term Overlap cont.}
+  \framesubtitle{Evaluation}
+  \begin{figure}
+    \centering
+    \scalebox{0.70}{
+      \begin{tabular}{lrrrlrrr}
+          \multicolumn{8}{c}{\textbf{\Large Precision}}\\
+          \hspace{1em}\\
+        \toprule
+          Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cline{2-4} \cline{6-8}
+          & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
+        \midrule
+          Match All                           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Match None                          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (no prepro)            & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (stem)                 & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (stem, stowo)          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (stem, stowo, syn, ant)& 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+        \midrule
+          BiLSTM (GloVe embeddings)           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          BERT pretrained                     & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+        \bottomrule
+      \end{tabular}
+    }
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Term Overlap cont.}
+  \framesubtitle{Evaluation}
+  \begin{figure}
+    \centering
+    \scalebox{0.70}{
+      \begin{tabular}{lrrrlrrr}
+          \multicolumn{8}{c}{\textbf{\Large Macro Precision}}\\
+          \hspace{1em}\\
+        \toprule
+          Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cline{2-4} \cline{6-8}
+          & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
+        \midrule
+          Match All                           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Match None                          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (no prepro)            & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (stem)                 & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (stem, stowo)          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (stem, stowo, syn, ant)& 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+        \midrule
+          BiLSTM (GloVe embeddings)           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          BERT pretrained                     & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\        
+        \bottomrule
+      \end{tabular}
+    }
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Term Overlap cont.}
+  \framesubtitle{Evaluation}
+  \begin{figure}
+    \centering
+    \scalebox{0.70}{
+      \begin{tabular}{lrrrlrrr}
+          \multicolumn{8}{c}{\textbf{\Large Recall}}\\
+          \hspace{1em}\\
+        \toprule
+          Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cline{2-4} \cline{6-8}
+          & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
+        \midrule
+          Match All                           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Match None                          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (no prepro)            & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (stem)                 & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (stem, stowo)          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (stem, stowo, syn, ant)& 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+        \midrule
+          BiLSTM (GloVe embeddings)           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          BERT pretrained                     & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\        
+        \bottomrule
+      \end{tabular}
+    }
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Term Overlap cont.}
+  \framesubtitle{Evaluation}
+  \begin{figure}
+    \centering
+    \scalebox{0.70}{
+      \begin{tabular}{lrrrlrrr}
+          \multicolumn{8}{c}{\textbf{\Large Macro Recall}}\\
+          \hspace{1em}\\
+        \toprule
+          Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cline{2-4} \cline{6-8}
+          & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
+        \midrule
+          Match All                           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Match None                          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (no prepro)            & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (stem)                 & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (stem, stowo)          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (stem, stowo, syn, ant)& 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+        \midrule
+          BiLSTM (GloVe embeddings)           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          BERT pretrained                     & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\        
+        \bottomrule
+      \end{tabular}
+    }
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Term Overlap cont.}
+  \framesubtitle{Evaluation}
+  \begin{figure}
+    \centering
+    \scalebox{0.70}{
+      \begin{tabular}{lrrrlrrr}
+          \multicolumn{8}{c}{\textbf{\Large F1-Score}}\\
+          \hspace{1em}\\
+        \toprule
+          Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cline{2-4} \cline{6-8}
+          & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
+        \midrule
+          Match All                           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Match None                          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (no prepro)            & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (stem)                 & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (stem, stowo)          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (stem, stowo, syn, ant)& 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+        \midrule
+          BiLSTM (GloVe embeddings)           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          BERT pretrained                     & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+        \bottomrule
+      \end{tabular}
+    }
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Term Overlap cont.}
+  \framesubtitle{Evaluation}
+  \begin{figure}
+    \centering
+    \scalebox{0.70}{
+      \begin{tabular}{lrrrlrrr}
+          \multicolumn{8}{c}{\textbf{\Large Macro F1 Score}}\\
+          \hspace{1em}\\
+        \toprule
+          Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cline{2-4} \cline{6-8}
+          & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
+        \midrule
+          Match All                           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Match None                          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (no prepro)            & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (stem)                 & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (stem, stowo)          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          Term Overlap (stem, stowo, syn, ant)& 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+        \midrule
+          BiLSTM (GloVe embeddings)           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+          BERT pretrained                     & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\        
+        \bottomrule
+      \end{tabular}
+    }
+  \end{figure}
+\end{frame}
+
+
 
 \begin{frame}
   \frametitle{Approach}
