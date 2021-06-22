@@ -28,6 +28,7 @@ from modern_talking.model import Dataset as UnlabelledDataset, Labels, \
 # `from tensorflow.data import Dataset`
 Dataset = data.Dataset
 list_physical_devices = config.list_physical_devices
+list_logical_devices = config.list_logical_devices
 
 
 class MergeType(Enum):
@@ -293,6 +294,7 @@ class DistilBertBilstmMatcher(Matcher):
     ):
         # Check GPU availability.
         print("\tGPUs available: ", len(list_physical_devices("GPU")))
+        print("\tTPUs available: ", len(list_logical_devices("TPU")))
 
         # Load and prepare datasets as tensors.
         print("\tLoad and prepare datasets for model.")
