@@ -14,6 +14,13 @@ parser.add_argument(
     help="Number of units in each BiLSTM module."
 )
 parser.add_argument(
+    "--layers",
+    dest="layers",
+    type=int,
+    default=1,
+    help="Number of BiLSTM layers."
+)
+parser.add_argument(
     "--max-length",
     dest="max_length",
     type=int,

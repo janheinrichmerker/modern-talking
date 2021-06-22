@@ -11,14 +11,13 @@ from tensorflow.keras import Model, Input
 from tensorflow.keras.activations import sigmoid
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 from tensorflow.keras.layers import Bidirectional, LSTM, Dense, Subtract, \
-    Dropout
+    Dropout, GlobalAveragePooling1D, GlobalMaxPooling1D, Concatenate
 from tensorflow.keras.losses import BinaryCrossentropy
 from tensorflow.keras.metrics import BinaryAccuracy, AUC, \
     MeanSquaredError
 from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam, Optimizer
-from tensorflow.python.keras.layers import GlobalAveragePooling1D, \
-    GlobalMaxPooling1D, Concatenate
+from tensorflow.keras import Sequential
 from tensorflow_addons.optimizers import AdamW
 
 from modern_talking.data.glove import download_glove_embeddings
@@ -39,6 +38,7 @@ list_logical_devices = config.list_logical_devices
 def create_bilstm_model(
         texts: List[str],
         units: int,
+        layers: int,
         max_length: int,
         dropout: float,
 ) -> Model:
@@ -67,27 +67,36 @@ def create_bilstm_model(
     argument_text_embedding = embed(argument_text_vector)
     key_point_embedding = embed(key_point_text_vector)
 
-    # Apply Bidirectional LSTM separately.
-    argument_text_bilstm = Bidirectional(LSTM(
-        units,
-        dropout=dropout,
-        return_sequences=True,
-    ))(argument_text_embedding)
-    key_point_bilstm = Bidirectional(LSTM(
-        units,
-        dropout=dropout,
-        return_sequences=True,
-    ))(key_point_embedding)
+    # Apply Bidirectional LSTMs separately.
+    argument_text_bilstm = Sequential([
+        Bidirectional(LSTM(
+            units,
+            dropout=dropout,
+            return_sequences=True,
+        ))
+        for _ in range(layers)
+    ])(argument_text_embedding)
+    key_point_bilstm = Sequential([
+        Bidirectional(LSTM(
+            units,
+            dropout=dropout,
+            return_sequences=True,
+        ))
+        for _ in range(layers)
+    ])(key_point_embedding)
 
     # Merge vectors by concatenating.
     concatenated = Subtract()([argument_text_bilstm, key_point_bilstm])
 
     # Apply Bidirectional LSTM on merged sequence.
-    bilstm = Bidirectional(LSTM(
-        units,
-        dropout=dropout,
-        return_sequences=True,
-    ))(concatenated)
+    bilstm = Sequential([
+        Bidirectional(LSTM(
+            units,
+            dropout=dropout,
+            return_sequences=True,
+        ))
+        for _ in range(layers)
+    ])(concatenated)
     sequence_max = GlobalMaxPooling1D()(bilstm)
     sequence_avg = GlobalAveragePooling1D()(bilstm)
     pooled = Concatenate()([sequence_max, sequence_avg])
@@ -168,6 +177,7 @@ def _prepare_labelled_data(
 
 class BidirectionalLstmMatcher(Matcher):
     units: int
+    layers: int
     max_length: int
     dropout: float
     learning_rate: float
@@ -183,6 +193,7 @@ class BidirectionalLstmMatcher(Matcher):
     def __init__(
             self,
             units: int = 16,
+            layers: int = 1,
             max_length: int = 512,
             dropout: float = 0,
             learning_rate: float = 1e-5,
@@ -194,6 +205,7 @@ class BidirectionalLstmMatcher(Matcher):
             augment: int = 0,
     ):
         self.units = units
+        self.layers = layers
         self.max_length = max_length
         self.dropout = dropout
         self.learning_rate = learning_rate
@@ -216,8 +228,8 @@ class BidirectionalLstmMatcher(Matcher):
             if self.early_stopping else ""
         augment_suffix = f"-augment-{self.augment}" \
             if self.augment > 0 else ""
-        return f"bilstm-{self.units}" \
-               f"-glove" \
+        return f"bilstm-{self.units}-{self.layers}" \
+               f"-glove-embeddings" \
                f"-max-length-{self.max_length}" \
                f"{dropout_suffix}" \
                f"-learn-{self.learning_rate}" \
@@ -271,6 +283,7 @@ class BidirectionalLstmMatcher(Matcher):
         self.model = create_bilstm_model(
             train_texts,
             self.units,
+            self.layers,
             self.max_length,
             self.dropout
         )
