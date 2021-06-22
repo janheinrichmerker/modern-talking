@@ -39,10 +39,6 @@ class UnknownLabelPolicy(str, Enum):
     strict = "strict"
     relaxed = "relaxed"
 
-    def __str__(self):
-        value: str = self.value
-        return value
-
 
 def create_bilstm_model(
         texts: List[str],
@@ -299,15 +295,15 @@ class BidirectionalLstmMatcher(Matcher):
             self.unknown_label_policy,
         )
         train_dataset = train_dataset.shuffle(self.shuffle)
-        train_dataset = train_dataset.batch(self.batch_size)
         print(f"\t{len(train_dataset)} training samples.")
+        train_dataset = train_dataset.batch(self.batch_size)
         dev_dataset, dev_texts = _prepare_labelled_data(
             dev_data,
             self.augment,
             self.unknown_label_policy,
         )
-        dev_dataset = dev_dataset.batch(self.batch_size)
         print(f"\t{len(dev_dataset)} validation samples.")
+        dev_dataset = dev_dataset.batch(self.batch_size)
 
         # Build model.
         print("\tBuild and compile model.")
