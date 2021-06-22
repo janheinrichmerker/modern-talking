@@ -1,4 +1,5 @@
 from pathlib import Path
+from random import shuffle
 from typing import List
 
 from pandas import DataFrame
@@ -26,7 +27,7 @@ class SimpleTransformer(Matcher):
 
     def prepare(self) -> None:
         base_dir = (Path(__file__).parent.parent.parent
-                     / "data" / "cache" / self.name)
+                    / "data" / "cache" / self.name)
 
         args = ClassificationArgs()
         args.cache_dir = str((base_dir / "cache").absolute())
@@ -34,10 +35,14 @@ class SimpleTransformer(Matcher):
         args.overwrite_output_dir = True
         args.tensorboard_dir = str((base_dir / "runs").absolute())
         args.best_model_dir = str((base_dir / "best_model").absolute())
+        args.regression = True
+        args.gradient_accumulation_steps = 16
+        args.evaluate_during_training = True
 
         self.model = ClassificationModel(
             model_type=self.model_type,
             model_name=self.model_name,
+            num_labels=1,
             args=args,
             use_cuda=is_cuda_available(),
         )
@@ -53,10 +58,7 @@ class SimpleTransformer(Matcher):
         dev_df = _text_pair_df(dev_data)
 
         # Train model.
-        self.model.train_model(train_df)
-
-        # Evaluate on dev set.
-        result, outputs, wrong_predictions = self.model.eval_model(dev_df)
+        self.model.train_model(train_df, eval_df=dev_df)
 
     def predict(self, data: Dataset) -> Labels:
         # Load data.
@@ -75,6 +77,7 @@ class SimpleTransformer(Matcher):
 
 def _text_pair_df(data: LabelledDataset) -> DataFrame:
     pairs = _arg_kp_pairs(data)
+    shuffle(pairs)
     return DataFrame(
         data=[
             [
@@ -99,4 +102,5 @@ def _arg_kp_pairs(data: Dataset) -> List[ArgumentKeyPointPair]:
         for kp in data.key_points
         if arg.topic == kp.topic and arg.stance == kp.stance
     ]
+    pairs = pairs[:10]
     return pairs
