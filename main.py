@@ -19,6 +19,7 @@ from modern_talking.matchers.regression import EnsembleVotingMatcher, \
     RegressionTfidfMatcher, RegressionBagOfWordsMatcher, \
     EnsemblePartOfSpeechMatcher, RegressionPartOfSpeechMatcher, \
     SVCPartOfSpeechMatcher, SVCBagOfWordsMatcher
+from modern_talking.matchers.regression import SimpleTransformMatcher
 from modern_talking.matchers.combine import Cascade
 from modern_talking.matchers.term_overlap import TermOverlapMatcher
 from modern_talking.pipeline import Pipeline
@@ -133,6 +134,7 @@ matchers = (
         ),
         0.7,
     ),
+    SimpleTransformMatcher(),
 )
 
 metrics = (
