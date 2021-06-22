@@ -7,7 +7,7 @@ from modern_talking.evaluation.f_measure import F1Score, MacroF1Score
 from modern_talking.evaluation.manual_errors import ManualErrors
 from modern_talking.evaluation.precision import Precision, MacroPrecision
 from modern_talking.evaluation.recall import Recall, MacroRecall
-from modern_talking.evaluation.map import Track1Metric
+from modern_talking.evaluation.map import MeanAveragePrecision
 from modern_talking.matchers import Matcher
 from modern_talking.matchers.baselines import AllMatcher, RandomMatcher, \
     NoneMatcher
@@ -158,7 +158,7 @@ metrics = (
     MacroRecall(),
     F1Score(),
     MacroF1Score(),
-    Track1Metric(),
+    MeanAveragePrecision(),
     ManualErrors(),
 )
 

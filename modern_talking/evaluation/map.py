@@ -7,7 +7,7 @@ from modern_talking.model import Labels
 from modern_talking.pipeline import Pipeline
 
 
-class Track1Metric(Metric):
+class MeanAveragePrecision(Metric):
     name = "map"
 
     def evaluate(
