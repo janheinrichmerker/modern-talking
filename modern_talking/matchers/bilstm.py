@@ -34,13 +34,14 @@ list_physical_devices = config.list_physical_devices
 list_logical_devices = config.list_logical_devices
 
 
-class UnknownLabelPolicy(Enum):
+class UnknownLabelPolicy(str, Enum):
     skip = "skip"
     strict = "strict"
     relaxed = "relaxed"
 
     def __str__(self):
-        return self.value
+        value: str = self.value
+        return value
 
 
 def create_bilstm_model(
