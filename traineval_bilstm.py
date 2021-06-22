@@ -76,6 +76,7 @@ parser.add_argument(
 )
 parser.add_argument(
     "--unknown-label-policy", "--unknown-label", "--label-policy",
+    dest="unknown_label_policy",
     type=UnknownLabelPolicy,
     choices=list(UnknownLabelPolicy),
     default=UnknownLabelPolicy.skip,
@@ -94,6 +95,7 @@ matcher = BidirectionalLstmMatcher(
     epochs=args.epochs,
     early_stopping=args.early_stopping,
     augment=args.augment,
+    unknown_label_policy=args.unknown_label_policy,
 )
 print("Training & evaluating BiLSTM model with GloVe embeddings:")
 print(f"BiLSTM units: {matcher.units}")
@@ -107,6 +109,7 @@ print(f"Batch size: {matcher.batch_size}")
 print(f"Epochs: {matcher.epochs}")
 print(f"Stop early: {'yes' if matcher.early_stopping else 'no'}")
 print(f"Augment input texts: {matcher.augment}")
+print(f"Unknown label policy: {matcher.unknown_label_policy}")
 
 # Download datasets.
 download_kpa_2021_data()
