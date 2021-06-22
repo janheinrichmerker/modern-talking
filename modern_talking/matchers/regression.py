@@ -25,24 +25,32 @@ from scipy.spatial import distance
 
 downloader = Downloader()
 
+
 class SimpleTransformMatcher(UntrainedMatcher):
     name = "simple-transform-similarity"
-    
-    def __init__(self):
+
+    transform_model: RepresentationModel
+
+    def prepare(self) -> None:
         self.transform_model = RepresentationModel(
             model_type="bert",
             model_name="bert-base-uncased",
             args={"manual_seed": 42},
             use_cuda=False,
-            )
+        )
+
     def get_similarity_score(self, arg, kp):
-        vectors = self.transform_model.encode_sentences([arg.text, kp.text], combine_strategy="mean")
+        vectors = self.transform_model.encode_sentences(
+            [arg.text, kp.text],
+            combine_strategy="mean",
+        )
         score = distance.cosine(vectors[0], vectors[1])
         if score <= 0.5:
             label = 0
         else:
             label = 1
         return label
+
     def predict(self, data: Dataset) -> Labels:
         return {
             (arg.id, kp.id): self.get_similarity_score(arg, kp)
@@ -50,6 +58,7 @@ class SimpleTransformMatcher(UntrainedMatcher):
             for kp in data.key_points
             if arg.topic == kp.topic and arg.stance == kp.stance
         }
+
 
 class SVCPartOfSpeechMatcher(Matcher):
     name = "svc-bow-pos"
@@ -113,7 +122,8 @@ class SVCPartOfSpeechMatcher(Matcher):
                 for term in word_tokenize(self.get_token_by_pos(kp.text))
             ]
 
-            #text = " ".join(tp_terms) + " ".join(arg_terms) + ". " + " ".join(kp_terms)
+            # text = " ".join(tp_terms) + " ".join(arg_terms) + \
+            #        ". " + " ".join(kp_terms)
             text = " ".join(arg_terms) + ". " + " ".join(kp_terms)
             train_texts.append(text)
         return train_texts
@@ -142,7 +152,7 @@ class SVCPartOfSpeechMatcher(Matcher):
     def get_match_probability(self, argument: Argument, key_point: KeyPoint):
         # Transform input text to numeric features.
         stemmer = SnowballStemmer("english")
-        input_text = argument.topic + " " + argument.text + ". " + key_point.text
+        input_text = f"{argument.topic} {argument.text}. {key_point.text}"
         input_text = self.get_token_by_pos(input_text)
         input_text = " ".join(
             [stemmer.stem(term) for term in word_tokenize(input_text)]
