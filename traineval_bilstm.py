@@ -29,6 +29,12 @@ parser.add_argument(
     default=0.3,
 )
 parser.add_argument(
+    "--learning-rate", "--learn",
+    dest="learning_rate",
+    type=float,
+    default=1e-5,
+)
+parser.add_argument(
     "--weight-decay", "--decay",
     dest="weight_decay",
     type=float,
@@ -63,6 +69,7 @@ matcher = BidirectionalLstmMatcher(
     units=args.units,
     max_length=args.max_length,
     dropout=args.dropout,
+    learning_rate=args.learning_rate,
     weight_decay=args.weight_decay,
     batch_size=args.batch_size,
     epochs=args.epochs,
@@ -73,6 +80,7 @@ print("Training & evaluating BiLSTM model with GloVe embeddings:")
 print(f"BiLSTM units: {matcher.units}")
 print(f"Maximum sequence length: {matcher.max_length}")
 print(f"Dropout: {matcher.dropout}")
+print(f"Learning rate: {matcher.learning_rate}")
 print(f"Weight decay: {matcher.weight_decay}")
 print(f"Batch size: {matcher.batch_size}")
 print(f"Epochs: {matcher.epochs}")
