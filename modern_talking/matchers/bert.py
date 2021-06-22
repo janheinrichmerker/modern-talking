@@ -208,8 +208,7 @@ class BertMatcher(Matcher):
 
         # Train model.
         print("\tTrain compiled model.")
-        checkpoint_name = "weights-improvement" \
-                          "-{epoch:02d}-{val_precision:.3f}.tf"
+        checkpoint_name = "weights-improvement-{epoch:02d}-{val_loss:.3f}.tf"
         checkpoint = ModelCheckpoint(
             checkpoint_path / checkpoint_name,
             monitor='val_precision',
