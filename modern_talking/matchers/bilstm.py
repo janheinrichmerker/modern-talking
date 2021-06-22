@@ -179,7 +179,8 @@ def _prepare_labelled_data(
                     labels.append(0)
                 elif unknown_label_policy == UnknownLabelPolicy.relaxed:
                     labels.append(1)
-            labels.append(labelled_data.labels[arg.id, kp.id])
+            else:
+                labels.append(labelled_data.labels[arg.id, kp.id])
     dataset = Dataset.from_tensor_slices((
         {
             "argument_text": array(arg_texts),
