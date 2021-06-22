@@ -1,3 +1,4 @@
 {
-    "jupyter.jupyterServerType": "local"
+    "jupyter.jupyterServerType": "local",
+    "python.pythonPath": "C:\\Users\\maxhe\\.virtualenvs\\modern-talking-Ea6PyI6P\\Scripts\\python.exe"
 }
