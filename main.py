@@ -18,9 +18,9 @@ from modern_talking.matchers.bilstm import BidirectionalLstmMatcher
 from modern_talking.matchers.regression import EnsembleVotingMatcher, \
     RegressionTfidfMatcher, RegressionBagOfWordsMatcher, \
     EnsemblePartOfSpeechMatcher, RegressionPartOfSpeechMatcher, \
-    SVCPartOfSpeechMatcher, SVCBagOfWordsMatcher
-from modern_talking.matchers.regression import SimpleTransformMatcher
+    SVCPartOfSpeechMatcher, SVCBagOfWordsMatcher, SimpleTransformMatcher
 from modern_talking.matchers.combine import Cascade
+from modern_talking.matchers.simple_transformers import SimpleTransformer
 from modern_talking.matchers.term_overlap import TermOverlapMatcher
 from modern_talking.pipeline import Pipeline
 
@@ -135,6 +135,9 @@ matchers = (
         0.7,
     ),
     SimpleTransformMatcher(),
+    SimpleTransformer("bert", "bert-base"),
+    SimpleTransformer("bert", "bert-base-uncased"),
+    SimpleTransformer("roberta", "roberta-base"),
 )
 
 metrics = (
