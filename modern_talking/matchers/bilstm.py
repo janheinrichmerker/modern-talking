@@ -11,9 +11,9 @@ from tensorflow.keras import Model, Input
 from tensorflow.keras.activations import sigmoid
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 from tensorflow.keras.layers import Bidirectional, LSTM, Dense, Subtract, \
-    SpatialDropout1D, Dropout
+    Dropout
 from tensorflow.keras.losses import BinaryCrossentropy
-from tensorflow.keras.metrics import Precision, Recall
+from tensorflow.keras.metrics import Precision, Recall, Accuracy, AUC
 from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam, Optimizer
 from tensorflow.python.keras.layers import GlobalAveragePooling1D, \
@@ -69,14 +69,14 @@ def create_bilstm_model(
     # Apply Bidirectional LSTM separately.
     argument_text_bilstm = Bidirectional(LSTM(
         units,
+        dropout=dropout,
         return_sequences=True,
     ))(argument_text_embedding)
-    argument_text_bilstm = SpatialDropout1D(dropout)(argument_text_bilstm)
     key_point_bilstm = Bidirectional(LSTM(
         units,
+        dropout=dropout,
         return_sequences=True,
     ))(key_point_embedding)
-    key_point_bilstm = SpatialDropout1D(dropout)(key_point_bilstm)
 
     # Merge vectors by concatenating.
     concatenated = Subtract()([argument_text_bilstm, key_point_bilstm])
@@ -84,9 +84,9 @@ def create_bilstm_model(
     # Apply Bidirectional LSTM on merged sequence.
     bilstm = Bidirectional(LSTM(
         units,
+        dropout=dropout,
         return_sequences=True,
     ))(concatenated)
-    bilstm = SpatialDropout1D(dropout)(bilstm)
     sequence_max = GlobalMaxPooling1D()(bilstm)
     sequence_avg = GlobalAveragePooling1D()(bilstm)
     pooled = Concatenate()([sequence_max, sequence_avg])
@@ -274,7 +274,12 @@ class BidirectionalLstmMatcher(Matcher):
         self.model.compile(
             optimizer=optimizer,
             loss=BinaryCrossentropy(),
-            metrics=[Precision(), Recall()],
+            metrics=[
+                Accuracy(),
+                Precision(),
+                Recall(),
+                AUC(),
+            ],
         )
         self.model.summary()
 

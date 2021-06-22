@@ -9,7 +9,7 @@ from tensorflow import data, int32, config
 from tensorflow.keras import Model, Input
 from tensorflow.keras.activations import sigmoid
 from tensorflow.keras.callbacks import ModelCheckpoint
-from tensorflow.keras.layers import Dense, Dropout, Concatenate, Layer, \
+from tensorflow.keras.layers import Dense, Concatenate, Layer, \
     Subtract, GlobalMaxPooling1D, GlobalAveragePooling1D, Bidirectional, \
     LSTM, SpatialDropout1D
 from tensorflow.keras.losses import BinaryCrossentropy
@@ -38,11 +38,11 @@ class MergeType(Enum):
 
 
 def create_model(
-        pretrained_model: TFDistilBertModel,
-        encoding_dropout: float = 0.2,
-        bilstm_units: int = 64,
-        memory_dropout: float = 0.2,
-        merge_memories: MergeType = MergeType.subtract
+        distilbert_model: TFDistilBertModel,
+        distilbert_dropout: float,
+        bilstm_units: int,
+        bilstm_dropout: float,
+        merge_memories: MergeType,
 ) -> Model:
     # Specify model inputs.
     argument_input_ids = Input(
@@ -77,27 +77,31 @@ def create_model(
     )
 
     # Encode with pretrained transformer model.
-    argument_encoding: TFBaseModelOutput = pretrained_model.distilbert(
+    argument_encoding: TFBaseModelOutput = distilbert_model.distilbert(
         argument_input_ids,
         attention_mask=argument_attention_mask,
         # token_type_ids=argument_token_type_ids,
     )
     argument_encoding_sequence = argument_encoding.last_hidden_state
-    argument_encoding_sequence = SpatialDropout1D(encoding_dropout)(
+    argument_encoding_sequence = SpatialDropout1D(distilbert_dropout)(
         argument_encoding_sequence
     )
-    key_point_encoding: TFBaseModelOutput = pretrained_model.distilbert(
+    key_point_encoding: TFBaseModelOutput = distilbert_model.distilbert(
         key_point_input_ids,
         attention_mask=key_point_attention_mask,
         # token_type_ids=key_point_token_type_ids,
     )
     key_point_encoding_sequence = key_point_encoding.last_hidden_state
-    key_point_encoding_sequence = SpatialDropout1D(encoding_dropout)(
+    key_point_encoding_sequence = SpatialDropout1D(distilbert_dropout)(
         key_point_encoding_sequence
     )
 
     # Long short term memory.
-    argument_bilstm = Bidirectional(LSTM(bilstm_units, return_sequences=True))
+    argument_bilstm = Bidirectional(LSTM(
+        bilstm_units,
+        dropout=bilstm_dropout,
+        return_sequences=True,
+    ))
     argument_memory_seq = argument_bilstm(argument_encoding_sequence)
     argument_memory_avg = GlobalAveragePooling1D()(argument_memory_seq)
     argument_memory_max = GlobalMaxPooling1D()(argument_memory_seq)
@@ -105,8 +109,11 @@ def create_model(
         argument_memory_max,
         argument_memory_avg
     ])
-    argument_memory = Dropout(memory_dropout)(argument_memory)
-    key_point_bilstm = Bidirectional(LSTM(bilstm_units, return_sequences=True))
+    key_point_bilstm = Bidirectional(LSTM(
+        bilstm_units,
+        dropout=bilstm_dropout,
+        return_sequences=True,
+    ))
     key_point_memory_seq = key_point_bilstm(key_point_encoding_sequence)
     key_point_memory_avg = GlobalAveragePooling1D()(key_point_memory_seq)
     key_point_memory_max = GlobalMaxPooling1D()(key_point_memory_seq)
@@ -114,7 +121,6 @@ def create_model(
         key_point_memory_max,
         key_point_memory_avg
     ])
-    key_point_memory = Dropout(memory_dropout)(key_point_memory)
 
     # Combine memory states
     merge_layer: Layer
@@ -130,7 +136,7 @@ def create_model(
     output = Dense(1, activation=sigmoid)(memory)
 
     # Define model.
-    pretrained_model = Model(
+    distilbert_model = Model(
         inputs=[
             argument_input_ids,
             argument_attention_mask,
@@ -141,7 +147,7 @@ def create_model(
         ],
         outputs=output
     )
-    return pretrained_model
+    return distilbert_model
 
 
 def _prepare_encodings(
@@ -227,9 +233,9 @@ class DistilBertBilstmMatcher(Matcher):
     """
 
     distilbert_model_name: str
-    encoding_dropout: float
+    distilbert_dropout: float
     bilstm_units: int
-    memory_dropout: float
+    bilstm_dropout: float
     merge_memories: MergeType
     batch_size: int
     epochs: int
@@ -242,18 +248,18 @@ class DistilBertBilstmMatcher(Matcher):
 
     def __init__(
             self,
-            pretrained_model_name: str,
-            encoding_dropout: float,
+            distilbert_model_name: str,
+            distilbert_dropout: float,
             bilstm_units: int,
-            memory_dropout: float,
+            bilstm_dropout: float,
             merge_memories: MergeType,
             batch_size: int = 64,
             epochs: int = 3,
     ):
-        self.distilbert_model_name = pretrained_model_name
-        self.encoding_dropout = encoding_dropout
+        self.distilbert_model_name = distilbert_model_name
+        self.distilbert_dropout = distilbert_dropout
         self.bilstm_units = bilstm_units
-        self.memory_dropout = memory_dropout
+        self.bilstm_dropout = bilstm_dropout
         self.merge_memories = merge_memories
         self.batch_size = batch_size
         self.epochs = epochs
@@ -261,9 +267,9 @@ class DistilBertBilstmMatcher(Matcher):
     @property
     def name(self) -> str:
         return f"{self.distilbert_model_name}" \
-               f"-dropout-{self.encoding_dropout}" \
+               f"-dropout-{self.distilbert_dropout}" \
                f"-bilstm-{self.bilstm_units}" \
-               f"-dropout-{self.memory_dropout}" \
+               f"-dropout-{self.bilstm_dropout}" \
                f"-{self.merge_memories.name}" \
                f"-batch-{self.batch_size}" \
                f"-epochs-{self.epochs}"
@@ -309,9 +315,9 @@ class DistilBertBilstmMatcher(Matcher):
         print("\tBuild and compile model.")
         self.model = create_model(
             self.distilbert_model,
-            self.encoding_dropout,
+            self.distilbert_dropout,
             self.bilstm_units,
-            self.memory_dropout,
+            self.bilstm_dropout,
             self.merge_memories
         )
         self.model.compile(
