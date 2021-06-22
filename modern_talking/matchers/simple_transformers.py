@@ -102,5 +102,4 @@ def _arg_kp_pairs(data: Dataset) -> List[ArgumentKeyPointPair]:
         for kp in data.key_points
         if arg.topic == kp.topic and arg.stance == kp.stance
     ]
-    pairs = pairs[:10]
     return pairs
