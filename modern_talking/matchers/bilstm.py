@@ -288,7 +288,7 @@ class BidirectionalLstmMatcher(Matcher):
         checkpoint_name = "weights-improvement-{epoch:02d}-{val_loss:.3f}.tf"
         checkpoint = ModelCheckpoint(
             checkpoint_path / checkpoint_name,
-            monitor='val_precision',
+            monitor='val_loss',
             save_best_only=True,
             save_weights_only=True,
             mode='max'
