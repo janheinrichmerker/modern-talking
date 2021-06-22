@@ -1,5 +1,5 @@
 # pylint: disable=no-name-in-module
-
+from enum import Enum
 from pathlib import Path
 from typing import List, Tuple, Optional
 
@@ -32,6 +32,15 @@ from modern_talking.model import Dataset as UnlabelledDataset, Labels, \
 Dataset = data.Dataset
 list_physical_devices = config.list_physical_devices
 list_logical_devices = config.list_logical_devices
+
+
+class UnknownLabelPolicy(Enum):
+    skip = "skip"
+    strict = "strict"
+    relaxed = "relaxed"
+
+    def __str__(self):
+        return self.value
 
 
 def create_bilstm_model(
@@ -137,14 +146,20 @@ def _prepare_unlabelled_data(
 def _prepare_labelled_data(
         labelled_data: LabelledDataset,
         augment: int,
+        unknown_label_policy: UnknownLabelPolicy,
 ) -> Tuple[Dataset, List[str]]:
     pairs = [
         (arg, kp)
         for arg in labelled_data.arguments
         for kp in labelled_data.key_points
-        if (arg.topic == kp.topic and arg.stance == kp.stance
-            and (arg.id, kp.id) in labelled_data.labels.keys())
+        if arg.topic == kp.topic and arg.stance == kp.stance
     ]
+    if unknown_label_policy == UnknownLabelPolicy.skip:
+        pairs = [
+            (arg, kp)
+            for (arg, kp) in pairs
+            if (arg.id, kp.id) in labelled_data.labels.keys()
+        ]
     arg_texts: List[str] = []
     kp_texts: List[str] = []
     labels: List[Label] = []
@@ -159,6 +174,11 @@ def _prepare_labelled_data(
         for arg_text, kp_text in zip(current_arg_texts, current_kp_texts):
             arg_texts.append(arg_text)
             kp_texts.append(kp_text)
+            if (arg.id, kp.id) not in labelled_data.labels.keys():
+                if unknown_label_policy == UnknownLabelPolicy.strict:
+                    labels.append(0)
+                elif unknown_label_policy == UnknownLabelPolicy.relaxed:
+                    labels.append(1)
             labels.append(labelled_data.labels[arg.id, kp.id])
     dataset = Dataset.from_tensor_slices((
         {
@@ -183,6 +203,7 @@ class BidirectionalLstmMatcher(Matcher):
     epochs: int
     early_stopping: bool
     augment: int
+    unknown_label_policy: UnknownLabelPolicy
 
     model: Model = None
 
@@ -199,6 +220,7 @@ class BidirectionalLstmMatcher(Matcher):
             epochs: int = 10,
             early_stopping: bool = False,
             augment: int = 0,
+            unknown_label_policy: UnknownLabelPolicy = UnknownLabelPolicy.skip,
     ):
         self.units = units
         self.layers = layers
@@ -211,6 +233,7 @@ class BidirectionalLstmMatcher(Matcher):
         self.epochs = epochs
         self.early_stopping = early_stopping
         self.augment = augment
+        self.unknown_label_policy = unknown_label_policy
 
     @property
     def name(self) -> str:
@@ -224,6 +247,11 @@ class BidirectionalLstmMatcher(Matcher):
             if self.early_stopping else ""
         augment_suffix = f"-augment-{self.augment}" \
             if self.augment > 0 else ""
+        unknown_label_policy_suffix = "-relaxed" \
+            if self.unknown_label_policy == UnknownLabelPolicy.relaxed \
+            else "-relaxed" \
+            if self.unknown_label_policy == UnknownLabelPolicy.strict \
+            else ""
         return f"bilstm-{self.units}-{self.layers}" \
                f"-glove-embeddings" \
                f"-max-length-{self.max_length}" \
@@ -234,7 +262,8 @@ class BidirectionalLstmMatcher(Matcher):
                f"-batch-{self.batch_size}" \
                f"-epochs-{self.epochs}" \
                f"{early_stopping_suffix}" \
-               f"{augment_suffix}"
+               f"{augment_suffix}" \
+               f"{unknown_label_policy_suffix}"
 
     def prepare(self) -> None:
         download_glove_embeddings()
@@ -265,12 +294,14 @@ class BidirectionalLstmMatcher(Matcher):
         train_dataset, train_texts = _prepare_labelled_data(
             train_data,
             self.augment,
+            self.unknown_label_policy,
         )
         train_dataset = train_dataset.shuffle(self.shuffle)
         train_dataset = train_dataset.batch(self.batch_size)
         dev_dataset, dev_texts = _prepare_labelled_data(
             dev_data,
             self.augment,
+            self.unknown_label_policy,
         )
         dev_dataset = dev_dataset.batch(self.batch_size)
 

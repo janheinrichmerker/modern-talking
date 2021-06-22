@@ -2,7 +2,8 @@ from argparse import ArgumentParser, Namespace
 
 from modern_talking.data import download_kpa_2021_data
 from modern_talking.evaluation.map import MeanAveragePrecision
-from modern_talking.matchers.bilstm import BidirectionalLstmMatcher
+from modern_talking.matchers.bilstm import BidirectionalLstmMatcher, \
+    UnknownLabelPolicy
 from modern_talking.pipeline import Pipeline
 
 parser: ArgumentParser = ArgumentParser()
@@ -72,6 +73,12 @@ parser.add_argument(
     dest="augment",
     type=int,
     default=0,
+)
+parser.add_argument(
+    "--unknown-label-policy", "--unknown-label", "--label-policy",
+    type=UnknownLabelPolicy,
+    choices=list(UnknownLabelPolicy),
+    default=UnknownLabelPolicy.skip,
 )
 args: Namespace = parser.parse_args()
 
