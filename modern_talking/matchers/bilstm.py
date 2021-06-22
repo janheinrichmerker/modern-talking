@@ -13,11 +13,13 @@ from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 from tensorflow.keras.layers import Bidirectional, LSTM, Dense, Subtract, \
     Dropout
 from tensorflow.keras.losses import BinaryCrossentropy
-from tensorflow.keras.metrics import Precision, Recall, Accuracy, AUC
+from tensorflow.keras.metrics import BinaryAccuracy, Precision, Recall, AUC, \
+    MeanSquaredError
 from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam, Optimizer
 from tensorflow.python.keras.layers import GlobalAveragePooling1D, \
     GlobalMaxPooling1D, Concatenate
+from tensorflow_addons.metrics import F1Score
 from tensorflow_addons.optimizers import AdamW
 
 from modern_talking.data.glove import download_glove_embeddings
@@ -275,10 +277,12 @@ class BidirectionalLstmMatcher(Matcher):
             optimizer=optimizer,
             loss=BinaryCrossentropy(),
             metrics=[
-                Accuracy(),
+                BinaryAccuracy(),
                 Precision(),
                 Recall(),
+                F1Score(),
                 AUC(),
+                MeanSquaredError(),
             ],
         )
         self.model.summary()
