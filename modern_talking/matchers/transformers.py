@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import List, Optional
 
 from nlpaug.augmenter.word import WordAugmenter, SynonymAug
+from nltk.downloader import Downloader
 from pandas import DataFrame
 from simpletransformers.classification import ClassificationModel
 from simpletransformers.config.model_args import ClassificationArgs
