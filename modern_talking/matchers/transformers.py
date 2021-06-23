@@ -148,9 +148,7 @@ class TransformersMatcher(Matcher):
 
     def load_model(self, path: Path) -> bool:
         model_path = path / "model"
-        if self.model is not None:
-            return True
-        elif not model_path.exists() or not model_path.is_dir():
+        if not model_path.exists() or not model_path.is_dir():
             return False
         else:
             self.model = ClassificationModel(
