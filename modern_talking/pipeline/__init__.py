@@ -179,6 +179,9 @@ class Pipeline:
         train_labels = self.matcher.predict(train_data)
         dev_labels = self.matcher.predict(dev_data)
         test_labels = self.matcher.predict(test_data)
+        print(f"Predicted {len(train_labels)} on train set, "
+              f"{len(dev_labels)} on validation set, "
+              f"{len(test_labels)} on test set")
 
         print("Save test predictions.")
         predictions_file = output_dir / f"predictions-{self.matcher.name}.json"
