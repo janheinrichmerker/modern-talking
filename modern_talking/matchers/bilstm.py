@@ -1,5 +1,4 @@
 # pylint: disable=no-name-in-module
-from enum import Enum
 from pathlib import Path
 from typing import List, Tuple, Optional
 
@@ -20,7 +19,7 @@ from tensorflow.keras.optimizers import Adam, Optimizer
 from tensorflow_addons.optimizers import AdamW
 
 from modern_talking.data.glove import download_glove_embeddings
-from modern_talking.matchers import Matcher
+from modern_talking.matchers import Matcher, UnknownLabelPolicy
 from modern_talking.matchers.colab_utils import setup_colab_tpu
 from modern_talking.matchers.layers import text_vectorization_layer, \
     glove_embedding_layer
@@ -32,12 +31,6 @@ from modern_talking.model import Dataset as UnlabelledDataset, Labels, \
 Dataset = data.Dataset
 list_physical_devices = config.list_physical_devices
 list_logical_devices = config.list_logical_devices
-
-
-class UnknownLabelPolicy(str, Enum):
-    skip = "skip"
-    strict = "strict"
-    relaxed = "relaxed"
 
 
 def create_bilstm_model(
@@ -247,7 +240,7 @@ class BidirectionalLstmMatcher(Matcher):
             if self.augment > 0 else ""
         unknown_label_policy_suffix = "-relaxed" \
             if self.unknown_label_policy == UnknownLabelPolicy.relaxed \
-            else "-relaxed" \
+            else "-strict" \
             if self.unknown_label_policy == UnknownLabelPolicy.strict \
             else ""
         return f"bilstm-{self.units}-{self.layers}" \

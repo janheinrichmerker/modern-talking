@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from enum import Enum
 from pathlib import Path
 from typing import final
 
@@ -75,6 +76,12 @@ class Matcher(ABC):
         :return: Dictionary of match labels for argument key point pairs.
         """
         pass
+
+
+class UnknownLabelPolicy(str, Enum):
+    skip = "skip"
+    strict = "strict"
+    relaxed = "relaxed"
 
 
 class UntrainedMatcher(Matcher, ABC):
