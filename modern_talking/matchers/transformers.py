@@ -119,8 +119,9 @@ def _text_pair_df(
             for (arg, kp) in pairs
             if (arg.id, kp.id) in data.labels.keys()
         ]
-    df = DataFrame(columns=["text_a", "text_b", "labels"])
-
+    arg_texts: List[str] = []
+    kp_texts: List[str] = []
+    labels: List[float] = []
     augmenter: Optional[WordAugmenter] = SynonymAug("wordnet") \
         if augment >= 2 else None
     for arg, kp in pairs:
@@ -140,15 +141,15 @@ def _text_pair_df(
                     raise Exception("Broken unknown label policy.")
             else:
                 label = data.labels[arg.id, kp.id]
-            df.append(
-                {
-                    "text_a": arg_text,
-                    "text_b": kp_text,
-                    "labels": label
-                },
-                ignore_index=True,
-            )
-    return df
+
+            arg_texts.append(arg_text)
+            kp_texts.append(kp_text)
+            labels.append(label)
+    return DataFrame({
+        "text_a": arg_texts,
+        "text_b": kp_texts,
+        "labels": labels
+    })
 
 
 def _arg_kp_pairs(data: Dataset) -> List[ArgumentKeyPointPair]:
