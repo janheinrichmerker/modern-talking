@@ -83,6 +83,10 @@ class UnknownLabelPolicy(str, Enum):
     strict = "strict"
     relaxed = "relaxed"
 
+    def __str__(self):
+        # pylint: disable=invalid-str-returned
+        return self.value
+
 
 class UntrainedMatcher(Matcher, ABC):
     """
