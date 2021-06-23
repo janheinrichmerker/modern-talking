@@ -49,15 +49,13 @@ class TransformersMatcher(Matcher):
 
     @property
     def name(self) -> str:
-        augment_suffix = f"-augment-{self.augment}" \
-            if self.augment > 0 else ""
+        augment_suffix = f"-augment-{self.augment}" if self.augment > 0 else ""
         unknown_label_policy_suffix = "-relaxed" \
             if self.unknown_label_policy == UnknownLabelPolicy.relaxed \
             else "-strict" \
             if self.unknown_label_policy == UnknownLabelPolicy.strict \
             else ""
-        shuffle_suffix = f"-shuffle-{self.shuffle}" \
-            if self.shuffle > 0 else ""
+        shuffle_suffix = f"-shuffle" if self.shuffle > 0 else ""
         early_stopping_suffix = "-early-stopping" \
             if self.early_stopping else ""
         return f"transformers" \
