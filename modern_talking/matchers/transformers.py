@@ -147,6 +147,22 @@ class TransformersMatcher(Matcher):
             for (arg, kp), label in zip(pairs, predictions)
         }
 
+    def load_model(self, path: Path) -> bool:
+        model_path = path / "model"
+        if self.model is not None:
+            return True
+        elif not model_path.exists() or not model_path.is_dir():
+            return False
+        else:
+            self.model = ClassificationModel(
+                model_type=self.model_type,
+                model_name=model_path,
+            )
+            return True
+
+    def save_model(self, path: Path):
+        self.model.save_model(path / "model")
+
 
 def _text_pair_df(
         data: LabelledDataset,
