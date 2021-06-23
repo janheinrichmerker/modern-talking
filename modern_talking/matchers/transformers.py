@@ -55,7 +55,7 @@ class TransformersMatcher(Matcher):
             else "-strict" \
             if self.unknown_label_policy == UnknownLabelPolicy.strict \
             else ""
-        shuffle_suffix = f"-shuffle" if self.shuffle > 0 else ""
+        shuffle_suffix = "-shuffle" if self.shuffle > 0 else ""
         early_stopping_suffix = "-early-stopping" \
             if self.early_stopping else ""
         return f"transformers" \
