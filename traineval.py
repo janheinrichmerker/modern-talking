@@ -187,6 +187,20 @@ def _prepare_bilstm_parser(parser: ArgumentParser) -> None:
         choices=list(UnknownLabelPolicy),
         default=UnknownLabelPolicy.skip,
     )
+    parser.add_argument(
+        "--strict",
+        dest="unknown_label_policy",
+        type=UnknownLabelPolicy,
+        action="store_const",
+        const=UnknownLabelPolicy.strict,
+    )
+    parser.add_argument(
+        "--relaxed",
+        dest="unknown_label_policy",
+        type=UnknownLabelPolicy,
+        action="store_const",
+        const=UnknownLabelPolicy.relaxed,
+    )
 
 
 def _prepare_transformers_parser(parser: ArgumentParser) -> None:
@@ -215,13 +229,28 @@ def _prepare_transformers_parser(parser: ArgumentParser) -> None:
         choices=list(UnknownLabelPolicy),
         default=UnknownLabelPolicy.skip,
     )
+    parser.add_argument(
+        "--strict",
+        dest="unknown_label_policy",
+        type=UnknownLabelPolicy,
+        action="store_const",
+        const=UnknownLabelPolicy.strict,
+    )
+    parser.add_argument(
+        "--relaxed",
+        dest="unknown_label_policy",
+        type=UnknownLabelPolicy,
+        action="store_const",
+        const=UnknownLabelPolicy.relaxed,
+    )
 
 
 def train_eval(matcher: Matcher, metric: Metric, test_known: bool) -> None:
     """
     Train/evaluate matcher.
     """
-    print(f"Train/evaluate matcher {matcher.name} with metric {metric.name}.")
+    print(f"Train/evaluate matcher '{matcher.name}' "
+          f"with metric '{metric.name}'.")
     if not test_known:
         print("Use validation set for testing.")
 
