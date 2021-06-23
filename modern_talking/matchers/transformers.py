@@ -1,7 +1,8 @@
 from pathlib import Path
 from typing import List, Optional
 
-from nlpaug.augmenter.word import WordAugmenter, SynonymAug
+from nlpaug.augmenter.word import SynonymAug, AntonymAug, RandomWordAug
+from nlpaug.flow import Sometimes, Pipeline
 from nltk.downloader import Downloader
 from pandas import DataFrame
 from simpletransformers.classification import ClassificationModel
@@ -133,8 +134,14 @@ def _text_pair_df(
     arg_texts: List[str] = []
     kp_texts: List[str] = []
     labels: List[float] = []
-    augmenter: Optional[WordAugmenter] = SynonymAug("wordnet") \
-        if augment >= 2 else None
+    augmenter: Optional[Pipeline] = None
+    if augment >= 2:
+        augmenter = Sometimes([
+            SynonymAug("wordnet"),
+            AntonymAug("wordnet"),
+            RandomWordAug(action="swap"),
+            RandomWordAug(action="delete"),
+        ])
     for arg, kp in pairs:
         current_arg_texts = [arg.text]
         current_kp_texts = [kp.text]
