@@ -39,7 +39,7 @@ class TermOverlapMatcher(UntrainedMatcher):
     ):
         self.language = language
         self.use_stop_words = stop_words
-        self.use_custom_stop_words = custom_stop_words
+        self.use_custom_stop_words = stopwords and custom_stop_words
         self.use_synonyms = synonyms and language == "english"
         self.use_antonyms = antonyms and language == "english"
         if stemming:
