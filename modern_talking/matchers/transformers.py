@@ -69,15 +69,9 @@ class TransformersMatcher(Matcher):
                f"{early_stopping_suffix}"
 
     def prepare(self) -> None:
-        base_dir = (Path(__file__).parent.parent.parent
-                    / "data" / "cache" / self.name)
-
+        # Configure model.
         args = ClassificationArgs()
-        args.cache_dir = str((base_dir / "cache").absolute())
-        args.output_dir = str((base_dir / "out").absolute())
         args.overwrite_output_dir = True
-        args.tensorboard_dir = str((base_dir / "runs").absolute())
-        args.best_model_dir = str((base_dir / "best_model").absolute())
         args.regression = True
         args.do_lower_case = "uncased" in self.model_name
         args.train_batch_size = self.batch_size
@@ -88,6 +82,7 @@ class TransformersMatcher(Matcher):
         args.early_stopping_patience = 5
         args.manual_seed = self.seed
 
+        # Load pretrained model.
         self.model = ClassificationModel(
             model_type=self.model_type,
             model_name=self.model_name,
@@ -96,9 +91,9 @@ class TransformersMatcher(Matcher):
             use_cuda=is_cuda_available(),
         )
 
+        # Download dependencies for augmenter.
         if self.augment > 0:
             downloader = Downloader()
-            # Download dependencies for augmenter.
             if not downloader.is_installed("punkt"):
                 downloader.download("punkt")
             if not downloader.is_installed("wordnet"):
@@ -127,6 +122,12 @@ class TransformersMatcher(Matcher):
         )
         if self.shuffle:
             dev_df = dev_df.sample(frac=1, random_state=self.seed)
+
+        # Configure model cache/checkpoint directories.
+        self.model.args.cache_dir = str(cache_path / "cache")
+        self.model.args.output_dir = str(cache_path / "out")
+        self.model.args.tensorboard_dir = str(cache_path / "runs")
+        self.model.args.best_model_dir = str(cache_path / "best_model")
 
         # Train model.
         self.model.train_model(train_df, eval_df=dev_df)
