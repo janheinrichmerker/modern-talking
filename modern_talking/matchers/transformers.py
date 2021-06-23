@@ -76,6 +76,7 @@ class TransformersMatcher(Matcher):
         args.do_lower_case = "uncased" in self.model_name
         args.train_batch_size = self.batch_size
         args.eval_batch_size = self.batch_size
+        args.num_train_epochs = self.epochs
         args.evaluate_during_training = True
         args.evaluate_during_training_steps = 1000
         args.use_early_stopping = self.early_stopping
