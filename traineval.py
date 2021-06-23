@@ -190,14 +190,12 @@ def _prepare_bilstm_parser(parser: ArgumentParser) -> None:
     parser.add_argument(
         "--strict",
         dest="unknown_label_policy",
-        type=UnknownLabelPolicy,
         action="store_const",
         const=UnknownLabelPolicy.strict,
     )
     parser.add_argument(
         "--relaxed",
         dest="unknown_label_policy",
-        type=UnknownLabelPolicy,
         action="store_const",
         const=UnknownLabelPolicy.relaxed,
     )
@@ -232,14 +230,12 @@ def _prepare_transformers_parser(parser: ArgumentParser) -> None:
     parser.add_argument(
         "--strict",
         dest="unknown_label_policy",
-        type=UnknownLabelPolicy,
         action="store_const",
         const=UnknownLabelPolicy.strict,
     )
     parser.add_argument(
         "--relaxed",
         dest="unknown_label_policy",
-        type=UnknownLabelPolicy,
         action="store_const",
         const=UnknownLabelPolicy.relaxed,
     )
