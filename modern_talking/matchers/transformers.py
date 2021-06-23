@@ -60,7 +60,7 @@ class TransformersMatcher(Matcher):
             if self.early_stopping else ""
         return f"transformers" \
                f"-{self.model_type}" \
-               f"-{self.model_name}" \
+               f"-{self.model_name.replace('/', '-')}" \
                f"{augment_suffix}" \
                f"{unknown_label_policy_suffix}" \
                f"{shuffle_suffix}" \
