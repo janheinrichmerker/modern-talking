@@ -82,7 +82,7 @@ class SVCPartOfSpeechMatcher(Matcher):
         return " ".join(pos_list)
 
     def load_model(self, path: Path) -> bool:
-        file_path = Path.joinpath(path, self.name)
+        file_path = path / self.name
         if self.model is not None and self.encoder is not None:
             return True
         if not file_path.exists() or not file_path.is_file():
@@ -96,7 +96,7 @@ class SVCPartOfSpeechMatcher(Matcher):
         matcher_path = path.parent.absolute()
         matcher_path.mkdir(exist_ok=True)
         path.mkdir(exist_ok=True)
-        file_path = Path.joinpath(path, self.name)
+        file_path = path / self.name
         with file_path.open("wb") as file:
             dump((self.model, self.encoder), file)
 
@@ -582,7 +582,7 @@ class RegressionBagOfWordsMatcher(Matcher):
             downloader.download("punkt")
 
     def load_model(self, path: Path) -> bool:
-        file_path = Path.joinpath(path, self.name)
+        file_path = path / self.name
         if self.model is not None and self.encoder is not None:
             return True
         if not file_path.exists() or not file_path.is_file():
@@ -595,7 +595,7 @@ class RegressionBagOfWordsMatcher(Matcher):
         matcher_path = path.parent.absolute()
         matcher_path.mkdir(exist_ok=True)
         path.mkdir(exist_ok=True)
-        file_path = Path.joinpath(path, self.name)
+        file_path = path / self.name
         with file_path.open("wb") as file:
             dump((self.model, self.encoder), file)
 
