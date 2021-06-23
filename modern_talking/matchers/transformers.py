@@ -69,6 +69,16 @@ class TransformersMatcher(Matcher):
             use_cuda=is_cuda_available(),
         )
 
+        if self.augment > 0:
+            downloader = Downloader()
+            # Download dependencies for augmenter.
+            if not downloader.is_installed("punkt"):
+                downloader.download("punkt")
+            if not downloader.is_installed("wordnet"):
+                downloader.download("wordnet")
+            if not downloader.is_installed("averaged_perceptron_tagger"):
+                downloader.download("averaged_perceptron_tagger")
+
     def train(
             self,
             train_data: LabelledDataset,
