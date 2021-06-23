@@ -19,6 +19,11 @@ class TransformersMatcher(Matcher):
     model_name: str
     augment: int
     unknown_label_policy: UnknownLabelPolicy
+    shuffle: bool
+    batch_size: int
+    epochs: int
+    early_stopping: bool
+    seed: int = 1234
 
     model: ClassificationModel
 
@@ -28,11 +33,19 @@ class TransformersMatcher(Matcher):
             model_name: str,
             augment: int = 0,
             unknown_label_policy: UnknownLabelPolicy = UnknownLabelPolicy.skip,
+            shuffle: bool = True,
+            batch_size: int = 16,
+            epochs: int = 1,
+            early_stopping: bool = False,
     ):
         self.model_type = model_type
         self.model_name = model_name
         self.augment = augment
         self.unknown_label_policy = unknown_label_policy
+        self.shuffle = shuffle
+        self.batch_size = batch_size
+        self.epochs = epochs
+        self.early_stopping = early_stopping
 
     @property
     def name(self) -> str:
@@ -43,11 +56,19 @@ class TransformersMatcher(Matcher):
             else "-strict" \
             if self.unknown_label_policy == UnknownLabelPolicy.strict \
             else ""
+        shuffle_suffix = f"-shuffle-{self.shuffle}" \
+            if self.shuffle > 0 else ""
+        early_stopping_suffix = "-early-stopping" \
+            if self.early_stopping else ""
         return f"transformers" \
                f"-{self.model_type}" \
                f"-{self.model_name}" \
                f"{augment_suffix}" \
-               f"{unknown_label_policy_suffix}"
+               f"{unknown_label_policy_suffix}" \
+               f"{shuffle_suffix}" \
+               f"-batch-{self.batch_size}" \
+               f"-epochs-{self.epochs}" \
+               f"{early_stopping_suffix}"
 
     def prepare(self) -> None:
         base_dir = (Path(__file__).parent.parent.parent
@@ -60,8 +81,14 @@ class TransformersMatcher(Matcher):
         args.tensorboard_dir = str((base_dir / "runs").absolute())
         args.best_model_dir = str((base_dir / "best_model").absolute())
         args.regression = True
-        args.gradient_accumulation_steps = 16
+        args.do_lower_case = "uncased" in self.model_name
+        args.train_batch_size = self.batch_size
+        args.eval_batch_size = self.batch_size
         args.evaluate_during_training = True
+        args.evaluate_during_training_steps = 1000
+        args.use_early_stopping = self.early_stopping
+        args.early_stopping_patience = 5
+        args.manual_seed = self.seed
 
         self.model = ClassificationModel(
             model_type=self.model_type,
@@ -93,13 +120,15 @@ class TransformersMatcher(Matcher):
             self.augment,
             self.unknown_label_policy,
         )
-        train_df.sample(frac=1, random_state=1234)
+        if self.shuffle:
+            train_df = train_df.sample(frac=1, random_state=self.seed)
         dev_df = _text_pair_df(
             dev_data,
             self.augment,
             self.unknown_label_policy,
         )
-        dev_df.sample(frac=1, random_state=1234)
+        if self.shuffle:
+            dev_df = dev_df.sample(frac=1, random_state=self.seed)
 
         # Train model.
         self.model.train_model(train_df, eval_df=dev_df)
