@@ -239,6 +239,28 @@ def _prepare_transformers_parser(parser: ArgumentParser) -> None:
         action="store_const",
         const=UnknownLabelPolicy.relaxed,
     )
+    parser.add_argument(
+        "--shuffle",
+        dest="shuffle",
+        action="store_true",
+    )
+    parser.add_argument(
+        "--batch-size", "--batch",
+        dest="batch_size",
+        type=int,
+        default=16,
+    )
+    parser.add_argument(
+        "--epochs",
+        dest="epochs",
+        type=int,
+        default=1,
+    )
+    parser.add_argument(
+        "--early-stopping",
+        dest="early_stopping",
+        action="store_true",
+    )
 
 
 def train_eval(matcher: Matcher, metric: Metric, test_known: bool) -> None:
@@ -315,6 +337,10 @@ def train_eval_cli(args: Namespace) -> None:
             model_name=args.model_name,
             augment=args.augment,
             unknown_label_policy=args.unknown_label_policy,
+            shuffle=args.shuffle,
+            batch_size=args.batch_size,
+            epochs=args.epochs,
+            early_stopping=args.early_stopping,
         )
     else:
         raise Exception("Invalid matcher.")
