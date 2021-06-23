@@ -132,7 +132,7 @@ class SVCPartOfSpeechMatcher(Matcher):
             self,
             train_data: LabelledDataset,
             dev_data: LabelledDataset,
-            checkpoint_path: Path,
+            cache_path: Path,
     ):
 
         self.train_encoder(train_data)
@@ -236,7 +236,7 @@ class EnsemblePartOfSpeechMatcher(Matcher):
             self,
             train_data: LabelledDataset,
             dev_data: LabelledDataset,
-            checkpoint_path: Path,
+            cache_path: Path,
     ):
 
         self.train_encoder(train_data)
@@ -347,7 +347,7 @@ class RegressionPartOfSpeechMatcher(Matcher):
             self,
             train_data: LabelledDataset,
             dev_data: LabelledDataset,
-            checkpoint_path: Path,
+            cache_path: Path,
     ):
 
         self.train_encoder(train_data)
@@ -421,7 +421,7 @@ class EnsembleVotingMatcher(Matcher):
             self,
             train_data: LabelledDataset,
             dev_data: LabelledDataset,
-            checkpoint_path: Path,
+            cache_path: Path,
     ):
         """
         Encode training data with bag of words to get numeric features.
@@ -516,7 +516,7 @@ class RegressionTfidfMatcher(Matcher):
             self,
             train_data: LabelledDataset,
             dev_data: LabelledDataset,
-            checkpoint_path: Path,
+            cache_path: Path,
     ):
         """
         Encode training data with bag of words to get numeric features.
@@ -603,7 +603,7 @@ class RegressionBagOfWordsMatcher(Matcher):
             self,
             train_data: LabelledDataset,
             dev_data: LabelledDataset,
-            checkpoint_path: Path,
+            cache_path: Path,
     ):
         """
         Encode training data with bag of words to get numeric features.
@@ -675,7 +675,7 @@ class SVCBagOfWordsMatcher(Matcher):
             self,
             train_data: LabelledDataset,
             dev_data: LabelledDataset,
-            checkpoint_path: Path,
+            cache_path: Path,
     ):
         """
         Encode training data with bag of words to get numeric features.

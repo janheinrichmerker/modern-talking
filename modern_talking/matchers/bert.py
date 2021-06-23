@@ -185,7 +185,7 @@ class BertMatcher(Matcher):
             self,
             train_data: LabelledDataset,
             dev_data: LabelledDataset,
-            checkpoint_path: Path,
+            cache_path: Path,
     ):
         # Check GPU availability.
         setup_colab_tpu()
@@ -215,7 +215,7 @@ class BertMatcher(Matcher):
         print("\tTrain compiled model.")
         checkpoint_name = "weights-improvement-{epoch:02d}-{val_loss:.3f}.tf"
         checkpoint = ModelCheckpoint(
-            checkpoint_path / checkpoint_name,
+            cache_path / checkpoint_name,
             monitor='val_loss',
             save_best_only=True,
             save_weights_only=True,

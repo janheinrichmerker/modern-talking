@@ -166,11 +166,11 @@ class Pipeline:
         # Load/train model.
         matcher_path = cache_dir / self.matcher.name
         model_path = matcher_path / "model"
-        checkpoint_path = matcher_path / "checkpoint"
+        cache_path = matcher_path / "cache"
         print("Load model.")
         if not self.matcher.load_model(model_path):
             print("Train model.")
-            self.matcher.train(train_data, dev_data, checkpoint_path)
+            self.matcher.train(train_data, dev_data, cache_path)
             print("Save model.")
             self.matcher.save_model(model_path)
 

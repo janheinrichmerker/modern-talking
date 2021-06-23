@@ -51,14 +51,14 @@ class Cascade(Matcher):
             self,
             train_data: LabelledDataset,
             dev_data: LabelledDataset,
-            checkpoint_path: Path,
+            cache_path: Path,
     ):
-        checkpoint_path_a = checkpoint_path / self.matcher_a.name
-        checkpoint_path_b = checkpoint_path / self.matcher_b.name
-        checkpoint_path_a.mkdir(exist_ok=True)
-        checkpoint_path_b.mkdir(exist_ok=True)
-        self.matcher_a.train(train_data, dev_data, checkpoint_path_a)
-        self.matcher_b.train(train_data, dev_data, checkpoint_path_b)
+        cache_path_a = cache_path / self.matcher_a.name
+        cache_path_b = cache_path / self.matcher_b.name
+        cache_path_a.mkdir(exist_ok=True)
+        cache_path_b.mkdir(exist_ok=True)
+        self.matcher_a.train(train_data, dev_data, cache_path_a)
+        self.matcher_b.train(train_data, dev_data, cache_path_b)
 
     def combined_prediction(
             self,

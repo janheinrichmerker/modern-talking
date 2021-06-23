@@ -112,7 +112,7 @@ class TransformersMatcher(Matcher):
             self,
             train_data: LabelledDataset,
             dev_data: LabelledDataset,
-            checkpoint_path: Path,
+            cache_path: Path,
     ):
         # Load data.
         train_df = _text_pair_df(

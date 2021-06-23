@@ -34,13 +34,14 @@ class Matcher(ABC):
             self,
             train_data: LabelledDataset,
             dev_data: LabelledDataset,
-            checkpoint_path: Path,
+            cache_path: Path,
     ):
         """
         Train the matcher given a training dataset and a development dataset
         that can be used for tuning hyper-parameters.
         :param train_data: Dataset for training the matcher.
         :param dev_data: Dataset for hyper-parameter tuning.
+        :param cache_path: Path for caching model assets during training.
         """
         pass
 
@@ -109,7 +110,7 @@ class UntrainedMatcher(Matcher, ABC):
             self,
             train_data: LabelledDataset,
             dev_data: LabelledDataset,
-            checkpoint_path: Path,
+            cache_path: Path,
     ):
         # Nothing to train.
         return
