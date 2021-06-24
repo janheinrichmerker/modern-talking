@@ -2,15 +2,17 @@ from pathlib import Path
 from urllib.request import urlretrieve
 
 paths = [
-    "arguments_dev.csv",
-    "arguments_train.csv",
-    "key_points_dev.csv",
-    "key_points_train.csv",
-    "labels_dev.csv",
-    "labels_train.csv",
+    "kpm_data/arguments_dev.csv",
+    "kpm_data/arguments_train.csv",
+    "test_data/arguments_test.csv",
+    "kpm_data/key_points_dev.csv",
+    "kpm_data/key_points_train.csv",
+    "test_data/key_points_test.csv",
+    "kpm_data/labels_dev.csv",
+    "kpm_data/labels_train.csv",
 ]
 urls = [
-    f"https://github.com/IBM/KPA_2021_shared_task/raw/main/kpm_data/{path}"
+    f"https://github.com/IBM/KPA_2021_shared_task/raw/main/{path}"
     for path in paths
 ]
 
