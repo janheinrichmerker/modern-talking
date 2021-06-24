@@ -6,7 +6,10 @@ from modern_talking.model import Labels, ArgumentKeyPointIdPair, Label
 
 
 class ManualErrors(Metric):
-    name = "manual-errors"
+
+    @property
+    def slug(self) -> str:
+        return "manual-errors"
 
     def evaluate(
             self,

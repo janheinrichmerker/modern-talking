@@ -18,9 +18,11 @@ class Metric(ABC):
 
     @property
     @abstractmethod
-    def name(self) -> str:
+    def slug(self) -> str:
         """
-        Descriptive name for this metric.
+        Descriptive slug for this metric.
+        The slug should contain only lowercase letters, numbers and dashes,
+        because it may used as file names in various places.
         """
         pass
 

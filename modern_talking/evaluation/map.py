@@ -8,7 +8,10 @@ from modern_talking.pipeline import Pipeline
 
 
 class MeanAveragePrecision(Metric):
-    name = "map"
+
+    @property
+    def slug(self) -> str:
+        return "map"
 
     def evaluate(
             self,

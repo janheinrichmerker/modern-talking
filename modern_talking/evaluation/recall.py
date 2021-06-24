@@ -5,7 +5,10 @@ from modern_talking.model import Labels
 
 
 class Recall(Metric):
-    name = "recall"
+
+    @property
+    def slug(self) -> str:
+        return "recall"
 
     def evaluate(
             self,
@@ -26,7 +29,10 @@ class Recall(Metric):
 
 
 class MacroRecall(Metric):
-    name = "macro-recall"
+
+    @property
+    def slug(self) -> str:
+        return "macro-recall"
 
     def evaluate(
             self,

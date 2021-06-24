@@ -1,30 +1,30 @@
 from argparse import ArgumentParser, Namespace
-from typing import Optional
+from typing import Optional, Iterable
 
 from modern_talking.data import download_kpa_2021_data
 from modern_talking.evaluation import Metric
 from modern_talking.evaluation.f_measure import F1Score, MacroF1Score
 from modern_talking.evaluation.manual_errors import ManualErrors
+from modern_talking.evaluation.map import MeanAveragePrecision
 from modern_talking.evaluation.precision import Precision, MacroPrecision
 from modern_talking.evaluation.recall import Recall, MacroRecall
-from modern_talking.evaluation.map import MeanAveragePrecision
 from modern_talking.matchers import Matcher
 from modern_talking.matchers.baselines import AllMatcher, RandomMatcher, \
     NoneMatcher
-from modern_talking.matchers.distillbert_bilstm import MergeType, \
-    DistilBertBilstmMatcher
 from modern_talking.matchers.bert import BertMatcher
 from modern_talking.matchers.bilstm import BidirectionalLstmMatcher
+from modern_talking.matchers.combine import Cascade
+from modern_talking.matchers.distillbert_bilstm import MergeType, \
+    DistilBertBilstmMatcher
 from modern_talking.matchers.regression import EnsembleVotingMatcher, \
     RegressionTfidfMatcher, RegressionBagOfWordsMatcher, \
     EnsemblePartOfSpeechMatcher, RegressionPartOfSpeechMatcher, \
     SVCPartOfSpeechMatcher, SVCBagOfWordsMatcher, SimpleTransformMatcher
-from modern_talking.matchers.combine import Cascade
-from modern_talking.matchers.transformers import TransformersMatcher
 from modern_talking.matchers.term_overlap import TermOverlapMatcher
+from modern_talking.matchers.transformers import TransformersMatcher
 from modern_talking.pipeline import Pipeline
 
-matchers = (
+matchers: Iterable[Matcher] = [
     AllMatcher(),
     NoneMatcher(),
     RandomMatcher(1234),
@@ -147,9 +147,9 @@ matchers = (
         "distilbert",
         "distilbert-base-uncased",
     ),
-)
+]
 
-metrics = (
+metrics: Iterable[Metric] = [
     Precision(),
     MacroPrecision(),
     Recall(),
@@ -158,7 +158,7 @@ metrics = (
     MacroF1Score(),
     MeanAveragePrecision(),
     ManualErrors(),
-)
+]
 
 parser: ArgumentParser = ArgumentParser()
 subparsers = parser.add_subparsers(dest="command")
@@ -184,7 +184,7 @@ def train_eval() -> None:
         )
 
     metric: Optional[Metric] = next(
-        filter(lambda m: m.name == args.metric, metrics),
+        filter(lambda m: m.slug == args.metric, metrics),
         None,
     )
     if metric is None:
@@ -201,7 +201,7 @@ def train_eval() -> None:
     result = pipeline.train_evaluate()
 
     print(
-        f"Final score for metric {metric.name}: {result:.4f}")
+        f"Final score for metric {metric.slug}: {result:.4f}")
 
 
 def list_matchers() -> None:
@@ -216,8 +216,8 @@ def list_metrics() -> None:
     """
     Print metric names.
     """
-    for metric in sorted(metrics, key=lambda m: m.name):
-        print(metric.name)
+    for metric in sorted(metrics, key=lambda m: m.slug):
+        print(metric.slug)
 
 
 if __name__ == "__main__":

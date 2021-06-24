@@ -1,4 +1,5 @@
 from argparse import ArgumentParser, Namespace
+from typing import Iterable
 
 from modern_talking.data import download_kpa_2021_data
 from modern_talking.evaluation import Metric
@@ -10,7 +11,7 @@ from modern_talking.evaluation.recall import Recall, MacroRecall
 from modern_talking.matchers import UnknownLabelPolicy, Matcher
 from modern_talking.pipeline import Pipeline
 
-metrics = [
+metrics: Iterable[Metric] = [
     MeanAveragePrecision(),
     Precision(),
     MacroPrecision(),
@@ -27,7 +28,7 @@ def _prepare_parser(parser: ArgumentParser) -> None:
     parser.add_argument(
         dest="metric",
         type=str,
-        choices=[metric.name for metric in metrics],
+        choices=[metric.slug for metric in metrics],
     )
 
     all_parser = matcher_parsers.add_parser("all")
@@ -268,7 +269,7 @@ def train_eval(matcher: Matcher, metric: Metric, test_known: bool) -> None:
     Train/evaluate matcher.
     """
     print(f"Train/evaluate matcher '{matcher.slug}' "
-          f"with metric '{metric.name}'.")
+          f"with metric '{metric.slug}'.")
     if not test_known:
         print("Use validation set for testing.")
 
@@ -279,13 +280,13 @@ def train_eval(matcher: Matcher, metric: Metric, test_known: bool) -> None:
     pipeline = Pipeline(matcher, metric)
     result = pipeline.train_evaluate(ignore_test=not test_known)
 
-    print(f"Final score for metric {metric.name}: {result:.4f}")
+    print(f"Final score for metric {metric.slug}: {result:.4f}")
 
 
 def train_eval_cli(args: Namespace) -> None:
     test_known: bool = args.test_known
 
-    metric: Metric = next(filter(lambda m: m.name == args.metric, metrics))
+    metric: Metric = next(filter(lambda m: m.slug == args.metric, metrics))
 
     matcher: Matcher
 

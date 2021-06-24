@@ -5,7 +5,10 @@ from modern_talking.model import Labels
 
 
 class F1Score(Metric):
-    name = "f1-score"
+
+    @property
+    def slug(self) -> str:
+        return "f1-score"
 
     def evaluate(
             self,
@@ -26,7 +29,10 @@ class F1Score(Metric):
 
 
 class MacroF1Score(Metric):
-    name = "macro-f1-score"
+
+    @property
+    def slug(self) -> str:
+        return "macro-f1-score"
 
     def evaluate(
             self,

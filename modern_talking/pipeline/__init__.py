@@ -287,7 +287,7 @@ class Pipeline:
         )
         train_result_average = (train_result_strict + train_result_relaxed) / 2
         print(
-            f"Metric {self.metric.name} on train dataset:"
+            f"Metric {self.metric.slug} on train dataset:"
             f" {train_result_strict:.4f} (strict)"
             f" {train_result_relaxed:.4f} (relaxed)"
             f" {train_result_average:.4f} (average)"
@@ -305,14 +305,14 @@ class Pipeline:
         )
         dev_result_average = (dev_result_strict + dev_result_relaxed) / 2
         print(
-            f"Metric {self.metric.name} on dev dataset:"
+            f"Metric {self.metric.slug} on dev dataset:"
             f" {dev_result_strict:.4f} (strict)"
             f" {dev_result_relaxed:.4f} (relaxed)"
             f" {dev_result_average:.4f} (average)"
         )
 
         if not isinstance(test_data, LabelledDataset):
-            print(f"Metric {self.metric.name} on train dataset: "
+            print(f"Metric {self.metric.slug} on train dataset: "
                   "skipped because no ground truth labels were found")
             return dev_result_average
 
@@ -349,7 +349,7 @@ class Pipeline:
                 or (isnan(saved_test_result_average)
                     and isnan(test_result_average)))
         print(
-            f"Metric {self.metric.name} on test dataset:"
+            f"Metric {self.metric.slug} on test dataset:"
             f" {test_result_strict:.4f} (strict)"
             f" {test_result_relaxed:.4f} (relaxed)"
             f" {test_result_average:.4f} (average)"

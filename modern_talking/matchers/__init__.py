@@ -18,7 +18,9 @@ class Matcher(ABC):
     @abstractmethod
     def slug(self) -> str:
         """
-        Descriptive name for this matcher.
+        Descriptive slug for this matcher.
+        The slug should contain only lowercase letters, numbers and dashes,
+        because it may used as file names in various places.
         """
         pass
 

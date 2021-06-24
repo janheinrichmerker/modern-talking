@@ -5,7 +5,10 @@ from modern_talking.model import Labels
 
 
 class Precision(Metric):
-    name = "precision"
+
+    @property
+    def slug(self) -> str:
+        return "precision"
 
     def evaluate(
             self,
@@ -26,7 +29,10 @@ class Precision(Metric):
 
 
 class MacroPrecision(Metric):
-    name = "macro-precision"
+
+    @property
+    def slug(self) -> str:
+        return "macro-precision"
 
     def evaluate(
             self,
