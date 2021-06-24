@@ -23,15 +23,38 @@ pipenv install
 
 ### Run a matcher pipeline
 
-Each matcher and metric has a unique name. (Names can be listed with `pipenv run python main.py matchers` and `pipenv run python main.py metrics`.)
-You can then run a pipeline, i.e., train and evaluate a matcher:
+Run a pipeline to train and evaluate a matcher with respect to a given metric:
 
 ```shell script
-pipenv run python main.py traineval [MATCHER] [METRIC]
+pipenv run python traineval.py [MATCHER] [MATCHER_OPTIONS] [METRIC]
 ```
 
-This will automatically download all datasets, train the matcher on the train set and evaluate the metric for predicted labels on the dev set.
-Predicted labels are also saved to `data/out/predictions-[METRIC]-[MATCHER].json` in JSON format as described in the [shared task documentation](https://github.com/ibm/KPA_2021_shared_task#track-1---key-point-matching).
+This will automatically download all datasets, train the matcher on the train set and evaluate the metric for predicted labels on the dev and test set (test evaluation will be skipped if test labels are unknown).
+Predicted labels are also saved to `data/out/predictions-[MATCHER].json` in JSON format as described in the [shared task documentation](https://github.com/ibm/KPA_2021_shared_task#track-1---key-point-matching).
+
+List available matchers with:
+```shell script
+pipenv run python traineval.py --help
+```
+List individual matcher's options with:
+```shell script
+pipenv run python traineval.py [MATCHER] --help
+```
+
+#### Examples
+
+Term overlap baseline:
+```shell script
+pipenv run python traineval.py term-overlap map
+```
+Term overlap baseline (with preprocessing):
+```shell script
+pipenv run python traineval.py term-overlap --stemming --stop-words --custom-stop-words --synonyms map
+```
+BERT classifier:
+```shell script
+pipenv run python traineval.py transformers --type bert --name bert-base-uncased map
+```
 
 ### Manual evaluation
 
