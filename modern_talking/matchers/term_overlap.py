@@ -60,6 +60,33 @@ class TermOverlapMatcher(UntrainedMatcher):
                f"{synonyms_suffix}" \
                f"{antonyms_suffix}"
 
+    @property
+    def name(self) -> Optional[str]:
+        return "Term Overlap"
+
+    @property
+    def description(self) -> Optional[str]:
+        preprocessing = []
+        if self.use_stop_words:
+            if self.use_custom_stop_words:
+                preprocessing.append("stop words (without 'not')")
+            else:
+                preprocessing.append("stop words")
+        if self.use_synonyms:
+            preprocessing.append("synonyms")
+        if self.use_antonyms:
+            preprocessing.append("antonyms")
+        if self.use_antonyms:
+            preprocessing.append("Snowball stemmer")
+        preprocessing_suffix = f"\nPreprocessing: {', '.join(preprocessing)}" \
+            if len(preprocessing) > 0 else ""
+        return "Match argument key point pairs based on their term overlap.\n" \
+               "This method uses the Natural Language Toolkit (NLTK) " \
+               "for tokenization" \
+               f"{' and preprocessing' if len(preprocessing) > 0 else ''}" \
+               f"." \
+               f"{preprocessing_suffix}"
+
     def prepare(self) -> None:
         downloader = Downloader()
 
