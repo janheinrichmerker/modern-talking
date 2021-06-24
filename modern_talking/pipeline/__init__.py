@@ -3,6 +3,7 @@ from json import load, dump
 from math import isnan
 from pathlib import Path
 from typing import Set
+from zipfile import ZipFile
 
 from modern_talking.evaluation import Metric, EvaluationMode
 from modern_talking.matchers import Matcher
@@ -141,6 +142,15 @@ class Pipeline:
             }
             dump(json, file)
 
+    @staticmethod
+    def save_predictions_archive(predictions_path: Path, zip_path: Path):
+        """
+        Save a copy of the predictions JSON file in a ZIP file.
+        In the archive the file is named `predictions.p`.
+        """
+        with ZipFile(zip_path, "w") as zip:
+            zip.write(predictions_path, "predictions.p")
+
     def train_evaluate(self, ignore_test: bool = False) -> float:
         """
         Parse training, test, and development data, train the matcher,
@@ -185,7 +195,9 @@ class Pipeline:
 
         print("Save test predictions.")
         predictions_file = output_dir / f"predictions-{self.matcher.name}.json"
+        archive_file = predictions_file.with_suffix(".zip")
         Pipeline.save_predictions(predictions_file, test_labels)
+        Pipeline.save_predictions_archive(predictions_file, archive_file)
         saved_test_labels = Pipeline.load_predictions(predictions_file)
         assert saved_test_labels == test_labels
 
