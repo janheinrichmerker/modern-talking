@@ -8,7 +8,7 @@ from zipfile import ZipFile
 from modern_talking.evaluation import Metric, EvaluationMode
 from modern_talking.matchers import Matcher
 from modern_talking.model import Argument, KeyPoint, Labels, LabelledDataset, \
-    DatasetType
+    DatasetType, Dataset
 
 data_dir = Path(__file__).parent.parent.parent / "data"
 output_dir = data_dir / "out"
@@ -32,12 +32,13 @@ class Pipeline:
         self.metric = evaluator
 
     @staticmethod
-    def load_dataset(dataset_type: DatasetType) -> LabelledDataset:
+    def load_dataset(dataset_type: DatasetType) -> Dataset:
         """
-        Load a single dataset with arguments, key points and match labels
+        Load a single dataset with arguments and key points
         from the data directory.
+        If the file exists, the match labels are also parsed.
         :param dataset_type: The dataset type to load.
-        :return: Parsed, labelled dataset.
+        :return: Parsed (possibly labelled) dataset.
         """
         suffix: str
         if dataset_type == DatasetType.TRAIN:
@@ -55,9 +56,11 @@ class Pipeline:
 
         arguments = Pipeline.load_arguments(arguments_file)
         key_points = Pipeline.load_key_points(key_points_file)
-        labels = Pipeline.load_labels(labels_file)
-
-        return LabelledDataset(arguments, key_points, labels)
+        if labels_file.exists():
+            labels = Pipeline.load_labels(labels_file)
+            return LabelledDataset(arguments, key_points, labels)
+        else:
+            return Dataset(arguments, key_points)
 
     @staticmethod
     def load_arguments(path: Path) -> Set[Argument]:
@@ -169,8 +172,10 @@ class Pipeline:
         # Load datasets.
         print("Load datasets.")
         train_data = Pipeline.load_dataset(DatasetType.TRAIN)
+        assert isinstance(train_data, LabelledDataset)
         dev_data = Pipeline.load_dataset(DatasetType.DEV)
-        test_data = Pipeline.load_dataset(DatasetType.TEST) \
+        assert isinstance(dev_data, LabelledDataset)
+        test_data: Dataset = Pipeline.load_dataset(DatasetType.TEST) \
             if not ignore_test else dev_data
 
         # Load/train model.
@@ -238,6 +243,11 @@ class Pipeline:
             f" {dev_result_relaxed:.4f} (relaxed)"
             f" {dev_result_average:.4f} (average)"
         )
+
+        if not isinstance(test_data, LabelledDataset):
+            print("Metric {self.metric.name} on train dataset: "
+                  "skipped because no ground truth labels were found")
+            return dev_result_average
 
         test_result_strict = self.metric.evaluate(
             test_labels,
