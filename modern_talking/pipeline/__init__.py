@@ -151,8 +151,8 @@ class Pipeline:
         Save a copy of the predictions JSON file in a ZIP file.
         In the archive the file is named `predictions.p`.
         """
-        with ZipFile(zip_path, "w") as zip:
-            zip.write(predictions_path, "predictions.p")
+        with ZipFile(zip_path, "w") as zip_file:
+            zip_file.write(predictions_path, "predictions.p")
 
     def train_evaluate(self, ignore_test: bool = False) -> float:
         """
@@ -261,8 +261,8 @@ class Pipeline:
         )
         test_result_average = (test_result_strict + test_result_relaxed) / 2
         saved_test_result_strict = self.metric.evaluate(
-            dev_labels,
-            dev_data.labels,
+            saved_test_labels,
+            test_data.labels,
             EvaluationMode.strict,
         )
         saved_test_result_relaxed = self.metric.evaluate(
