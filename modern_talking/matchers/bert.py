@@ -161,7 +161,7 @@ class BertMatcher(Matcher):
         self.epochs = epochs
 
     @property
-    def name(self) -> str:
+    def slug(self) -> str:
         return f"{self.bert_model_name}" \
                f"-shuffle-{self.shuffle}" \
                f"-batch-{self.batch_size}" \

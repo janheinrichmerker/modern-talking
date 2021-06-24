@@ -48,7 +48,7 @@ class TransformersMatcher(Matcher):
         self.early_stopping = early_stopping
 
     @property
-    def name(self) -> str:
+    def slug(self) -> str:
         augment_suffix = f"-augment-{self.augment}" if self.augment > 0 else ""
         unknown_label_policy_suffix = "-relaxed" \
             if self.unknown_label_policy == UnknownLabelPolicy.relaxed \

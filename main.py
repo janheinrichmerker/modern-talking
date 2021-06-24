@@ -174,7 +174,7 @@ def train_eval() -> None:
     Train/evaluate matcher.
     """
     matcher: Optional[Matcher] = next(
-        filter(lambda m: m.name == args.matcher, matchers),
+        filter(lambda m: m.slug == args.matcher, matchers),
         None,
     )
     if matcher is None:
@@ -208,8 +208,8 @@ def list_matchers() -> None:
     """
     Print matcher names.
     """
-    for matcher in sorted(matchers, key=lambda m: m.name):
-        print(matcher.name)
+    for matcher in sorted(matchers, key=lambda m: m.slug):
+        print(matcher.slug)
 
 
 def list_metrics() -> None:

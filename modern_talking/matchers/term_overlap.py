@@ -46,7 +46,7 @@ class TermOverlapMatcher(UntrainedMatcher):
             self.stemmer = SnowballStemmer(language)
 
     @property
-    def name(self) -> str:
+    def slug(self) -> str:
         stemming_suffix = "-stemming" if self.stemmer is not None else ""
         stop_words_suffix = "-stopwords" if self.use_stop_words else ""
         custom_stop_words_suffix = "-custom" if self.use_custom_stop_words \

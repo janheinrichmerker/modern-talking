@@ -21,27 +21,27 @@ class Cascade(Matcher):
         self.threshold = threshold
 
     @property
-    def name(self) -> str:
+    def slug(self) -> str:
         return f"cascade" \
                f"-{self.threshold}" \
-               f"-{self.matcher_a.name}" \
-               f"-{self.matcher_b.name}"
+               f"-{self.matcher_a.slug}" \
+               f"-{self.matcher_b.slug}"
 
     def prepare(self) -> None:
         self.matcher_a.prepare()
         self.matcher_b.prepare()
 
     def load_model(self, path: Path) -> bool:
-        path_a = path / self.matcher_a.name
-        path_b = path / self.matcher_b.name
+        path_a = path / self.matcher_a.slug
+        path_b = path / self.matcher_b.slug
         if not path_a.exists() or not path_b.exists():
             return False
         return (self.matcher_a.load_model(path_a)
                 and self.matcher_b.load_model(path_b))
 
     def save_model(self, path: Path):
-        path_a = path / self.matcher_a.name
-        path_b = path / self.matcher_b.name
+        path_a = path / self.matcher_a.slug
+        path_b = path / self.matcher_b.slug
         path_a.mkdir(exist_ok=True)
         path_b.mkdir(exist_ok=True)
         self.matcher_a.save_model(path_a)
@@ -53,8 +53,8 @@ class Cascade(Matcher):
             dev_data: LabelledDataset,
             cache_path: Path,
     ):
-        cache_path_a = cache_path / self.matcher_a.name
-        cache_path_b = cache_path / self.matcher_b.name
+        cache_path_a = cache_path / self.matcher_a.slug
+        cache_path_b = cache_path / self.matcher_b.slug
         cache_path_a.mkdir(exist_ok=True)
         cache_path_b.mkdir(exist_ok=True)
         self.matcher_a.train(train_data, dev_data, cache_path_a)

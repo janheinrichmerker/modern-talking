@@ -268,7 +268,7 @@ class DistilBertBilstmMatcher(Matcher):
         self.epochs = epochs
 
     @property
-    def name(self) -> str:
+    def slug(self) -> str:
         return f"{self.distilbert_model_name}" \
                f"-dropout-{self.distilbert_dropout}" \
                f"-bilstm-{self.bilstm_units}" \

@@ -27,9 +27,11 @@ downloader = Downloader()
 
 
 class SimpleTransformMatcher(UntrainedMatcher):
-    name = "simple-transform-similarity"
-
     transform_model: RepresentationModel
+
+    @property
+    def slug(self) -> str:
+        return "simple-transform-similarity"
 
     def prepare(self) -> None:
         self.transform_model = RepresentationModel(
@@ -61,10 +63,13 @@ class SimpleTransformMatcher(UntrainedMatcher):
 
 
 class SVCPartOfSpeechMatcher(Matcher):
-    name = "svc-bow-pos"
     model: SVC = None
     encoder: CountVectorizer = None
     language: Language
+
+    @property
+    def slug(self) -> str:
+        return "svc-bow-pos"
 
     def prepare(self) -> None:
         if not is_package("en_core_web_sm"):
@@ -174,11 +179,13 @@ class SVCPartOfSpeechMatcher(Matcher):
 
 
 class EnsemblePartOfSpeechMatcher(Matcher):
-    name = "ensemble-bow-pos"
-
     model: VotingClassifier = None
     encoder: CountVectorizer = None
     language: Language
+
+    @property
+    def slug(self) -> str:
+        return "ensemble-bow-pos"
 
     def prepare(self) -> None:
         # Install NLTK punctuation for tokenization.
@@ -288,11 +295,13 @@ class EnsemblePartOfSpeechMatcher(Matcher):
 
 
 class RegressionPartOfSpeechMatcher(Matcher):
-    name = "regression-bow-pos"
-
     model: LogisticRegression = None
     encoder: CountVectorizer = None
     language: Language
+
+    @property
+    def slug(self) -> str:
+        return "regression-bow-pos"
 
     def prepare(self) -> None:
         print("checked preprare")
@@ -394,10 +403,12 @@ class RegressionPartOfSpeechMatcher(Matcher):
 
 
 class EnsembleVotingMatcher(Matcher):
-    name = "ensemble-bow-voting"
-
     model: VotingClassifier = None
     encoder: CountVectorizer = None
+
+    @property
+    def slug(self) -> str:
+        return "ensemble-bow-voting"
 
     def prepare(self) -> None:
         # Install NLTK punctuation for tokenization.
@@ -489,10 +500,12 @@ def get_texts(train_data: LabelledDataset) -> List[str]:
 
 
 class RegressionTfidfMatcher(Matcher):
-    name = "regression-tfidf"
-
     model: LogisticRegression = None
     encoder: TfidfVectorizer = None
+
+    @property
+    def slug(self) -> str:
+        return "regression-tfidf"
 
     def prepare(self) -> None:
         # Install NLTK punctuation for tokenization.
@@ -571,10 +584,12 @@ class RegressionBagOfWordsMatcher(Matcher):
     TODO Document matcher.
     """
 
-    name = "regression-bow"
-
     model: LogisticRegression = None
     encoder: CountVectorizer = None
+
+    @property
+    def slug(self) -> str:
+        return "regression-bow"
 
     def prepare(self) -> None:
         # Install NLTK punctuation for tokenization.
@@ -653,10 +668,12 @@ class RegressionBagOfWordsMatcher(Matcher):
 
 
 class SVCBagOfWordsMatcher(Matcher):
-    name = "svc-bow"
-
     model: SVC = None
     encoder: CountVectorizer = None
+
+    @property
+    def slug(self) -> str:
+        return "svc-bow"
 
     def load_model(self, path: Path) -> bool:
         if self.model is not None and self.encoder is not None:

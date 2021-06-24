@@ -1,4 +1,5 @@
 from random import Random
+from typing import Optional
 
 from modern_talking.matchers import UntrainedMatcher
 from modern_talking.model import Labels, Dataset
@@ -9,7 +10,17 @@ class AllMatcher(UntrainedMatcher):
     Match arguments with key points if they share the same topic and stance.
     """
 
-    name = "all"
+    @property
+    def slug(self) -> str:
+        return "all"
+
+    @property
+    def name(self) -> Optional[str]:
+        return "All Pairs"
+
+    @property
+    def description(self) -> Optional[str]:
+        return "Match all argument key point pairs."
 
     def predict(self, data: Dataset) -> Labels:
         return {
@@ -25,7 +36,17 @@ class NoneMatcher(UntrainedMatcher):
     Match no argument key point pair.
     """
 
-    name = "none"
+    @property
+    def slug(self) -> str:
+        return "none"
+
+    @property
+    def name(self) -> Optional[str]:
+        return "No Pairs"
+
+    @property
+    def description(self) -> Optional[str]:
+        return "Match no argument key point pair."
 
     def predict(self, data: Dataset) -> Labels:
         return {
@@ -41,7 +62,21 @@ class RandomMatcher(UntrainedMatcher):
     Match argument key point pairs randomly if they share topic and stance.
     """
 
-    name = "random"
+    @property
+    def slug(self) -> str:
+        return "random"
+
+    @property
+    def name(self) -> Optional[str]:
+        seed_suffix = f" (seed {self.seed})" \
+            if self.seed is not None else ""
+        return f"Random{seed_suffix}"
+
+    @property
+    def description(self) -> Optional[str]:
+        seed_suffix = f"\nInitialize the random generator with seed {self.seed}." \
+            if self.seed is not None else ""
+        return f"Match argument key point pairs randomly.{seed_suffix}"
 
     def __init__(self, seed=None):
         self.seed = seed

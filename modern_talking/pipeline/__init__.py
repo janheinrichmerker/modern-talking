@@ -2,7 +2,7 @@ from csv import DictReader
 from json import load, dump
 from math import isnan
 from pathlib import Path
-from typing import Set
+from typing import Set, Optional
 from zipfile import ZipFile
 
 from modern_talking.evaluation import Metric, EvaluationMode
@@ -154,6 +154,71 @@ class Pipeline:
         with ZipFile(zip_path, "w") as zip_file:
             zip_file.write(predictions_path, "predictions.p")
 
+    @staticmethod
+    def save_matcher_summary(
+            path: Path,
+            matcher: Matcher,
+            team_name: str = "Modern Talking",
+            project_url: Optional[str] = "https://github.com/"
+                                         "heinrichreimer/modern-talking",
+            publication_url: Optional[str] = None,
+            bibtex: Optional[str] = None,
+            affiliation: Optional[
+                str] = "Martin Luther University Halle-Wittenberg",
+    ):
+        """
+        Save a short summary of the matcher as text file in Markdown format.
+        """
+
+        if len(team_name) > 20:
+            raise Exception("Team name must be <=20 characters.")
+
+        matcher_name = matcher.name
+        if matcher.name is None:
+            print("Warning: No matcher name specified, "
+                  "using slug as name in matcher summary.")
+            matcher_name = matcher.slug
+        if len(matcher_name) > 20:
+            raise Exception("Matcher name must be <=20 characters.")
+        matcher_description = matcher.description
+        if matcher.description is None:
+            print("Warning: No matcher description specified, "
+                  "using slug as name in matcher summary.")
+            matcher_description = matcher.slug
+
+        summary = [
+            "# Matcher summary\n\n",
+            "#### Team name:\n",
+            f"{team_name}\n\n",
+            "#### Method name:\n",
+            f"{matcher_name}\n\n",
+            "#### Method description:\n",
+            f"{matcher_description}\n\n",
+        ]
+        if project_url is not None:
+            summary.extend([
+                "#### Project URL\n",
+                f"{project_url}\n\n",
+            ])
+        if publication_url is not None:
+            summary.extend([
+                "#### Publication URL\n",
+                f"{publication_url}\n\n",
+            ])
+        if bibtex is not None:
+            summary.extend([
+                "#### BibTeX\n",
+                f"{bibtex}\n\n",
+            ])
+        if affiliation is not None:
+            summary.extend([
+                "#### Organization/affiliation\n",
+                f"{affiliation}\n\n",
+            ])
+
+        with path.open("w") as file:
+            file.writelines(summary)
+
     def train_evaluate(self, ignore_test: bool = False) -> float:
         """
         Parse training, test, and development data, train the matcher,
@@ -168,6 +233,8 @@ class Pipeline:
         # Prepare matcher.
         print("Prepare matcher.")
         self.matcher.prepare()
+        summary_file = output_dir / f"summary-{self.matcher.slug}.md"
+        Pipeline.save_matcher_summary(summary_file, self.matcher)
 
         # Load datasets.
         print("Load datasets.")
@@ -179,7 +246,7 @@ class Pipeline:
             if not ignore_test else dev_data
 
         # Load/train model.
-        matcher_path = cache_dir / self.matcher.name
+        matcher_path = cache_dir / self.matcher.slug
         model_path = matcher_path / "model"
         cache_path = matcher_path / "cache"
         print("Load model.")
@@ -199,7 +266,7 @@ class Pipeline:
               f"{len(test_labels)} on test set")
 
         print("Save test predictions.")
-        predictions_file = output_dir / f"predictions-{self.matcher.name}.json"
+        predictions_file = output_dir / f"predictions-{self.matcher.slug}.json"
         archive_file = predictions_file.with_suffix(".zip")
         Pipeline.save_predictions(predictions_file, test_labels)
         Pipeline.save_predictions_archive(predictions_file, archive_file)
@@ -245,7 +312,7 @@ class Pipeline:
         )
 
         if not isinstance(test_data, LabelledDataset):
-            print("Metric {self.metric.name} on train dataset: "
+            print(f"Metric {self.metric.name} on train dataset: "
                   "skipped because no ground truth labels were found")
             return dev_result_average
 

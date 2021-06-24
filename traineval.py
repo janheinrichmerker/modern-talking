@@ -267,7 +267,7 @@ def train_eval(matcher: Matcher, metric: Metric, test_known: bool) -> None:
     """
     Train/evaluate matcher.
     """
-    print(f"Train/evaluate matcher '{matcher.name}' "
+    print(f"Train/evaluate matcher '{matcher.slug}' "
           f"with metric '{metric.name}'.")
     if not test_known:
         print("Use validation set for testing.")

@@ -227,7 +227,7 @@ class BidirectionalLstmMatcher(Matcher):
         self.unknown_label_policy = unknown_label_policy
 
     @property
-    def name(self) -> str:
+    def slug(self) -> str:
         dropout_suffix = f"-dropout-{self.dropout}" \
             if self.dropout > 0 else ""
         weight_decay_suffix = f"-weight-decay-{self.weight_decay}" \

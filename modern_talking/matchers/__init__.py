@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from enum import Enum
 from pathlib import Path
-from typing import final
+from typing import final, Optional
 
 from modern_talking.model import Labels, Dataset, LabelledDataset
 
@@ -16,11 +16,25 @@ class Matcher(ABC):
 
     @property
     @abstractmethod
-    def name(self) -> str:
+    def slug(self) -> str:
         """
         Descriptive name for this matcher.
         """
         pass
+
+    @property
+    def name(self) -> Optional[str]:
+        """
+        Descriptive name for this matcher.
+        """
+        return None
+
+    @property
+    def description(self) -> Optional[str]:
+        """
+        Detailed description for this matcher.
+        """
+        return None
 
     def prepare(self) -> None:
         """
