@@ -80,7 +80,8 @@ class TermOverlapMatcher(UntrainedMatcher):
             preprocessing.append("Snowball stemmer")
         preprocessing_suffix = f"\nPreprocessing: {', '.join(preprocessing)}" \
             if len(preprocessing) > 0 else ""
-        return "Match argument key point pairs based on their term overlap.\n" \
+        return "Match argument key point pairs " \
+               "based on their term overlap.\n" \
                "This method uses the Natural Language Toolkit (NLTK) " \
                "for tokenization" \
                f"{' and preprocessing' if len(preprocessing) > 0 else ''}" \

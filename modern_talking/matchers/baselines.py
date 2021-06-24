@@ -68,11 +68,12 @@ class RandomMatcher(UntrainedMatcher):
 
     @property
     def name(self) -> Optional[str]:
-        return f"Random"
+        return "Random"
 
     @property
     def description(self) -> Optional[str]:
-        seed_suffix = f"\nInitialize the random generator with seed {self.seed}." \
+        seed_suffix = f"\nInitialize the random generator " \
+                      f"with seed {self.seed}." \
             if self.seed is not None else ""
         return f"Match argument key point pairs randomly.{seed_suffix}"
 

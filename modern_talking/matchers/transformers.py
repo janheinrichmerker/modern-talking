@@ -97,15 +97,15 @@ class TransformersMatcher(Matcher):
             if self.unknown_label_policy == UnknownLabelPolicy.strict \
             else "\nSkip missing training labels."
         shuffle_suffix = "\nShuffle training data." if self.shuffle > 0 else ""
-        early_stopping_suffix = "Stop early when loss validation set " \
+        early_stopping_suffix = "\nStop early when loss validation set " \
                                 "does not decrease for 5 epochs." \
             if self.early_stopping else ""
         return f"Classify matches with {self.model_name} " \
-               f"Huggingface Transformers model (type {self.model_type}).\n" \
+               f"Huggingface Transformers model (type {self.model_type})." \
                f"{augment_suffix}" \
                f"{unknown_label_policy_suffix}" \
                f"{shuffle_suffix}" \
-               f"Train with batch size {self.batch_size} " \
+               f"\nFine-tune with batch size {self.batch_size} " \
                f"for {self.epochs} epochs." \
                f"{early_stopping_suffix}"
 
