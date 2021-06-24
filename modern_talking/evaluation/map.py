@@ -37,7 +37,7 @@ class MeanAveragePrecision(Metric):
 
             # Parse result.
             result = str(result.stdout)
-            result = result.splitlines()[1].split(";")
+            result = result.splitlines()[-1].split(";")
             result_strict = float(result[0].split("=")[1].strip())
             result_relaxed = float(result[1].split("=")[1].strip())
 
