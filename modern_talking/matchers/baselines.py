@@ -68,9 +68,7 @@ class RandomMatcher(UntrainedMatcher):
 
     @property
     def name(self) -> Optional[str]:
-        seed_suffix = f" (seed {self.seed})" \
-            if self.seed is not None else ""
-        return f"Random{seed_suffix}"
+        return f"Random"
 
     @property
     def description(self) -> Optional[str]:
