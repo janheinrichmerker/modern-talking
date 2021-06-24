@@ -49,7 +49,8 @@ class TransformersMatcher(Matcher):
 
     @property
     def slug(self) -> str:
-        augment_suffix = f"-augment-{self.augment}" if self.augment > 0 else ""
+        augment_suffix = f"-augment-{self.augment}" \
+            if self.augment >= 2 else ""
         unknown_label_policy_suffix = "-relaxed" \
             if self.unknown_label_policy == UnknownLabelPolicy.relaxed \
             else "-strict" \
@@ -68,98 +69,143 @@ class TransformersMatcher(Matcher):
                f"-epochs-{self.epochs}" \
                f"{early_stopping_suffix}"
 
-    def prepare(self) -> None:
-        # Configure model.
-        args = ClassificationArgs()
-        args.overwrite_output_dir = True
-        args.regression = True
-        args.do_lower_case = "uncased" in self.model_name
-        args.train_batch_size = self.batch_size
-        args.eval_batch_size = self.batch_size
-        args.num_train_epochs = self.epochs
-        args.evaluate_during_training = True
-        args.evaluate_during_training_steps = 1000
-        args.use_early_stopping = self.early_stopping
-        args.early_stopping_patience = 5
-        args.manual_seed = self.seed
+    @property
+    def name(self) -> Optional[str]:
+        if self.model_type == "albert":
+            return "ALBERT"
+        elif self.model_type == "bert":
+            return "BERT"
+        elif self.model_type == "distilbert":
+            return "DistilBERT"
+        elif self.model_type == "roberta":
+            return "RoBERTa"
+        elif self.model_type == "xlm":
+            return "XLM"
+        elif self.model_type == "xlmroberta":
+            return "XLM-RoBERTa"
+        else:
+            return f"Transformers {self.model_type[:7]}"
 
-        # Load pretrained model.
+    @property
+    def description(self) -> Optional[str]:
+        augment_suffix = f"\nAugment arguments and key points " \
+                         f"{self.augment} times" if self.augment >= 2 else ""
+        unknown_label_policy_suffix = "\nFill missing training labels " \
+                                      "with 1." \
+            if self.unknown_label_policy == UnknownLabelPolicy.relaxed \
+            else "\nFill missing training labels with 0." \
+            if self.unknown_label_policy == UnknownLabelPolicy.strict \
+            else "\nSkip missing training labels."
+        shuffle_suffix = "\nShuffle training data." if self.shuffle > 0 else ""
+        early_stopping_suffix = "Stop early when loss validation set " \
+                                "does not decrease for 5 epochs." \
+            if self.early_stopping else ""
+        return f"Classify matches with {self.model_name} " \
+               f"Huggingface Transformers model (type {self.model_type}).\n" \
+               f"{augment_suffix}" \
+               f"{unknown_label_policy_suffix}" \
+               f"{shuffle_suffix}" \
+               f"Train with batch size {self.batch_size} " \
+               f"for {self.epochs} epochs." \
+               f"{early_stopping_suffix}"
+
+
+def prepare(self) -> None:
+    # Configure model.
+    args = ClassificationArgs()
+    args.overwrite_output_dir = True
+    args.regression = True
+    args.do_lower_case = "uncased" in self.model_name
+    args.train_batch_size = self.batch_size
+    args.eval_batch_size = self.batch_size
+    args.num_train_epochs = self.epochs
+    args.evaluate_during_training = True
+    args.evaluate_during_training_steps = 1000
+    args.use_early_stopping = self.early_stopping
+    args.early_stopping_patience = 5
+    args.manual_seed = self.seed
+
+    # Load pretrained model.
+    self.model = ClassificationModel(
+        model_type=self.model_type,
+        model_name=self.model_name,
+        num_labels=1,
+        args=args,
+        use_cuda=is_cuda_available(),
+    )
+
+    # Download dependencies for augmenter.
+    if self.augment > 0:
+        downloader = Downloader()
+        if not downloader.is_installed("punkt"):
+            downloader.download("punkt")
+        if not downloader.is_installed("wordnet"):
+            downloader.download("wordnet")
+        if not downloader.is_installed("averaged_perceptron_tagger"):
+            downloader.download("averaged_perceptron_tagger")
+
+
+def train(
+        self,
+        train_data: LabelledDataset,
+        dev_data: LabelledDataset,
+        cache_path: Path,
+):
+    # Load data.
+    train_df = _text_pair_df(
+        train_data,
+        self.augment,
+        self.unknown_label_policy,
+    )
+    if self.shuffle:
+        train_df = train_df.sample(frac=1, random_state=self.seed)
+    dev_df = _text_pair_df(
+        dev_data,
+        self.augment,
+        self.unknown_label_policy,
+    )
+    if self.shuffle:
+        dev_df = dev_df.sample(frac=1, random_state=self.seed)
+
+    # Configure model cache/checkpoint directories.
+    self.model.args.cache_dir = str(cache_path / "cache")
+    self.model.args.output_dir = str(cache_path / "out")
+    self.model.args.tensorboard_dir = str(cache_path / "runs")
+    self.model.args.best_model_dir = str(cache_path / "best_model")
+
+    # Train model.
+    self.model.train_model(train_df, eval_df=dev_df)
+
+
+def predict(self, data: Dataset) -> Labels:
+    # Load data.
+    pairs = _arg_kp_pairs(data)
+    inputs = [[arg.text, kp.text] for arg, kp in pairs]
+
+    # Predict labels.
+    predictions, _ = self.model.predict(inputs)
+
+    # Return predictions.
+    return {
+        (arg.id, kp.id): float(label)
+        for (arg, kp), label in zip(pairs, predictions)
+    }
+
+
+def load_model(self, path: Path) -> bool:
+    model_path = path / "model"
+    if not model_path.exists() or not model_path.is_dir():
+        return False
+    else:
         self.model = ClassificationModel(
             model_type=self.model_type,
-            model_name=self.model_name,
-            num_labels=1,
-            args=args,
-            use_cuda=is_cuda_available(),
+            model_name=model_path,
         )
+        return True
 
-        # Download dependencies for augmenter.
-        if self.augment > 0:
-            downloader = Downloader()
-            if not downloader.is_installed("punkt"):
-                downloader.download("punkt")
-            if not downloader.is_installed("wordnet"):
-                downloader.download("wordnet")
-            if not downloader.is_installed("averaged_perceptron_tagger"):
-                downloader.download("averaged_perceptron_tagger")
 
-    def train(
-            self,
-            train_data: LabelledDataset,
-            dev_data: LabelledDataset,
-            cache_path: Path,
-    ):
-        # Load data.
-        train_df = _text_pair_df(
-            train_data,
-            self.augment,
-            self.unknown_label_policy,
-        )
-        if self.shuffle:
-            train_df = train_df.sample(frac=1, random_state=self.seed)
-        dev_df = _text_pair_df(
-            dev_data,
-            self.augment,
-            self.unknown_label_policy,
-        )
-        if self.shuffle:
-            dev_df = dev_df.sample(frac=1, random_state=self.seed)
-
-        # Configure model cache/checkpoint directories.
-        self.model.args.cache_dir = str(cache_path / "cache")
-        self.model.args.output_dir = str(cache_path / "out")
-        self.model.args.tensorboard_dir = str(cache_path / "runs")
-        self.model.args.best_model_dir = str(cache_path / "best_model")
-
-        # Train model.
-        self.model.train_model(train_df, eval_df=dev_df)
-
-    def predict(self, data: Dataset) -> Labels:
-        # Load data.
-        pairs = _arg_kp_pairs(data)
-        inputs = [[arg.text, kp.text] for arg, kp in pairs]
-
-        # Predict labels.
-        predictions, _ = self.model.predict(inputs)
-
-        # Return predictions.
-        return {
-            (arg.id, kp.id): float(label)
-            for (arg, kp), label in zip(pairs, predictions)
-        }
-
-    def load_model(self, path: Path) -> bool:
-        model_path = path / "model"
-        if not model_path.exists() or not model_path.is_dir():
-            return False
-        else:
-            self.model = ClassificationModel(
-                model_type=self.model_type,
-                model_name=model_path,
-            )
-            return True
-
-    def save_model(self, path: Path):
-        self.model.save_model(path / "model")
+def save_model(self, path: Path):
+    self.model.save_model(path / "model")
 
 
 def _text_pair_df(
