@@ -52,13 +52,13 @@ def _prepare_parser(parser: ArgumentParser) -> None:
         "--test-unknown",
         dest="test_known",
         action="store_false",
-        default=False,
+        default=True,
     )
     parser.add_argument(
         "--test-known",
         dest="test_unknown",
         action="store_true",
-        default=False,
+        default=True,
     )
 
 
@@ -279,8 +279,7 @@ def train_eval(matcher: Matcher, metric: Metric, test_known: bool) -> None:
     pipeline = Pipeline(matcher, metric)
     result = pipeline.train_evaluate(ignore_test=not test_known)
 
-    print(f"Final score for metric {metric.name} "
-          f"on test dataset: {result:.4f}")
+    print(f"Final score for metric {metric.name}: {result:.4f}")
 
 
 def train_eval_cli(args: Namespace) -> None:
