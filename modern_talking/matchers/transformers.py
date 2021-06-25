@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import List, Optional
 
+from imblearn.over_sampling import RandomOverSampler
 from nlpaug.augmenter.word import SynonymAug, AntonymAug, RandomWordAug
 from nlpaug.flow import Sometimes, Pipeline
 from nltk.downloader import Downloader
@@ -19,6 +20,7 @@ class TransformersMatcher(Matcher):
     model_name: str
     augment: int
     unknown_label_policy: UnknownLabelPolicy
+    over_sample: bool
     shuffle: bool
     batch_size: int
     epochs: int
@@ -33,6 +35,7 @@ class TransformersMatcher(Matcher):
             model_name: str,
             augment: int = 0,
             unknown_label_policy: UnknownLabelPolicy = UnknownLabelPolicy.skip,
+            over_sample: bool = False,
             shuffle: bool = True,
             batch_size: int = 16,
             epochs: int = 1,
@@ -42,6 +45,7 @@ class TransformersMatcher(Matcher):
         self.model_name = model_name
         self.augment = augment
         self.unknown_label_policy = unknown_label_policy
+        self.over_sample = over_sample
         self.shuffle = shuffle
         self.batch_size = batch_size
         self.epochs = epochs
@@ -56,7 +60,8 @@ class TransformersMatcher(Matcher):
             else "-strict" \
             if self.unknown_label_policy == UnknownLabelPolicy.strict \
             else ""
-        shuffle_suffix = "-shuffle" if self.shuffle > 0 else ""
+        over_sample_suffix = "-over-sample" if self.over_sample else ""
+        shuffle_suffix = "-shuffle" if self.shuffle else ""
         early_stopping_suffix = "-early-stopping" \
             if self.early_stopping else ""
         return f"transformers" \
@@ -64,6 +69,7 @@ class TransformersMatcher(Matcher):
                f"-{self.model_name.replace('/', '-')}" \
                f"{augment_suffix}" \
                f"{unknown_label_policy_suffix}" \
+               f"{over_sample_suffix}" \
                f"{shuffle_suffix}" \
                f"-batch-{self.batch_size}" \
                f"-epochs-{self.epochs}" \
@@ -96,7 +102,9 @@ class TransformersMatcher(Matcher):
             else "\nFill missing training labels with 0." \
             if self.unknown_label_policy == UnknownLabelPolicy.strict \
             else "\nSkip missing training labels."
-        shuffle_suffix = "\nShuffle training data." if self.shuffle > 0 else ""
+        over_sample_suffix = "\nOversample training data randomly."\
+            if self.over_sample else ""
+        shuffle_suffix = "\nShuffle training data." if self.shuffle else ""
         early_stopping_suffix = "\nStop early when loss validation set " \
                                 "does not decrease for 5 epochs." \
             if self.early_stopping else ""
@@ -104,6 +112,7 @@ class TransformersMatcher(Matcher):
                f"Huggingface Transformers model (type {self.model_type})." \
                f"{augment_suffix}" \
                f"{unknown_label_policy_suffix}" \
+               f"{over_sample_suffix}" \
                f"{shuffle_suffix}" \
                f"\nFine-tune with batch size {self.batch_size} " \
                f"for {self.epochs} epochs." \
@@ -154,6 +163,7 @@ class TransformersMatcher(Matcher):
             train_data,
             self.augment,
             self.unknown_label_policy,
+            self.over_sample
         )
         if self.shuffle:
             train_df = train_df.sample(frac=1, random_state=self.seed)
@@ -207,6 +217,7 @@ def _text_pair_df(
         data: LabelledDataset,
         augment: int,
         unknown_label_policy: UnknownLabelPolicy,
+        over_sample: bool = False,
 ) -> DataFrame:
     pairs = _arg_kp_pairs(data)
     if unknown_label_policy == UnknownLabelPolicy.skip:
@@ -247,11 +258,17 @@ def _text_pair_df(
             arg_texts.append(arg_text)
             kp_texts.append(kp_text)
             labels.append(label)
-    return DataFrame({
-        "text_a": arg_texts,
-        "text_b": kp_texts,
-        "labels": labels
-    })
+
+    data = DataFrame()
+    data["text_a"] = arg_texts
+    data["text_b"] = kp_texts
+
+    if over_sample:
+        over_sampler = RandomOverSampler(random_state=42)
+        data, labels = over_sampler.fit_resample(data, labels)
+
+    data["labels"] = labels
+    return data
 
 
 def _arg_kp_pairs(data: Dataset) -> List[ArgumentKeyPointPair]:

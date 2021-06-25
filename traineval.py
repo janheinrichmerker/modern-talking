@@ -63,11 +63,11 @@ def _prepare_parser(parser: ArgumentParser) -> None:
     )
 
 
-def _prepare_all_parser(parser: ArgumentParser) -> None:
+def _prepare_all_parser(_: ArgumentParser) -> None:
     pass
 
 
-def _prepare_none_parser(parser: ArgumentParser) -> None:
+def _prepare_none_parser(_: ArgumentParser) -> None:
     pass
 
 
@@ -241,6 +241,11 @@ def _prepare_transformers_parser(parser: ArgumentParser) -> None:
         const=UnknownLabelPolicy.relaxed,
     )
     parser.add_argument(
+        "--over-sample",
+        dest="over_sample",
+        action="store_true",
+    )
+    parser.add_argument(
         "--shuffle",
         dest="shuffle",
         action="store_true",
@@ -337,6 +342,7 @@ def train_eval_cli(args: Namespace) -> None:
             model_name=args.model_name,
             augment=args.augment,
             unknown_label_policy=args.unknown_label_policy,
+            over_sample=args.over_sample,
             shuffle=args.shuffle,
             batch_size=args.batch_size,
             epochs=args.epochs,
