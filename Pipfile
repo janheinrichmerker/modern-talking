@@ -27,6 +27,7 @@ pydot = "*"
 nlpaug = "*"
 torch = "*"
 simpletransformers = "*"
+imbalanced-learn = "*"
 
 [requires]
 python_version = "3.9"
