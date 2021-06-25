@@ -183,21 +183,21 @@ def _prepare_bilstm_parser(parser: ArgumentParser) -> None:
         default=0,
     )
     parser.add_argument(
-        "--unknown-label-policy", "--unknown-label", "--label-policy",
-        dest="unknown_label_policy",
+        "--label-policy",
+        dest="label_policy",
         type=LabelPolicy,
         choices=list(LabelPolicy),
         default=LabelPolicy.skip,
     )
     parser.add_argument(
         "--strict",
-        dest="unknown_label_policy",
+        dest="label_policy",
         action="store_const",
         const=LabelPolicy.strict,
     )
     parser.add_argument(
         "--relaxed",
-        dest="unknown_label_policy",
+        dest="label_policy",
         action="store_const",
         const=LabelPolicy.relaxed,
     )
@@ -223,21 +223,21 @@ def _prepare_transformers_parser(parser: ArgumentParser) -> None:
         default=0,
     )
     parser.add_argument(
-        "--unknown-label-policy", "--unknown-label", "--label-policy",
-        dest="unknown_label_policy",
+        "--label-policy",
+        dest="label_policy",
         type=LabelPolicy,
         choices=list(LabelPolicy),
         default=LabelPolicy.skip,
     )
     parser.add_argument(
         "--strict",
-        dest="unknown_label_policy",
+        dest="label_policy",
         action="store_const",
         const=LabelPolicy.strict,
     )
     parser.add_argument(
         "--relaxed",
-        dest="unknown_label_policy",
+        dest="label_policy",
         action="store_const",
         const=LabelPolicy.relaxed,
     )
@@ -336,7 +336,7 @@ def train_eval_cli(args: Namespace) -> None:
             epochs=args.epochs,
             early_stopping=args.early_stopping,
             augment=args.augment,
-            label_policy=args.unknown_label_policy,
+            label_policy=args.label_policy,
         )
     elif args.matcher == "transformers":
         from modern_talking.matchers.transformers import TransformersMatcher
@@ -344,7 +344,7 @@ def train_eval_cli(args: Namespace) -> None:
             model_type=args.model_type,
             model_name=args.model_name,
             augment=args.augment,
-            label_policy=args.unknown_label_policy,
+            label_policy=args.label_policy,
             over_sample=args.over_sample,
             shuffle=args.shuffle,
             batch_size=args.batch_size,
