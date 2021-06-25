@@ -30,7 +30,7 @@ class TransformersMatcher(Matcher):
     learning_rate: float
     warmup_ratio: float
     weight_decay: float
-    seed: int
+    random_seed: int
 
     model: ClassificationModel
 
@@ -45,11 +45,11 @@ class TransformersMatcher(Matcher):
             shuffle: bool = True,
             batch_size: int = 16,
             epochs: int = 1,
-            early_stopping: bool = False,
             learning_rate: float = 4e-5,
             warmup_ratio: float = 0.06,
-            weight_decay: float = 0.0,
-            seed: int = 1234
+            weight_decay: float = 0,
+            early_stopping: bool = False,
+            random_seed: int = 1234
     ):
         self.model_type = model_type
         self.model_name = model_name
@@ -60,11 +60,11 @@ class TransformersMatcher(Matcher):
         self.shuffle = shuffle
         self.batch_size = batch_size
         self.epochs = epochs
-        self.early_stopping = early_stopping
         self.learning_rate = learning_rate
         self.warmup_ratio = warmup_ratio
         self.weight_decay = weight_decay
-        self.seed = seed
+        self.early_stopping = early_stopping
+        self.random_seed = random_seed
 
     @property
     def slug(self) -> str:
@@ -145,7 +145,7 @@ class TransformersMatcher(Matcher):
             learning_rate=self.learning_rate,
             warmup_ratio=self.warmup_ratio,
             weight_decay=self.weight_decay,
-            manual_seed=self.seed,
+            manual_seed=self.random_seed,
         )
 
         # Load pretrained model.
@@ -273,13 +273,13 @@ class TransformersMatcher(Matcher):
         data["text_b"] = kp_texts
 
         if self.over_sample:
-            over_sampler = RandomOverSampler(random_state=self.seed)
+            over_sampler = RandomOverSampler(random_state=self.random_seed)
             data, labels = over_sampler.fit_resample(data, labels)
 
         data["labels"] = labels
 
         if self.shuffle:
-            data = data.sample(frac=1, random_state=self.seed)
+            data = data.sample(frac=1, random_state=self.random_seed)
 
         return data
 

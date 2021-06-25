@@ -1,5 +1,4 @@
 from dataclasses import asdict
-from json import dumps
 from os import environ
 from typing import Iterable, Dict
 
@@ -69,7 +68,7 @@ MODEL_DESCRIPTION_KEYS: Dict[str, str] = {
     "layer_norm_eps": "Layer normalization epsilon",
     "learning_rate": "Learning rate",
     "local_rank": "Local rank",
-    "manual_seed": "Manual seed",
+    "manual_seed": "Random seed",
     "max_grad_norm": "Maximum norm for gradients",
     "max_position_embeddings": "Maximum position embeddings",
     "max_seq_length": "Maximum sequence length",

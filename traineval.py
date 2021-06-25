@@ -217,6 +217,12 @@ def _prepare_transformers_parser(parser: ArgumentParser) -> None:
         default="bert-base-uncased",
     )
     parser.add_argument(
+        "--max-sequence-length", "--max-length",
+        dest="max_sequence_length",
+        type=int,
+        default=128,
+    )
+    parser.add_argument(
         "--augment",
         dest="augment",
         type=int,
@@ -264,9 +270,33 @@ def _prepare_transformers_parser(parser: ArgumentParser) -> None:
         default=1,
     )
     parser.add_argument(
+        "--learning-rate",
+        dest="learning_rate",
+        type=float,
+        default=4e-5,
+    )
+    parser.add_argument(
+        "--warmup-ratio", "--warmup",
+        dest="warmup_ratio",
+        type=float,
+        default=0.06,
+    )
+    parser.add_argument(
+        "--weight-decay", "--decay",
+        dest="weight_decay",
+        type=float,
+        default=0,
+    )
+    parser.add_argument(
         "--early-stopping",
         dest="early_stopping",
         action="store_true",
+    )
+    parser.add_argument(
+        "--random-seed", "--seed",
+        dest="random_seed",
+        type=int,
+        default=1234,
     )
 
 
@@ -343,13 +373,18 @@ def train_eval_cli(args: Namespace) -> None:
         matcher = TransformersMatcher(
             model_type=args.model_type,
             model_name=args.model_name,
+            max_sequence_length=args.max_sequence_length,
             augment=args.augment,
             label_policy=args.label_policy,
             over_sample=args.over_sample,
             shuffle=args.shuffle,
             batch_size=args.batch_size,
             epochs=args.epochs,
+            learning_rate=args.learning_rate,
+            warmup_ratio=args.warmup_ratio,
+            weight_decay=args.weight_decay,
             early_stopping=args.early_stopping,
+            random_seed=args.random_seed,
         )
     else:
         raise Exception("Invalid matcher.")
