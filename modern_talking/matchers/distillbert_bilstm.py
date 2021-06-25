@@ -21,7 +21,6 @@ from transformers import TFDistilBertModel, DistilBertConfig, \
 from transformers.modeling_tf_outputs import TFBaseModelOutput
 
 from modern_talking.matchers import Matcher
-from modern_talking.matchers.colab_utils import setup_colab_tpu
 from modern_talking.model import Dataset as UnlabelledDataset, Labels, \
     LabelledDataset, ArgumentKeyPointIdPair
 
@@ -304,7 +303,6 @@ class DistilBertBilstmMatcher(Matcher):
             cache_path: Path,
     ):
         # Check GPU availability.
-        setup_colab_tpu()
         print("\tGPUs available: ", len(list_physical_devices("GPU")))
         print("\tTPUs available: ", len(list_logical_devices("TPU")))
 

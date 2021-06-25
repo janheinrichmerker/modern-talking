@@ -20,7 +20,6 @@ from tensorflow_addons.optimizers import AdamW
 
 from modern_talking.data.glove import download_glove_embeddings
 from modern_talking.matchers import Matcher, UnknownLabelPolicy
-from modern_talking.matchers.colab_utils import setup_colab_tpu
 from modern_talking.matchers.layers import text_vectorization_layer, \
     glove_embedding_layer
 from modern_talking.model import Dataset as UnlabelledDataset, Labels, \
@@ -276,7 +275,6 @@ class BidirectionalLstmMatcher(Matcher):
             cache_path: Path,
     ):
         # Check GPU availability.
-        setup_colab_tpu()
         print("\tGPUs available: ", len(list_physical_devices("GPU")))
         print("\tTPUs available: ", len(list_logical_devices("TPU")))
 

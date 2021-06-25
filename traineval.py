@@ -9,6 +9,7 @@ from modern_talking.evaluation.map import MeanAveragePrecision
 from modern_talking.evaluation.precision import Precision, MacroPrecision
 from modern_talking.evaluation.recall import Recall, MacroRecall
 from modern_talking.matchers import UnknownLabelPolicy, Matcher
+from modern_talking.matchers.utils import setup_colab_tpu
 from modern_talking.pipeline import Pipeline
 
 metrics: Iterable[Metric] = [
@@ -277,6 +278,8 @@ def train_eval(matcher: Matcher, metric: Metric, test_known: bool) -> None:
           f"with metric '{metric.slug}'.")
     if not test_known:
         print("Use validation set for testing.")
+
+    setup_colab_tpu()
 
     # Download datasets.
     download_kpa_2021_data()

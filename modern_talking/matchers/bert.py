@@ -17,7 +17,6 @@ from transformers import PreTrainedTokenizerFast, BatchEncoding, BertConfig, \
 from transformers.modeling_tf_outputs import TFBaseModelOutputWithPooling
 
 from modern_talking.matchers import Matcher
-from modern_talking.matchers.colab_utils import setup_colab_tpu
 from modern_talking.model import Dataset as UnlabelledDataset, Labels, \
     LabelledDataset, ArgumentKeyPointPair, ArgumentKeyPointIdPair
 
@@ -188,7 +187,6 @@ class BertMatcher(Matcher):
             cache_path: Path,
     ):
         # Check GPU availability.
-        setup_colab_tpu()
         print("\tGPUs available: ", len(list_physical_devices("GPU")))
         print("\tTPUs available: ", len(list_logical_devices("TPU")))
 
