@@ -95,7 +95,7 @@ class Matcher(ABC):
         pass
 
 
-class UnknownLabelPolicy(str, Enum):
+class LabelPolicy(str, Enum):
     skip = "skip"
     strict = "strict"
     relaxed = "relaxed"

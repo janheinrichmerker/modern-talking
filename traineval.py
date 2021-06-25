@@ -8,7 +8,7 @@ from modern_talking.evaluation.manual_errors import ManualErrors
 from modern_talking.evaluation.map import MeanAveragePrecision
 from modern_talking.evaluation.precision import Precision, MacroPrecision
 from modern_talking.evaluation.recall import Recall, MacroRecall
-from modern_talking.matchers import UnknownLabelPolicy, Matcher
+from modern_talking.matchers import LabelPolicy, Matcher
 from modern_talking.matchers.utils import setup_colab_tpu
 from modern_talking.pipeline import Pipeline
 
@@ -185,21 +185,21 @@ def _prepare_bilstm_parser(parser: ArgumentParser) -> None:
     parser.add_argument(
         "--unknown-label-policy", "--unknown-label", "--label-policy",
         dest="unknown_label_policy",
-        type=UnknownLabelPolicy,
-        choices=list(UnknownLabelPolicy),
-        default=UnknownLabelPolicy.skip,
+        type=LabelPolicy,
+        choices=list(LabelPolicy),
+        default=LabelPolicy.skip,
     )
     parser.add_argument(
         "--strict",
         dest="unknown_label_policy",
         action="store_const",
-        const=UnknownLabelPolicy.strict,
+        const=LabelPolicy.strict,
     )
     parser.add_argument(
         "--relaxed",
         dest="unknown_label_policy",
         action="store_const",
-        const=UnknownLabelPolicy.relaxed,
+        const=LabelPolicy.relaxed,
     )
 
 
@@ -225,21 +225,21 @@ def _prepare_transformers_parser(parser: ArgumentParser) -> None:
     parser.add_argument(
         "--unknown-label-policy", "--unknown-label", "--label-policy",
         dest="unknown_label_policy",
-        type=UnknownLabelPolicy,
-        choices=list(UnknownLabelPolicy),
-        default=UnknownLabelPolicy.skip,
+        type=LabelPolicy,
+        choices=list(LabelPolicy),
+        default=LabelPolicy.skip,
     )
     parser.add_argument(
         "--strict",
         dest="unknown_label_policy",
         action="store_const",
-        const=UnknownLabelPolicy.strict,
+        const=LabelPolicy.strict,
     )
     parser.add_argument(
         "--relaxed",
         dest="unknown_label_policy",
         action="store_const",
-        const=UnknownLabelPolicy.relaxed,
+        const=LabelPolicy.relaxed,
     )
     parser.add_argument(
         "--over-sample",
@@ -336,7 +336,7 @@ def train_eval_cli(args: Namespace) -> None:
             epochs=args.epochs,
             early_stopping=args.early_stopping,
             augment=args.augment,
-            unknown_label_policy=args.unknown_label_policy,
+            label_policy=args.unknown_label_policy,
         )
     elif args.matcher == "transformers":
         from modern_talking.matchers.transformers import TransformersMatcher
@@ -344,7 +344,7 @@ def train_eval_cli(args: Namespace) -> None:
             model_type=args.model_type,
             model_name=args.model_name,
             augment=args.augment,
-            unknown_label_policy=args.unknown_label_policy,
+            label_policy=args.unknown_label_policy,
             over_sample=args.over_sample,
             shuffle=args.shuffle,
             batch_size=args.batch_size,

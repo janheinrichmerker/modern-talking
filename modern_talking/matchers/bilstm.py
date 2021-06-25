@@ -19,7 +19,7 @@ from tensorflow.keras.optimizers import Adam, Optimizer
 from tensorflow_addons.optimizers import AdamW
 
 from modern_talking.data.glove import download_glove_embeddings
-from modern_talking.matchers import Matcher, UnknownLabelPolicy
+from modern_talking.matchers import Matcher, LabelPolicy
 from modern_talking.matchers.layers import text_vectorization_layer, \
     glove_embedding_layer
 from modern_talking.model import Dataset as UnlabelledDataset, Labels, \
@@ -135,7 +135,7 @@ def _prepare_unlabelled_data(
 def _prepare_labelled_data(
         labelled_data: LabelledDataset,
         augment: int,
-        unknown_label_policy: UnknownLabelPolicy,
+        label_policy: LabelPolicy,
 ) -> Tuple[Dataset, List[str]]:
     pairs = [
         (arg, kp)
@@ -143,7 +143,7 @@ def _prepare_labelled_data(
         for kp in labelled_data.key_points
         if arg.topic == kp.topic and arg.stance == kp.stance
     ]
-    if unknown_label_policy == UnknownLabelPolicy.skip:
+    if label_policy == LabelPolicy.skip:
         pairs = [
             (arg, kp)
             for (arg, kp) in pairs
@@ -164,9 +164,9 @@ def _prepare_labelled_data(
             arg_texts.append(arg_text)
             kp_texts.append(kp_text)
             if (arg.id, kp.id) not in labelled_data.labels.keys():
-                if unknown_label_policy == UnknownLabelPolicy.strict:
+                if label_policy == LabelPolicy.strict:
                     labels.append(0)
-                elif unknown_label_policy == UnknownLabelPolicy.relaxed:
+                elif label_policy == LabelPolicy.relaxed:
                     labels.append(1)
             else:
                 labels.append(labelled_data.labels[arg.id, kp.id])
@@ -193,7 +193,7 @@ class BidirectionalLstmMatcher(Matcher):
     epochs: int
     early_stopping: bool
     augment: int
-    unknown_label_policy: UnknownLabelPolicy
+    label_policy: LabelPolicy
 
     model: Model = None
 
@@ -210,7 +210,7 @@ class BidirectionalLstmMatcher(Matcher):
             epochs: int = 10,
             early_stopping: bool = False,
             augment: int = 0,
-            unknown_label_policy: UnknownLabelPolicy = UnknownLabelPolicy.skip,
+            label_policy: LabelPolicy = LabelPolicy.skip,
     ):
         self.units = units
         self.layers = layers
@@ -223,7 +223,7 @@ class BidirectionalLstmMatcher(Matcher):
         self.epochs = epochs
         self.early_stopping = early_stopping
         self.augment = augment
-        self.unknown_label_policy = unknown_label_policy
+        self.label_policy = label_policy
 
     @property
     def slug(self) -> str:
@@ -237,10 +237,10 @@ class BidirectionalLstmMatcher(Matcher):
             if self.early_stopping else ""
         augment_suffix = f"-augment-{self.augment}" \
             if self.augment > 0 else ""
-        unknown_label_policy_suffix = "-relaxed" \
-            if self.unknown_label_policy == UnknownLabelPolicy.relaxed \
+        label_policy_suffix = "-relaxed" \
+            if self.label_policy == LabelPolicy.relaxed \
             else "-strict" \
-            if self.unknown_label_policy == UnknownLabelPolicy.strict \
+            if self.label_policy == LabelPolicy.strict \
             else ""
         return f"bilstm-{self.units}-{self.layers}" \
                f"-glove-embeddings" \
@@ -253,7 +253,7 @@ class BidirectionalLstmMatcher(Matcher):
                f"-epochs-{self.epochs}" \
                f"{early_stopping_suffix}" \
                f"{augment_suffix}" \
-               f"{unknown_label_policy_suffix}"
+               f"{label_policy_suffix}"
 
     def prepare(self) -> None:
         download_glove_embeddings()
@@ -283,7 +283,7 @@ class BidirectionalLstmMatcher(Matcher):
         train_dataset, train_texts = _prepare_labelled_data(
             train_data,
             self.augment,
-            self.unknown_label_policy,
+            self.label_policy,
         )
         train_dataset = train_dataset.shuffle(self.shuffle)
         print(f"\t{len(train_dataset)} training samples.")
@@ -291,7 +291,7 @@ class BidirectionalLstmMatcher(Matcher):
         dev_dataset, dev_texts = _prepare_labelled_data(
             dev_data,
             self.augment,
-            self.unknown_label_policy,
+            self.label_policy,
         )
         print(f"\t{len(dev_dataset)} validation samples.")
         dev_dataset = dev_dataset.batch(self.batch_size)
