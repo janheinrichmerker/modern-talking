@@ -304,21 +304,31 @@
 
 \begin{frame}
   \frametitle{BiLSTM}
-  \framesubtitle{Parameters}
+  \framesubtitle{Predictions on why did it not work ?}
     
+  Tested a lot of different parameter settings:
   \begin{itemize}
-    \item Epochs:
-    \item Batch Size:
-    \item Optimizer:
-    \item Weight Decay:
-    \item Loss Function:
-    \item Metrics:
-    \item EarlyStopping:
-    \item Dropout:
-    \item Learning Rate:
-    \item Shuffeling:
-    \item Unknown Label Policy:
+    \item Epochs
+    \begin{itemize}
+      \item Few $(1-10)$ resulted in good scores on training set but mediocre on dev set
+      \item A lot $(10-100)$ resulted in decreasing \texttt{val\_acc} $\rightarrow$ Overfiting
+      \item Used EarlyStopping, Dropout and Weight Decay against it
+    \end{itemize}
   \end{itemize}
+  Maybe we were learning to quickly or our data was not enough:
+  \begin{itemize}
+    \item Learning Rate 
+    \begin{itemize}
+      \item Set to $0.0001$ showed no significant improvement
+    \end{itemize}
+    \item Text Augmentation
+    \begin{itemize}
+      \item Creating new data from old for better generalization
+      \item Yielded no improvement
+    \end{itemize}
+  \end{itemize}
+
+  At this point: model probably to difficult or wrong way of data input
 
 \end{frame}
 
