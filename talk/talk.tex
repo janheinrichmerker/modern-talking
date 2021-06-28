@@ -51,10 +51,13 @@
 
 \titleframe
 
-\begin{frame}{Initial Ideas}
+\begin{frame}[allowframebreaks]{Initial Ideas}
   
   \begin{itemize}
-    \item Rule-based baseline
+    \item Rule-based baseline 
+      \begin{itemize}
+        \item Lecture inspired us to try this approach
+      \end{itemize}
     \item Improve upon the baseline with Machine Learning
     \begin{itemize}
       \item Regression, SVC~\cite{CortesV1995}
@@ -63,6 +66,8 @@
     \end{itemize}
     \item Variations of the above \(\to\) Hyper-parameter tuning
   \end{itemize}
+
+  \framebreak
   
   \begin{block}{What did not work?}
     Some of the brainstormed ideas did not improve upon the baseline:
@@ -70,16 +75,25 @@
       \item Regression, SVC
       \item Ensemble
       \item \BiLSTM
+      \begin{itemize}
+        \item Integrating topic information in \BiLSTM resulted in better argument mining \cite{StabMSRG2018}
+        \item Practical implementation proved to be challenging and resulted in no genuine improvements
+      \end{itemize}
     \end{itemize}
   \end{block}
   
   \begin{block}{What did work?}
     \begin{itemize}
       \item \Bert
+      \begin{itemize}
+        \item State-of-the-art ML approach used widely in NLP problems with usually good performance
+      \end{itemize}
     \end{itemize}
   \end{block}
 
 \end{frame}
+
+
 
 \begin{frame}[allowframebreaks]{Term Overlap}
   
