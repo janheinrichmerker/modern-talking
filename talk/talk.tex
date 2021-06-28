@@ -1,14 +1,13 @@
 \documentclass[english,handout]{mlutalk}
 
-\title{Stance Classification for Key-Point Analysis}
-% \title{%
-%   Modern Talking: Key-Point Analysis \\
-%   using Modern Natural Language Processing
-% }
+\title{%
+  Modern Talking: Key-Point Analysis \\
+  using Modern Language Understanding
+}
 \subtitle{Natural Language Processing, Summer Semester 2021}
 \author{Max Henze \and Hanh Luu \and Jan Heinrich Reimer}
 \institute{Martin Luther University Halle-Wittenberg}
-\date{April 20, 2021}
+\date{June 29, 2021}
 \titlegraphic{\includegraphics[width=3cm]{figures/mlu-halle}}
 
 \addbibresource{../literature/literature.bib}
@@ -31,6 +30,7 @@
 \newcommand{\TF}{\mbox{TF}\xspace}
 \newcommand{\TFIDF}{\mbox{TF/IDF}\xspace}
 \newcommand{\todocite}{{\smaller\color{red}[CITE]}\xspace}
+\newcommand{\todo}[1]{{\smaller\color{red}[#1]}}
 
 \tikzset{%
     every neuron/.style={
@@ -55,150 +55,130 @@
 
 \titleframe
 
-\begin{frame}
-  \frametitle{Brainstorming}
-
+\begin{frame}{Initial Ideas}
+  
   \begin{itemize}
     \item Rule-based baseline
     \item Improve upon the baseline with Machine Learning
-    \item Deep Neural Networks, e.g., \BiLSTM~\todocite, \Bert~\todocite
+    \begin{itemize}
+      \item Regression, SVC~\todocite
+      \item Ensemble
+      \item Deep Neural Networks, e.g., \BiLSTM~\todocite with GloVe embeddings~\todocite, \Bert~\todocite
+    \end{itemize}
     \item Variations of the above \(\to\) Hyper-parameter tuning
   \end{itemize}
-
-\end{frame}
-
-\begin{frame}
-  \frametitle{What did not work ?}
-  \framesubtitle{Regression, SVC, Ensemble}
-    \begin{itemize}
-      \item All approaches performed mediocre
-      \item Machine Learning methods: Regression, SVC, Ensemble(Regression, SVC)
-      \item Feature Extraction methods: Bag of Words, TFIDF
-      \item Used technologies
-      		\begin{itemize}
-    		\item Feature extraction
-    		\begin{itemize}
-    			\item NTLK: Stemming, Stopwords
-    			\item spaCy: Part of Speech
-    			\item sklearn: CountVectorizer, TFIDFVectorizer
-    		\end{itemize}
-    		\item Learning methods from sklearn
-    	\end{itemize}
-    \end{itemize}
   
+  \begin{block}{What did not work?}
+    Some of the brainstormed ideas did not improve upon the baseline:
+    \begin{itemize}
+      \item Regression, SVC
+      \item Ensemble
+      \item \BiLSTM
+    \end{itemize}
+  \end{block}
 
 \end{frame}
 
-\begin{frame}
-  \frametitle{What did not work ? cont. }
-  \framesubtitle{Feature Extraction and Machine Learning methods}
-    
-    	\begin{itemize}
-      \item high-dimensional data (> 4000 for basis feature extraction)
-      	\begin{itemize}
-      		\item Regression: not robust for high-dimensional data
-      		\item SVC: better results then regression
-      	\end{itemize}
-	\end{itemize}
-	
-    \begin{itemize}
-      \item problematic with semantic meaning
-      \item prediction based on the existence of words
-	\end{itemize}
-   
-    \begin{example}
-      \textbf{Argument:} \textit{School uniforms violate the right to freedom of expression.}\\
-      \textbf{Key Point:} \textit{School uniforms are often uncomfortable/sexist}\\
-      \textbf{Prediction:} Matching
-    \end{example}
-    
-     \begin{example}
-      \textbf{Argument:} \textit{it is not fair to not allow children to express their personality through dress as long as it is appropriate.}\\
-      \textbf{Key Point:} \textit{School uniform is harming the student's self expression.}\\
-      \textbf{Prediction:} No Matching
-    \end{example}
-
-\end{frame}
-
-\begin{frame}
-  \frametitle{What did work ?}
-  \framesubtitle{Term Overlap}
-    
-    \begin{itemize}
-      \item Term Overlap in different variations
+\begin{frame}{Regression, SVC}
+  
+  \framesubtitle{What did not work?}
+  
+  \begin{itemize}
+    \item Features: bag-of-words and/or \TFIDF for selected parts-of-speech
+    \item Regression \todo{what type?}, Support Vector Classifier
+    \item Ensemble of Regression + SVC
+  \end{itemize}
+  
+  \begin{block}{Technology}
       \begin{itemize}
-        \item Without preprocessing already high relaxed mAP
-        \item Using stemming, stop words etc. increased both scores by up to 12 pp 
-      \end{itemize} 
-      \item BiLSTM with GloVe embeddings
-      \item Pretrained BERT model
-    \end{itemize}
+        \item NTLK~\todocite for tokenization \todo{didn't we?}, stemming,  and stop word list
+        \item spaCy~\todocite for part-of-speech tagging
+        \item Scikit-Learn~\todocite for bag-of-words and \TFIDF
+        \item Scikit-Learn~\todocite for regression and SVC implementation
+      \end{itemize}
+  \end{block}
 
 \end{frame}
 
-\begin{frame}
-  \frametitle{Term Overlap}
-  \framesubtitle{Used Technologies + Preprocessing}
-    \begin{itemize}
-      \item NLTK 
-        \begin{itemize}
-          \item Stemming
-          \begin{itemize}
-            \item Removing unnecessary Pre - and Suffixes for Generalization
-          \end{itemize}
-          \item Tokenization
-          \begin{itemize}
-            \item Necessary for Vounting Overlapping Words
-          \end{itemize}
-          \item Stopword Removal (with Standard and Modified Stopword List)
-          \begin{itemize}
-            \item Reduces the Load and removes Clutter from Sentences
-            \item Makes Key Words more prominent
-          \end{itemize}
-          
-          \begin{example}
-            \textbf{Arg:} \textit{homeschooling a child denies them valuable lifeskills, particularly interaction with their own age group and all experiences stemming from this.}\\
-            \textbf{New Arg:} \textit{homeschool child deni valuabl lifeskil , particular interact age group experi stem .}
-          \end{example}
+\begin{frame}{Regression, SVC}
 
-          \item Synonyms and Antonyms for Overlap Calculation
-          \begin{itemize}
-            \item Child $\rightarrow$ Kid, Youngster, nestling etc.
-          \end{itemize}
-        \end{itemize}
-    \end{itemize}
-    
+  \framesubtitle{Why did not work?}
+
+  \begin{itemize}
+    \item Too much features~(\( > 4000 \)) for Regression
+    \item SVC better results, but still worse than baseline
+    \item Can't capture context or semantic meaning
+  \end{itemize}
+
+  \begin{example}[False Positives]
+    \smaller
+    \begin{tabular}{ll}
+      Argument: & School uniforms violate the right to freedom of expression. \\
+      Key Point: & School uniforms are often uncomfortable/sexist. \\
+      Prediction: & Match
+    \end{tabular}
+  \end{example}
+  
+  \begin{example}[False Negatives]
+    \smaller
+    \begin{tabular}{ll}
+      Argument: & It is not fair to not allow children to express their personality through dress as long as it is appropriate. \\
+      Key Point: & School uniform is harming the student's self expression. \\
+      Prediction: & No match
+    \end{tabular}
+  \end{example}
+
 \end{frame}
 
-\begin{frame}
-  \frametitle{Term Overlap cont.}
-  \framesubtitle{Why is Performance so good overall?}
-    %TODO Cite paper or lecture which inspired to use models
-    
+\begin{frame}[allowframebreaks]{Term Overlap}
+  
+  \begin{itemize}
+    \item Rule-based approach with no training
+    \item Features: (preprocessed) terms
+    \item Preprocessing:
     \begin{itemize}
-      \item A lot of arguments contain the same words as the key points
-        \begin{itemize}
-          \item Fits our Intuition that Key Points summarize Arguments
-          \item Stemming and Synonyms/Antonyms make it much more likely for Words to overlap
-        \end{itemize}
+      \item Stemming \(\leadsto\) generalization
+      \item Stop words \(\leadsto\) less noise/confusion \\ modified without \query{not}
+      \item Synonyms, antonyms \(\leadsto\) generalization
+    \end{itemize}
+    \item Compute similarity based on Jaccard similarity coefficient~\todocite, i.e., proportion of terms that appear in argument and key point
+    \item Good improvement with preprocessing: up to 12~pp \todo{don't abbreviate}
+  \end{itemize}
+  
+  \begin{example}[Preprocessing]
+    \smaller
+    Homeschooling a child denies them valuable lifeskills, particularly interaction with their own age group and all experiences stemming from this. \\
+    \(\to\) homeschool child deni valuabl lifeskil particular interact age group experi stem
+  \end{example}
+
+  \framebreak
+  
+  \begin{block}{Technology}
+      \begin{itemize}
+        \item NTLK~\todocite for tokenization, stemming,  and stop word list
+        \item WordNet~\todocite (via NLTK) for synonyms and antonyms
+      \end{itemize}
+  \end{block}
+
+  \begin{block}{Intuition}
+    \begin{itemize}
+      \item Many arguments contain the same words as matching key points
+      \item Key points summarize arguments
+      \item Stemming/synonyms/antonyms increase overlap
     \end{itemize}
 
     \begin{example}
-      \textbf{Argument:} \textit{people reach their limit when it comes to their quality of life and should be able to end their suffering. this can be done with little or no suffering by assistance and the person is able to say good bye.}\\
-      \textbf{Key Point:} \textit{Assisted suicide reduces suffering}
+      \smaller
+      \begin{tabular}{lp{0.7\textwidth}}
+        Argument: & People reach their limit when it comes to their quality of life and should be able to end their {\color{blue} suffering}. This can be done with little or no {\color{blue} suffering} by {\color{orange} assistance} and the person is able to say good bye. \\
+        Key Point: & {\color{orange} Assisted} suicide reduces {\color{blue} suffering}.
+      \end{tabular}
     \end{example}
+  \end{block}
 
 \end{frame}
 
-\begin{frame}
-  \frametitle{Term Overlap cont.}
-  \framesubtitle{Features}
-    
-    
-\end{frame}
-
-\begin{frame}
-  \frametitle{BiLSTM}
+\begin{frame}{BiLSTM}
   \framesubtitle{Used technologies + Preprocessing}
 
   \begin{itemize}
@@ -259,8 +239,7 @@
 %   \end{figure}
 % \end{frame}
 
-\begin{frame}
-  \frametitle{BiLSTM}
+\begin{frame}{BiLSTM}
   \framesubtitle{Approach}
     %TODO cite paper which inspired to use blstm
   \begin{figure}
@@ -300,8 +279,7 @@
   \end{figure}
 \end{frame}
 
-\begin{frame}
-  \frametitle{BiLSTM}
+\begin{frame}{BiLSTM}
   \framesubtitle{Predictions on why did it not work ?}
     
   Tested a lot of different parameter settings:
@@ -330,31 +308,14 @@
 
 \end{frame}
 
-\begin{frame}
-  \frametitle{Transformers}
+\begin{frame}{\Bert}
   \framesubtitle{Used technologies + Preprocessing}
   
 
 \end{frame}
 
-\begin{frame}
-  \frametitle{Transformers}
+\begin{frame}{\Bert}
   \framesubtitle{Approach + Parameters}
-  
-
-\end{frame}
-
-\begin{frame}
-  \frametitle{BERT}
-  \framesubtitle{Used technologies + Preprocessing}
-  
-
-\end{frame}
-
-\begin{frame}
-  \frametitle{BERT}
-  \framesubtitle{Approach + Parameters}
-    
   
 
 \end{frame}
