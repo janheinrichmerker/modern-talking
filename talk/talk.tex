@@ -107,7 +107,7 @@
       \item Stop words \(\leadsto\) less noise/confusion \\ modified without \query{not}
       \item Synonyms, antonyms \(\leadsto\) generalization
     \end{itemize}
-    \item Compute similarity based on Jaccard similarity coefficient~\cite{Jaccard1902}, i.e., proportion of terms that appear in argument and key point
+    \item Compute similarity based on Jaccard similarity coefficient~\cite{Jaccard1902}, \\ i.e., proportion of terms that appear in argument and key point
     \item Good improvement with preprocessing: up to 12~pp 
   \end{itemize}
   
@@ -201,8 +201,9 @@
   
   \begin{itemize}
     \item Embed with GloVe~\cite{PenningtonSM2014}
-    \item Encode argument and key point separately \\ with bidirectional long short-term memory model~(\BiLSTM)
-    \item Merge pooled outputs to estimate similarity
+    \item Encode argument and key point separately \\ with bidirectional long short-term memory~(\BiLSTM) model~\todocite
+    \item Encode merged sequences with \BiLSTM
+    \item Classify pooled output to estimate similarity
   \end{itemize}
   
   \begin{block}{Preprocessing}
@@ -213,7 +214,7 @@
           \item[strict] Assume no match
           \item[relaxed] Assume match
         \end{description}
-        \item Data Augmentation with WordNet~\cite{Miller1995} synonyms and common misspellings
+        \item Data augmentation with WordNet~\cite{Miller1995} synonyms and misspellings
       \end{itemize}
   \end{block}
 
@@ -230,7 +231,7 @@
       \node[every neuron] (merge) at (3, 0.5) {\(-\)};
       \node[layer] (bilstm) at (4, 0.5) {\BiLSTM};
       \node[layer] (dense) at (5, 0.5) {Dense};
-      \node at (4.75, 1.1) {\small\color{blue} \BiLSTM+GloVe};
+      \node at (4.75, 1.1) {\small\color{blue} \BiLSTM + GloVe};
       \draw[draw=blue, rounded corners, thick] (0.5, -0.25) rectangle (5.5, 1.25);
       \draw[->, rounded corners] (arg) -| (vec);
       \draw[->, rounded corners] (kp) -| (vec);
@@ -244,7 +245,7 @@
       \draw[->] (bilstm) -- (dense);
       \draw[->] (dense) -- (6, 0.5);
     \end{tikzpicture}
-    \caption{\BiLSTM+GloVe model}
+    \caption{\BiLSTM + GloVe model}
   \end{figure}
   
   \begin{block}{Technology}
@@ -278,44 +279,40 @@
 \end{frame}
 
 \begin{frame}{\Bert and Transformers}
-  \framesubtitle{Used technologies + Preprocessing + Approach + Parameters}
 
   \begin{itemize}
-    \item \Bert - pretrained classification model~\cite{devlin-etal-2019-bert}
-    \item \Bert as classifier
-    	\begin{itemize}
-    		\item argument, keypoint pair as input
-    		\item transformer encoder output as features to classification model
-    		\item classification layer on top of the encoder output
-    	\end{itemize}
+    \item Pretrained encoder model, e.g., \Bert~\cite{DevlinCLT2018} or \Roberta~\todocite
+    \item Sequence classification model \\ \(=\) dense layer after \Bert pooling output
+    \item Input: pairs of argument and key point texts
+    \item Fine-tune pretrained model with ArgKP data
   \end{itemize}
   
-  \begin{block}{Technology}
+  \begin{block}{Parameters}
     \begin{itemize}
-      \item Simple Transformers\cite{Rajapaske2019} for model layers~(e.g., RNN) and tokenization
-      \item NLPAug\cite{Edward2019} for data augmentation
+    		\item Missing labels: skip, relaxed, strict (like for \BiLSTM)
+    		\item Data augmentation
+    		\item Batch size, epochs, learning rate, \ldots
     \end{itemize}
   \end{block}
   
-    \begin{block}{Approach \todo{what should be here exactly?}}
+  \begin{block}{Technology}
     \begin{itemize}
-    		\item \Bert -Base, \Bert -Large, RoBERTa, DistilBERT
-    		%The BERT base architecture has L=12, H=768, A=12 and a 		%total of around 110M parameters. Here L refers to the number of %transformer blocks, H refers to the hidden size, A refers to the %number of self-attention head. For BERT large, L=24, H=1024, A=16.
-    		\item Missing labels policy: skip, relaxed, strict
-    		\item Data Augmentation
-    		\item Parameters: batch size, epoch, learning-rate
+      \item Simple Transformers~\cite{Rajapaske2019} for tokenization, model, and training
+      \item NLPAug~\cite{Edward2019} for data augmentation
     \end{itemize}
-    
   \end{block}
 
 \end{frame}
 
-\begin{frame}{\Roberta}
-  \begin{block}{Differences\footnote{\scriptsize\url{https://towardsdatascience.com/bert-roberta-distilbert-xlnet-which-one-to-use-3d5ab82ba5f8}}}
+\begin{frame}{\Roberta~\todocite}
+
+  Alternative language model (pretrained encoder).
+
+  \begin{block}{Better than \Bert?\footnote{\tiny\smaller\url{https://towardsdatascience.com/bert-roberta-distilbert-xlnet-which-one-to-use-3d5ab82ba5f8}}}
     \begin{itemize}
-      \item Trained on 160~GB of data vs \Bert 16~GB of data
-      \item Larger mini-batches, learning rates and step sizes for longer training
-      \item Overall 2-20\% improvement over \Bert
+      \item Trained on 160~GB of data vs 16~GB (\Bert)
+      \item Larger mini-batches, learning rates, and step sizes \(\to\) longer training
+      \item Often 2--20\,\% improvement over \Bert
     \end{itemize}
   \end{block}
 
@@ -330,24 +327,25 @@
     \centering
     \caption{Mean average precision of the match label for different approaches and baselines, as computed by the KPA\,2021 Shared Task's evaluation script.}
     \tiny
-    \begin{tabular}{lrrrlrrr}
+    \begin{tabular}{lcccccc}
       \toprule
-      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & & \multicolumn{3}{c}{\textbf{Validation Data}}\\ \cmidrule{2-4} \cmidrule{6-8}
-        & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}}\\
+      \cmidrule(r{0.5em}){2-4} \cmidrule(l{0.5em}){5-7}
+      & Strict & Relaxed & Average & Strict & Relaxed & Average\\
       \midrule
       Random 
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (no preprocessing)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (with preprocessing)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \midrule
       BiLSTM (GloVe embeddings)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \BertBase
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \RobertaBase
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \bottomrule
     \end{tabular}
   \end{figure}
@@ -359,24 +357,25 @@
     \centering
     \caption{Precision of the match label for different approaches and baselines.}
     \tiny
-    \begin{tabular}{lrrrlrrr}
+    \begin{tabular}{lcccccc}
       \toprule
-      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & & \multicolumn{3}{c}{\textbf{Validation Data}}\\ \cmidrule{2-4} \cmidrule{6-8}
-        & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}}\\
+      \cmidrule(r{0.5em}){2-4} \cmidrule(l{0.5em}){5-7}
+      & Strict & Relaxed & Average & Strict & Relaxed & Average\\
       \midrule
       Random 
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (no preprocessing)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (with preprocessing)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \midrule
       BiLSTM (GloVe embeddings)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \BertBase
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \RobertaBase
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \bottomrule
     \end{tabular}
   \end{figure}
@@ -388,24 +387,25 @@
     \centering
     \caption{Macro precision of both labels for different approaches and baselines.}
     \tiny
-    \begin{tabular}{lrrrlrrr}
+    \begin{tabular}{lcccccc}
       \toprule
-      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & & \multicolumn{3}{c}{\textbf{Validation Data}}\\ \cmidrule{2-4} \cmidrule{6-8}
-        & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}}\\
+      \cmidrule(r{0.5em}){2-4} \cmidrule(l{0.5em}){5-7}
+      & Strict & Relaxed & Average & Strict & Relaxed & Average\\
       \midrule
       Random 
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (no preprocessing)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (with preprocessing)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \midrule
       BiLSTM (GloVe embeddings)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \BertBase
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \RobertaBase
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \bottomrule
     \end{tabular}
   \end{figure}
@@ -417,24 +417,25 @@
     \centering
     \caption{Recall of the match label for different approaches and baselines.}
     \tiny
-    \begin{tabular}{lrrrlrrr}
+    \begin{tabular}{lcccccc}
       \toprule
-      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & & \multicolumn{3}{c}{\textbf{Validation Data}}\\ \cmidrule{2-4} \cmidrule{6-8}
-        & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}}\\
+      \cmidrule(r{0.5em}){2-4} \cmidrule(l{0.5em}){5-7}
+      & Strict & Relaxed & Average & Strict & Relaxed & Average\\
       \midrule
       Random 
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (no preprocessing)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (with preprocessing)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \midrule
       BiLSTM (GloVe embeddings)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \BertBase
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \RobertaBase
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \bottomrule
     \end{tabular}
   \end{figure}
@@ -446,24 +447,25 @@
     \centering
     \caption{Macro recall of both labels for different approaches and baselines.}
     \tiny
-    \begin{tabular}{lrrrlrrr}
+    \begin{tabular}{lcccccc}
       \toprule
-      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & & \multicolumn{3}{c}{\textbf{Validation Data}}\\ \cmidrule{2-4} \cmidrule{6-8}
-        & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}}\\
+      \cmidrule(r{0.5em}){2-4} \cmidrule(l{0.5em}){5-7}
+      & Strict & Relaxed & Average & Strict & Relaxed & Average\\
       \midrule
       Random 
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (no preprocessing)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (with preprocessing)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \midrule
       BiLSTM (GloVe embeddings)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \BertBase
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \RobertaBase
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \bottomrule
     \end{tabular}
   \end{figure}
@@ -475,24 +477,25 @@
     \centering
     \caption{F1-Score of the match label for different approaches and baselines.}
     \tiny
-    \begin{tabular}{lrrrlrrr}
+    \begin{tabular}{lcccccc}
       \toprule
-      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & & \multicolumn{3}{c}{\textbf{Validation Data}}\\ \cmidrule{2-4} \cmidrule{6-8}
-        & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}}\\
+      \cmidrule(r{0.5em}){2-4} \cmidrule(l{0.5em}){5-7}
+      & Strict & Relaxed & Average & Strict & Relaxed & Average\\
       \midrule
       Random 
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (no preprocessing)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (with preprocessing)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \midrule
       BiLSTM (GloVe embeddings)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \BertBase
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \RobertaBase
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \bottomrule
     \end{tabular}
   \end{figure}
@@ -504,27 +507,41 @@
     \centering
     \caption{Macro F1-score of both labels for different approaches and baselines.}
     \tiny
-    \begin{tabular}{lrrrlrrr}
+    \begin{tabular}{lcccccc}
       \toprule
-      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & & \multicolumn{3}{c}{\textbf{Validation Data}}\\ \cmidrule{2-4} \cmidrule{6-8}
-        & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}}\\
+      \cmidrule(r{0.5em}){2-4} \cmidrule(l{0.5em}){5-7}
+      & Strict & Relaxed & Average & Strict & Relaxed & Average\\
       \midrule
       Random 
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (no preprocessing)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (with preprocessing)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \midrule
       BiLSTM (GloVe embeddings)
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \BertBase
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \RobertaBase
-      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \bottomrule
     \end{tabular}
   \end{figure}
+\end{frame}
+
+\begin{frame}{Conclusion}
+  \begin{itemize}
+    \item Strong, rule-based baseline
+    \item Creative model ideaa, though not better than baseline
+    \item \Roberta better able to capture semantic similarity
+    \item Submitted scores (on validation data):
+    \begin{tabular}{lc}
+      mAP strict & 00000 \\
+      mAP relaxed & 00000
+    \end{tabular}
+  \end{itemize}
 \end{frame}
 
 \appendix
