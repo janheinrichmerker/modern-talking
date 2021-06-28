@@ -8,7 +8,6 @@ from modern_talking.pipeline import Pipeline
 
 
 class MeanAveragePrecision(Metric):
-
     new: bool
 
     def __init__(self, new: bool = False):
@@ -56,4 +55,3 @@ class MeanAveragePrecision(Metric):
             return result_relaxed
         else:
             return result_strict
-
