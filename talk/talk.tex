@@ -151,7 +151,7 @@
   \begin{itemize}
     \item Features: bag-of-words and/or \TFIDF for selected parts-of-speech
     \item Logistic regression, Support Vector Classifier
-    \item Ensemble of Regression + SVC
+    \item Ensemble of Regression and SVC
   \end{itemize}
   
   \begin{block}{Technology}
@@ -201,7 +201,7 @@
   
   \begin{itemize}
     \item Embed with GloVe~\cite{PenningtonSM2014}
-    \item Encode argument and key point separately \\ with bidirectional long short-term memory~(\BiLSTM) model~\todocite
+    \item Encode argument and key point separately \\ with bidirectional long short-term memory~(\BiLSTM) model~\cite{HochreiterS1997}
     \item Encode merged sequences with \BiLSTM
     \item Classify pooled output to estimate similarity
   \end{itemize}
@@ -231,7 +231,7 @@
       \node[every neuron] (merge) at (3, 0.5) {\(-\)};
       \node[layer] (bilstm) at (4, 0.5) {\BiLSTM};
       \node[layer] (dense) at (5, 0.5) {Dense};
-      \node at (4.75, 1.1) {\small\color{blue} \BiLSTM + GloVe};
+      \node at (4.75, 1.1) {\small\color{blue} \BiLSTM-GloVe};
       \draw[draw=blue, rounded corners, thick] (0.5, -0.25) rectangle (5.5, 1.25);
       \draw[->, rounded corners] (arg) -| (vec);
       \draw[->, rounded corners] (kp) -| (vec);
@@ -245,7 +245,7 @@
       \draw[->] (bilstm) -- (dense);
       \draw[->] (dense) -- (6, 0.5);
     \end{tikzpicture}
-    \caption{\BiLSTM + GloVe model}
+    \caption{\BiLSTM-GloVe model}
   \end{figure}
   
   \begin{block}{Technology}
@@ -331,21 +331,21 @@
     \centering
     \caption{Mean average precision of the match label for different approaches and baselines, as computed by the KPA\,2021 Shared Task's evaluation script.
     Values where the script returns no score are indicated by ---.}
-    \tiny
+    \scriptsize
     \begin{tabular}{lcccccc}
       \toprule
-      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}}\\
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}} \\
       \cmidrule(r{0.5em}){2-4} \cmidrule(l{0.5em}){5-7}
-      & Strict & Relaxed & Average & Strict & Relaxed & Average\\
+      & Strict & Relaxed & \(\varnothing\) & Strict & Relaxed & \(\varnothing\) \\
       \midrule
       Random 
       & --- & --- & --- & 0.188 & 0.365 & 0.277 \\
-      Term Overlap (no preprocessing)
+      Term Overlap (basic)
       & --- & --- & --- & 0.523 & 0.702 & 0.613 \\
-      Term Overlap (with preprocessing)
+      Term Overlap (preprocessing)
       & --- & --- & --- & 0.643 & 0.802 & 0.722 \\
       \midrule
-      BiLSTM (GloVe embeddings)
+      \BiLSTM-GloVe
       & --- & --- & --- & --- & 0.417 & --- \\
       \BertBase
       & --- & --- & --- & 0.760 & 0.939 & 0.850 \\
@@ -361,21 +361,21 @@
   \begin{figure}
     \centering
     \caption{Precision of the match label for different approaches and baselines.}
-    \tiny
+    \scriptsize
     \begin{tabular}{lcccccc}
       \toprule
-      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}}\\
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}} \\
       \cmidrule(r{0.5em}){2-4} \cmidrule(l{0.5em}){5-7}
-      & Strict & Relaxed & Average & Strict & Relaxed & Average\\
+      & Strict & Relaxed & \(\varnothing\) & Strict & Relaxed & \(\varnothing\) \\
       \midrule
       Random 
       & 0.176 & 0.330 & 0.253 & 0.179 & 0.344 & 0.261 \\
-      Term Overlap (no preprocessing)
+      Term Overlap (basic)
       & 0.377 & 0.571 & 0.474 & 0.330 & 0.568 & 0.449 \\
-      Term Overlap (with preprocessing)
+      Term Overlap (preprocessing)
       & 0.269 & 0.435 & 0.352 & 0.219 & 0.416 & 0.317 \\
       \midrule
-      BiLSTM (GloVe embeddings)
+      \BiLSTM-GloVe
       & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
       \BertBase
       & 0.723 & 0.950 & 0.836 & 0.428 & 0.671 & 0.550 \\
@@ -391,21 +391,21 @@
   \begin{figure}
     \centering
     \caption{Macro precision of both labels for different approaches and baselines.}
-    \tiny
+    \scriptsize
     \begin{tabular}{lcccccc}
       \toprule
-      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}}\\
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}} \\
       \cmidrule(r{0.5em}){2-4} \cmidrule(l{0.5em}){5-7}
-      & Strict & Relaxed & Average & Strict & Relaxed & Average\\
+      & Strict & Relaxed & \(\varnothing\) & Strict & Relaxed & \(\varnothing\) \\
       \midrule
       Random 
       & 0.334 & 0.333 & 0.334 & 0.336 & 0.326 & 0.331 \\
-      Term Overlap (no preprocessing)
+      Term Overlap (basic)
       & 0.405 & 0.419 & 0.412 & 0.388 & 0.410 & 0.399 \\
-      Term Overlap (with preprocessing)
+      Term Overlap (preprocessing)
       & 0.373 & 0.377 & 0.375 & 0.355 & 0.363 & 0.359 \\
       \midrule
-      BiLSTM (GloVe embeddings)
+      \BiLSTM-GloVe
       & 0.275 & 0.223 & 0.249 & 0.275 & 0.215 & 0.245 \\
       \BertBase
       & 0.564 & 0.594 & \underline{0.579} & 0.458 & 0.489 & 0.474 \\
@@ -421,21 +421,21 @@
   \begin{figure}
     \centering
     \caption{Recall of the match label for different approaches and baselines.}
-    \tiny
+    \scriptsize
     \begin{tabular}{lcccccc}
       \toprule
-      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}}\\
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}} \\
       \cmidrule(r{0.5em}){2-4} \cmidrule(l{0.5em}){5-7}
-      & Strict & Relaxed & Average & Strict & Relaxed & Average\\
+      & Strict & Relaxed & \(\varnothing\) & Strict & Relaxed & \(\varnothing\) \\
       \midrule
       Random 
       & 0.504 & 0.499 & 0.501 & 0.522 & 0.496 & 0.509 \\
-      Term Overlap (no preprocessing)
+      Term Overlap (basic)
       & 0.128 & 0.103 & 0.115 & 0.122 & 0.104 & 0.113 \\
-      Term Overlap (with preprocessing)
+      Term Overlap (preprocessing)
       & 0.323 & 0.275 & 0.299 & 0.390 & 0.366 & 0.378 \\
       \midrule
-      BiLSTM (GloVe embeddings)
+      \BiLSTM-GloVe
       & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
       \BertBase
       & 0.861 & 0.596 & \underline{0.729} & 0.787 & 0.611 & \underline{0.699} \\
@@ -451,21 +451,21 @@
   \begin{figure}
     \centering
     \caption{Macro recall of both labels for different approaches and baselines.}
-    \tiny
+    \scriptsize
     \begin{tabular}{lcccccc}
       \toprule
-      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}}\\
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}} \\
       \cmidrule(r{0.5em}){2-4} \cmidrule(l{0.5em}){5-7}
-      & Strict & Relaxed & Average & Strict & Relaxed & Average\\
+      & Strict & Relaxed & \(\varnothing\) & Strict & Relaxed & \(\varnothing\) \\
       \midrule
       Random 
       & 0.335 & 0.333 & 0.334 & 0.338 & 0.326 & 0.332 \\
-      Term Overlap (no preprocessing)
+      Term Overlap (basic)
       & 0.361 & 0.355 & 0.358 & 0.356 & 0.354 & 0.355 \\
-      Term Overlap (with preprocessing)
+      Term Overlap (preprocessing)
       & 0.379 & 0.366 & 0.373 & 0.365 & 0.361 & 0.363 \\
       \midrule
-      BiLSTM (GloVe embeddings)
+      \BiLSTM-GloVe
       & 0.333 & 0.333 & 0.333 & 0.333 & 0.333 & 0.333 \\
       \BertBase
       & 0.597 & 0.527 & \underline{0.562} & 0.521 & 0.482 & 0.502 \\
@@ -481,21 +481,21 @@
   \begin{figure}
     \centering
     \caption{F1-Score of the match label for different approaches and baselines.}
-    \tiny
+    \scriptsize
     \begin{tabular}{lcccccc}
       \toprule
-      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}}\\
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}} \\
       \cmidrule(r{0.5em}){2-4} \cmidrule(l{0.5em}){5-7}
-      & Strict & Relaxed & Average & Strict & Relaxed & Average\\
+      & Strict & Relaxed & \(\varnothing\) & Strict & Relaxed & \(\varnothing\) \\
       \midrule
       Random 
       & 0.261 & 0.397 & 0.329 & 0.267 & 0.406 & 0.336 \\
-      Term Overlap (no preprocessing)
+      Term Overlap (basic)
       & 0.192 & 0.174 & 0.183 & 0.178 & 0.176 & 0.177 \\
-      Term Overlap (with preprocessing)
+      Term Overlap (preprocessing)
       & 0.294 & 0.337 & 0.315 & 0.281 & 0.389 & 0.335 \\
       \midrule
-      BiLSTM (GloVe embeddings)
+      \BiLSTM-GloVe
       & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
       \BertBase
       & 0.786 & 0.733 & \underline{0.759} & 0.555 & 0.640 & 0.597 \\
@@ -511,21 +511,21 @@
   \begin{figure}
     \centering
     \caption{Macro F1-score of both labels for different approaches and baselines.}
-    \tiny
+    \scriptsize
     \begin{tabular}{lcccccc}
       \toprule
-      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}}\\
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}} \\
       \cmidrule(r{0.5em}){2-4} \cmidrule(l{0.5em}){5-7}
-      & Strict & Relaxed & Average & Strict & Relaxed & Average\\
+      & Strict & Relaxed & \(\varnothing\) & Strict & Relaxed & \(\varnothing\) \\
       \midrule
       Random 
       & 0.295 & 0.323 & 0.309 & 0.295 & 0.318 & 0.306 \\
-      Term Overlap (no preprocessing)
+      Term Overlap (basic)
       & 0.362 & 0.325 & 0.343 & 0.355 & 0.319 & 0.337 \\
-      Term Overlap (with preprocessing)
+      Term Overlap (preprocessing)
       & 0.375 & 0.364 & 0.370 & 0.350 & 0.361 & 0.356 \\
       \midrule
-      BiLSTM (GloVe embeddings)
+      \BiLSTM-GloVe
       & 0.302 & 0.267 & 0.285 & 0.301 & 0.262 & 0.282 \\
       \BertBase
       & 0.578 & 0.545 & \underline{0.562} & 0.469 & 0.485 & 0.477 \\
@@ -543,8 +543,8 @@
     \item \Roberta better able to capture semantic similarity
     \item Submitted scores (on validation data): \\
     \begin{tabular}{@{}lc}
-      mAP strict: & 00000 \\
-      mAP relaxed: & 00000
+      mAP strict: & \textbf{0.866} \\
+      mAP relaxed: & \textbf{0.978}
     \end{tabular}
   \end{itemize}
 \end{frame}
