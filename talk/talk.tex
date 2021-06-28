@@ -327,7 +327,8 @@
   \framesubtitle{Mean Average Precision}
   \begin{figure}
     \centering
-    \caption{Mean average precision of the match label for different approaches and baselines, as computed by the KPA\,2021 Shared Task's evaluation script.}
+    \caption{Mean average precision of the match label for different approaches and baselines, as computed by the KPA\,2021 Shared Task's evaluation script.
+    Values where the script returns no score are indicated by ---.}
     \tiny
     \begin{tabular}{lcccccc}
       \toprule
@@ -336,7 +337,37 @@
       & Strict & Relaxed & Average & Strict & Relaxed & Average\\
       \midrule
       Random 
+      & ---   & ---   & ---   & 0.188 & 0.365 & 0.277 \\
+      Term Overlap (no preprocessing)
       & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      Term Overlap (with preprocessing)
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      \midrule
+      BiLSTM (GloVe embeddings)
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      \BertBase
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      \RobertaBase
+      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      \bottomrule
+    \end{tabular}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Evaluation}
+  \framesubtitle{Mean Average Precision (fixed)}
+  \begin{figure}
+    \centering
+    \caption{Mean average precision of the match label for different approaches and baselines, as described in the KPA\,2021 Shared Task's documentation.}
+    \tiny
+    \begin{tabular}{lcccccc}
+      \toprule
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}}\\
+      \cmidrule(r{0.5em}){2-4} \cmidrule(l{0.5em}){5-7}
+      & Strict & Relaxed & Average & Strict & Relaxed & Average\\
+      \midrule
+      Random 
+      & 0.170 & 0.307 & 0.238 & 0.188 & 0.365 & 0.277 \\
       Term Overlap (no preprocessing)
       & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (with preprocessing)
@@ -366,7 +397,7 @@
       & Strict & Relaxed & Average & Strict & Relaxed & Average\\
       \midrule
       Random 
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      & 0.176 & 0.330 & 0.253 & 0.179 & 0.344 & 0.261 \\
       Term Overlap (no preprocessing)
       & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (with preprocessing)
@@ -396,7 +427,7 @@
       & Strict & Relaxed & Average & Strict & Relaxed & Average\\
       \midrule
       Random 
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      & 0.334 & 0.333 & 0.334 & 0.336 & 0.326 & 0.331 \\
       Term Overlap (no preprocessing)
       & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (with preprocessing)
@@ -426,7 +457,7 @@
       & Strict & Relaxed & Average & Strict & Relaxed & Average\\
       \midrule
       Random 
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      & 0.504 & 0.499 & 0.501 & 0.522 & 0.496 & 0.509 \\
       Term Overlap (no preprocessing)
       & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (with preprocessing)
@@ -456,7 +487,7 @@
       & Strict & Relaxed & Average & Strict & Relaxed & Average\\
       \midrule
       Random 
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      & 0.335 & 0.333 & 0.334 & 0.338 & 0.326 & 0.332 \\
       Term Overlap (no preprocessing)
       & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (with preprocessing)
@@ -486,7 +517,7 @@
       & Strict & Relaxed & Average & Strict & Relaxed & Average\\
       \midrule
       Random 
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      & 0.261 & 0.397 & 0.329 & 0.267 & 0.406 & 0.336 \\
       Term Overlap (no preprocessing)
       & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (with preprocessing)
@@ -516,7 +547,7 @@
       & Strict & Relaxed & Average & Strict & Relaxed & Average\\
       \midrule
       Random 
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      & 0.295 & 0.323 & 0.309 & 0.295 & 0.318 & 0.306 \\
       Term Overlap (no preprocessing)
       & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       Term Overlap (with preprocessing)
@@ -538,10 +569,10 @@
     \item Strong, rule-based baseline
     \item Creative model ideaa, though not better than baseline
     \item \Roberta better able to capture semantic similarity
-    \item Submitted scores (on validation data):
-    \begin{tabular}{lc}
-      mAP strict & 00000 \\
-      mAP relaxed & 00000
+    \item Submitted scores (on validation data): \\
+    \begin{tabular}{@{}lc}
+      mAP strict: & 00000 \\
+      mAP relaxed: & 00000
     \end{tabular}
   \end{itemize}
 \end{frame}
