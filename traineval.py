@@ -14,6 +14,7 @@ from modern_talking.pipeline import Pipeline
 
 metrics: Iterable[Metric] = [
     MeanAveragePrecision(),
+    MeanAveragePrecision(new=True),
     Precision(),
     MacroPrecision(),
     Recall(),

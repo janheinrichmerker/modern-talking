@@ -157,6 +157,7 @@ metrics: Iterable[Metric] = [
     F1Score(),
     MacroF1Score(),
     MeanAveragePrecision(),
+    MeanAveragePrecision(new=True),
     ManualErrors(),
 ]
 

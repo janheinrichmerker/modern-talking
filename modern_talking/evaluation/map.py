@@ -9,9 +9,15 @@ from modern_talking.pipeline import Pipeline
 
 class MeanAveragePrecision(Metric):
 
+    new: bool
+
+    def __init__(self, new: bool = False):
+        self.new = new
+
     @property
     def slug(self) -> str:
-        return "map"
+        new_suffix = "-new" if self.new else ""
+        return f"map{new_suffix}"
 
     def evaluate(
             self,
@@ -20,7 +26,9 @@ class MeanAveragePrecision(Metric):
             mode: EvaluationMode,
     ) -> float:
         script_dir = Path(__file__).parent
-        evaluation_script = script_dir / "track_1_kp_matching.py"
+        script_name = "track_1_kp_matching_new.py" if self.new \
+            else "track_1_kp_matching.py"
+        script_file = script_dir / script_name
         gold_data_dir = script_dir.parent.parent / "data"
         with TemporaryDirectory() as temp_dir:
             predictions_file = Path(temp_dir) / "predictions.json"
@@ -30,7 +38,7 @@ class MeanAveragePrecision(Metric):
             result = run(
                 [
                     "python",
-                    evaluation_script.absolute(),
+                    script_file.absolute(),
                     gold_data_dir.absolute(),
                     predictions_file.absolute(),
                 ],
@@ -48,3 +56,4 @@ class MeanAveragePrecision(Metric):
             return result_relaxed
         else:
             return result_strict
+
