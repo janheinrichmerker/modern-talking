@@ -21,35 +21,31 @@
 \usepackage{booktabs}
 \usepackage{graphics,graphicx}
 
-\newcommand{\Bert}{\textsc{Bert}\xspace}
 \newcommand{\ArgKP}{\mbox{ArgKP}\xspace}
 \newcommand{\ArgQ}{\mbox{IBM-ArgQ-Rank-30kArgs}\xspace}
 \newcommand{\BiLSTM}{\mbox{BiLSTM}\xspace}
-\newcommand{\BertBase}{\textsc{Bert}-Base\xspace}
-\newcommand{\BertLarge}{\textsc{Bert}-Large\xspace}
+\newcommand{\Bert}{\textsc{Bert}\xspace}
+\newcommand{\BertBase}{\Bert-Base\xspace}
+\newcommand{\BertLarge}{\Bert-Large\xspace}
+\newcommand{\Roberta}{\mbox{Ro\textsc{Bert}a}\xspace}
+\newcommand{\RobertaBase}{\Roberta-Base\xspace}
 \newcommand{\TF}{\mbox{TF}\xspace}
 \newcommand{\TFIDF}{\mbox{TF/IDF}\xspace}
 \newcommand{\todocite}{{\smaller\color{red}[CITE]}\xspace}
 \newcommand{\todo}[1]{{\smaller\color{red}[#1]}}
 
 \tikzset{%
-    every neuron/.style={
-      circle,
-      draw,
-      minimum size=1cm
-    },
-    neuron missing/.style={
-      draw=none, 
-      scale=4,
-      text height=0.333cm,
-      execute at begin node=\color{black}$\vdots$
-    },
-    layer/.style= {
-      rectangle,
-      draw,
-      minimum size = 1cm
-    }
+  every neuron/.style={
+    circle,
+    draw,
+    minimum size=1cm
+  },
+  layer/.style= {
+    rectangle,
+    draw,
+    minimum size = 1cm
   }
+}
 
 \begin{document}
 
@@ -265,16 +261,28 @@
 
 \end{frame}
 
-\begin{frame}{\Bert}
-  \framesubtitle{Used technologies + Preprocessing}
+\begin{frame}{\Bert and Transformers}
+  \framesubtitle{Used technologies + Preprocessing + Approach + Parameters}
+
+  \begin{itemize}
+    \item \todo{How to use \Bert as classifier?}
+  \end{itemize}
   
+  \begin{block}{Technology}
+    \begin{itemize}
+      \item Simple Transformers~\todocite for model layers~(e.g., RNN) and tokenization
+      \item NLPAug~\todocite for data augmentation
+    \end{itemize}
+  \end{block}
 
 \end{frame}
 
-\begin{frame}{\Bert}
-  \framesubtitle{Approach + Parameters}
-  
+\begin{frame}{\Roberta}
+  \todo{Differences}
 
+  \begin{block}{Hyper-parameter settings}
+    
+  \end{block}
 \end{frame}
 
 \begin{frame}{Evaluation}
@@ -285,22 +293,22 @@
     \tiny
     \begin{tabular}{lrrrlrrr}
       \toprule
-      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cline{2-4} \cline{6-8}
+      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cmidrule{2-4} \cmidrule{6-8}
         & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
       \midrule
-      Match All                           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Match None                          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (no prepro)            & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem)                 & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem, stowo)          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem, stowo, syn, ant)& 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+      Random 
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      Term Overlap (no preprocessing)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      Term Overlap (with preprocessing)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
       \midrule
-      BiLSTM (GloVe embeddings)           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      BERT-Base (skip)                    & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      BERT-Large (skip)                   & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      RoBERTa-Base (skip)                 & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      DistilBERT-Base (skip)              & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Transformers                        & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+      BiLSTM (GloVe embeddings)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      \BertBase
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      \RobertaBase
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
       \bottomrule
     \end{tabular}
   \end{figure}
@@ -314,7 +322,7 @@
     \tiny
     \begin{tabular}{lrrrlrrr}
       \toprule
-      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cline{2-4} \cline{6-8}
+      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cmidrule{2-4} \cmidrule{6-8}
         & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
       \midrule
       Match All                           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
@@ -343,7 +351,7 @@
     \tiny
     \begin{tabular}{lrrrlrrr}
       \toprule
-      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cline{2-4} \cline{6-8}
+      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cmidrule{2-4} \cmidrule{6-8}
         & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
       \midrule
       Match All                           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
@@ -372,7 +380,7 @@
     \tiny
     \begin{tabular}{lrrrlrrr}
       \toprule
-      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cline{2-4} \cline{6-8}
+      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cmidrule{2-4} \cmidrule{6-8}
         & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
       \midrule
       Match All                           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
@@ -401,7 +409,7 @@
     \tiny
     \begin{tabular}{lrrrlrrr}
       \toprule
-      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cline{2-4} \cline{6-8}
+      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cmidrule{2-4} \cmidrule{6-8}
         & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
       \midrule
       Match All                           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
@@ -430,7 +438,7 @@
     \tiny
     \begin{tabular}{lrrrlrrr}
       \toprule
-      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cline{2-4} \cline{6-8}
+      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cmidrule{2-4} \cmidrule{6-8}
         & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
       \midrule
       Match All                           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
@@ -459,7 +467,7 @@
     \tiny
     \begin{tabular}{lrrrlrrr}
       \toprule
-      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cline{2-4} \cline{6-8}
+      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cmidrule{2-4} \cmidrule{6-8}
         & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
       \midrule
       Match All                           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
