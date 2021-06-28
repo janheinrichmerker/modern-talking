@@ -38,12 +38,13 @@
   every neuron/.style={
     circle,
     draw,
-    minimum size=1cm
+    minimum size=1cm,
   },
   layer/.style= {
     rectangle,
     draw,
-    minimum size = 1cm
+    minimum size=1cm,
+    rounded corners,
   }
 }
 
@@ -229,13 +230,14 @@
       \node[every neuron] (merge) at (3, 0.5) {\(-\)};
       \node[layer] (bilstm) at (4, 0.5) {\BiLSTM};
       \node[layer] (dense) at (5, 0.5) {Dense};
-      \node at (4.75, 1.1) {\small \BiLSTM+GloVe};
-      \draw[draw=blue] (0.5, -0.25) rectangle (5.5, 1.25);
-      \draw[->] (arg) -- (vec);
-      \draw[->] (kp) -- (vec);
-      \draw[->] (vec) -- (glove);
-      \draw[->] (glove) -- (bilstm-arg);
-      \draw[->] (glove) -- (bilstm-kp);
+      \node at (4.75, 1.1) {\small\color{blue} \BiLSTM+GloVe};
+      \draw[draw=blue, rounded corners, thick] (0.5, -0.25) rectangle (5.5, 1.25);
+      \draw[->, rounded corners] (arg) -| (vec);
+      \draw[->, rounded corners] (kp) -| (vec);
+      \draw[->, transform canvas={yshift=-2mm}] (vec) -- (glove);
+      \draw[->, transform canvas={yshift=2mm}] (vec) -- (glove);
+      \draw[->, rounded corners] (glove) |- (bilstm-arg);
+      \draw[->, rounded corners] (glove) |- (bilstm-kp);
       \draw[->] (bilstm-arg) -- (merge);
       \draw[->] (bilstm-kp) -- (merge);
       \draw[->] (merge) -- (bilstm);
