@@ -316,9 +316,11 @@
     \end{itemize}
   \end{block}
 
-  \begin{block}{Hyper-parameter settings}
+  \begin{block}{Chosen hyper-parameters}
     \begin{itemize}
-      \item 
+      \item Pretrained \BertBase~/~\RobertaBase models: \\ 12~hidden layers of size~768, 12~attention heads with dropout~0.1
+      \item Batch size~32, 1~epoch, learning rate~\(2 \cdot 10^{-5}\), warmup proportion~6\,\%
+      \item No weight decay, no early stopping, no data augmentation, \\ no oversampling, skip missing labels
     \end{itemize}
   \end{block}
 \end{frame}
@@ -346,39 +348,9 @@
       BiLSTM (GloVe embeddings)
       & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \BertBase
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      & --- & --- & --- & 0.760 & 0.939 & 0.850 \\
       \RobertaBase
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
-      \bottomrule
-    \end{tabular}
-  \end{figure}
-\end{frame}
-
-\begin{frame}{Evaluation}
-  \framesubtitle{Mean Average Precision (fixed)}
-  \begin{figure}
-    \centering
-    \caption{Mean average precision of the match label for different approaches and baselines, as described in the KPA\,2021 Shared Task's documentation.}
-    \tiny
-    \begin{tabular}{lcccccc}
-      \toprule
-      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & \multicolumn{3}{c}{\textbf{Validation Data}}\\
-      \cmidrule(r{0.5em}){2-4} \cmidrule(l{0.5em}){5-7}
-      & Strict & Relaxed & Average & Strict & Relaxed & Average\\
-      \midrule
-      Random 
-      & 0.170 & 0.307 & 0.238 & 0.188 & 0.365 & 0.277 \\
-      Term Overlap (no preprocessing)
-      & 0.170 & 0.307 & 0.238 & 0.525 & 0.702 & 0.614 \\
-      Term Overlap (with preprocessing)
-      & 0.170 & 0.307 & 0.238 & 0.657 & 0.810 & 0.733 \\
-      \midrule
-      BiLSTM (GloVe embeddings)
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
-      \BertBase
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
-      \RobertaBase
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      & --- & --- & --- & 0.866 & 0.978 & \underline{0.922} \\
       \bottomrule
     \end{tabular}
   \end{figure}
@@ -406,9 +378,9 @@
       BiLSTM (GloVe embeddings)
       & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \BertBase
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      & 0.723 & 0.950 & 0.836 & 0.428 & 0.671 & 0.550 \\
       \RobertaBase
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      & 0.730 & 0.942 & \underline{0.836} & 0.622 & 0.852 & \underline{0.737} \\
       \bottomrule
     \end{tabular}
   \end{figure}
@@ -436,9 +408,9 @@
       BiLSTM (GloVe embeddings)
       & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \BertBase
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      & 0.564 & 0.594 & \underline{0.579} & 0.458 & 0.489 & 0.474 \\
       \RobertaBase
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      & 0.562 & 0.585 & 0.573 & 0.523 & 0.545 & \underline{0.534} \\
       \bottomrule
     \end{tabular}
   \end{figure}
@@ -466,9 +438,9 @@
       BiLSTM (GloVe embeddings)
       & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \BertBase
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      & 0.861 & 0.596 & \underline{0.729} & 0.787 & 0.611 & \underline{0.699} \\
       \RobertaBase
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      & 0.791 & 0.538 & 0.664 & 0.759 & 0.515 & 0.637 \\
       \bottomrule
     \end{tabular}
   \end{figure}
@@ -496,9 +468,9 @@
       BiLSTM (GloVe embeddings)
       & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \BertBase
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      & 0.597 & 0.527 & \underline{0.562} & 0.521 & 0.482 & 0.502 \\
       \RobertaBase
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      & 0.576 & 0.507 & 0.542 & 0.554 & 0.489 & \underline{0.521} \\
       \bottomrule
     \end{tabular}
   \end{figure}
@@ -526,9 +498,9 @@
       BiLSTM (GloVe embeddings)
       & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \BertBase
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      & 0.786 & 0.733 & \underline{0.759} & 0.555 & 0.640 & 0.597 \\
       \RobertaBase
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      & 0.759 & 0.685 & 0.722 & 0.683 & 0.642 & \underline{0.663} \\
       \bottomrule
     \end{tabular}
   \end{figure}
@@ -556,9 +528,9 @@
       BiLSTM (GloVe embeddings)
       & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
       \BertBase
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      & 0.578 & 0.545 & \underline{0.562} & 0.469 & 0.485 & 0.477 \\
       \RobertaBase
-      & 00000 & 00000 & 00000 & 00000 & 00000 & 00000 \\
+      & 0.569 & 0.525 & 0.547 & 0.536 & 0.500 & \underline{0.518} \\
       \bottomrule
     \end{tabular}
   \end{figure}
