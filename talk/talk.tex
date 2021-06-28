@@ -293,7 +293,7 @@
     \tiny
     \begin{tabular}{lrrrlrrr}
       \toprule
-      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cmidrule{2-4} \cmidrule{6-8}
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & & \multicolumn{3}{c}{\textbf{Validation Data}}\\ \cmidrule{2-4} \cmidrule{6-8}
         & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
       \midrule
       Random 
@@ -322,22 +322,22 @@
     \tiny
     \begin{tabular}{lrrrlrrr}
       \toprule
-      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cmidrule{2-4} \cmidrule{6-8}
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & & \multicolumn{3}{c}{\textbf{Validation Data}}\\ \cmidrule{2-4} \cmidrule{6-8}
         & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
       \midrule
-      Match All                           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Match None                          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (no prepro)            & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem)                 & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem, stowo)          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem, stowo, syn, ant)& 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+      Random 
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      Term Overlap (no preprocessing)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      Term Overlap (with preprocessing)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
       \midrule
-      BiLSTM (GloVe embeddings)           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      BERT-Base (skip)                    & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      BERT-Large (skip)                   & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      RoBERTa-Base (skip)                 & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      DistilBERT-Base (skip)              & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Transformers                        & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+      BiLSTM (GloVe embeddings)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      \BertBase
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      \RobertaBase
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
       \bottomrule
     \end{tabular}
   \end{figure}
@@ -351,22 +351,22 @@
     \tiny
     \begin{tabular}{lrrrlrrr}
       \toprule
-      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cmidrule{2-4} \cmidrule{6-8}
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & & \multicolumn{3}{c}{\textbf{Validation Data}}\\ \cmidrule{2-4} \cmidrule{6-8}
         & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
       \midrule
-      Match All                           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Match None                          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (no prepro)            & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem)                 & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem, stowo)          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem, stowo, syn, ant)& 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+      Random 
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      Term Overlap (no preprocessing)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      Term Overlap (with preprocessing)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
       \midrule
-      BiLSTM (GloVe embeddings)           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      BERT-Base (skip)                    & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      BERT-Large (skip)                   & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      RoBERTa-Base (skip)                 & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      DistilBERT-Base (skip)              & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Transformers                        & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+      BiLSTM (GloVe embeddings)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      \BertBase
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      \RobertaBase
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
       \bottomrule
     \end{tabular}
   \end{figure}
@@ -380,22 +380,22 @@
     \tiny
     \begin{tabular}{lrrrlrrr}
       \toprule
-      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cmidrule{2-4} \cmidrule{6-8}
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & & \multicolumn{3}{c}{\textbf{Validation Data}}\\ \cmidrule{2-4} \cmidrule{6-8}
         & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
       \midrule
-      Match All                           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Match None                          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (no prepro)            & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem)                 & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem, stowo)          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem, stowo, syn, ant)& 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+      Random 
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      Term Overlap (no preprocessing)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      Term Overlap (with preprocessing)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
       \midrule
-      BiLSTM (GloVe embeddings)           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      BERT-Base (skip)                    & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      BERT-Large (skip)                   & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      RoBERTa-Base (skip)                 & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      DistilBERT-Base (skip)              & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Transformers                        & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+      BiLSTM (GloVe embeddings)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      \BertBase
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      \RobertaBase
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
       \bottomrule
     \end{tabular}
   \end{figure}
@@ -409,22 +409,22 @@
     \tiny
     \begin{tabular}{lrrrlrrr}
       \toprule
-      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cmidrule{2-4} \cmidrule{6-8}
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & & \multicolumn{3}{c}{\textbf{Validation Data}}\\ \cmidrule{2-4} \cmidrule{6-8}
         & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
       \midrule
-      Match All                           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Match None                          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (no prepro)            & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem)                 & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem, stowo)          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem, stowo, syn, ant)& 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+      Random 
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      Term Overlap (no preprocessing)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      Term Overlap (with preprocessing)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
       \midrule
-      BiLSTM (GloVe embeddings)           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      BERT-Base (skip)                    & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      BERT-Large (skip)                   & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      RoBERTa-Base (skip)                 & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      DistilBERT-Base (skip)              & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Transformers                        & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+      BiLSTM (GloVe embeddings)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      \BertBase
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      \RobertaBase
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
       \bottomrule
     \end{tabular}
   \end{figure}
@@ -438,22 +438,22 @@
     \tiny
     \begin{tabular}{lrrrlrrr}
       \toprule
-      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cmidrule{2-4} \cmidrule{6-8}
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & & \multicolumn{3}{c}{\textbf{Validation Data}}\\ \cmidrule{2-4} \cmidrule{6-8}
         & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
       \midrule
-      Match All                           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Match None                          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (no prepro)            & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem)                 & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem, stowo)          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem, stowo, syn, ant)& 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+      Random 
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      Term Overlap (no preprocessing)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      Term Overlap (with preprocessing)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
       \midrule
-      BiLSTM (GloVe embeddings)           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      BERT-Base (skip)                    & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      BERT-Large (skip)                   & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      RoBERTa-Base (skip)                 & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      DistilBERT-Base (skip)              & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Transformers                        & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+      BiLSTM (GloVe embeddings)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      \BertBase
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      \RobertaBase
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
       \bottomrule
     \end{tabular}
   \end{figure}
@@ -467,22 +467,22 @@
     \tiny
     \begin{tabular}{lrrrlrrr}
       \toprule
-      Baselines/Approach & \multicolumn{3}{c}{Training Data} & & \multicolumn{3}{c}{Validation Data}\\ \cmidrule{2-4} \cmidrule{6-8}
+      \textbf{Baselines/Approach} & \multicolumn{3}{c}{\textbf{Training Data}} & & \multicolumn{3}{c}{\textbf{Validation Data}}\\ \cmidrule{2-4} \cmidrule{6-8}
         & Strict & Relaxed & Average & & Strict & Relaxed & Average\\
       \midrule
-      Match All                           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Match None                          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (no prepro)            & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem)                 & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem, stowo)          & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Term Overlap (stem, stowo, syn, ant)& 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+      Random 
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      Term Overlap (no preprocessing)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      Term Overlap (with preprocessing)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
       \midrule
-      BiLSTM (GloVe embeddings)           & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      BERT-Base (skip)                    & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      BERT-Large (skip)                   & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      RoBERTa-Base (skip)                 & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      DistilBERT-Base (skip)              & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
-      Transformers                        & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000\\
+      BiLSTM (GloVe embeddings)
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      \BertBase
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
+      \RobertaBase
+      & 00000 & 00000 & 00000 & & 00000 & 00000 & 00000 \\
       \bottomrule
     \end{tabular}
   \end{figure}
