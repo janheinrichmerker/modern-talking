@@ -226,6 +226,10 @@ class BidirectionalLstmMatcher(Matcher):
         self.label_policy = label_policy
 
     @property
+    def name(self) -> Optional[str]:
+        return "BiLSTM-GloVe"
+
+    @property
     def slug(self) -> str:
         dropout_suffix = f"-dropout-{self.dropout}" \
             if self.dropout > 0 else ""
