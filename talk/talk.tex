@@ -36,7 +36,7 @@
 \newcommand{\todo}[1]{{\smaller\color{red}[#1]}}
 \renewcommand{\lg}{\color{lightgray}}
 
-
+\lstset{basicstyle=\ttfamily,breaklines=true}
 
 \tikzset{%
   every neuron/.style={
@@ -112,7 +112,8 @@
       \item Synonyms, antonyms \(\leadsto\) generalization
     \end{itemize}
     \item Compute similarity based on Jaccard similarity coefficient~\cite{Jaccard1902}, \\ i.e., proportion of terms that appear in argument and key point
-    \item Good improvement with preprocessing: up to 12~pp 
+    \item Good improvement with preprocessing: up to 12~pp
+    \item {\tiny\lstinline{python traineval.py term-overlap --stemming --stop-words --custom-stop-words --synonyms map}}
   \end{itemize}
   
   \begin{example}[Preprocessing]
@@ -274,6 +275,7 @@
     \item Slow learning rate~\(\eta = 0.0001\) does not improve much
     \item Early stopping, dropout layers, and weight decay \(\to\) neglible improvements
     \item Generate new samples~(data augmentation) \(\to\) \textquote{confuses} model
+    \item {\tiny\lstinline{python traineval.py bilstm-glove --units 4 --max-length 32 --dropout 0.2 --learn 1e-4 --decay 1e-3 --batch 64 --epochs 100 --early-stopping map}}
   \end{itemize}
 
   \begin{block}{Conclusion}
@@ -325,6 +327,7 @@
       \item Pretrained \BertBase~/~\RobertaBase models: \\ 12~hidden layers of size~768, 12~attention heads with dropout~0.1
       \item Batch size~32, 1~epoch, learning rate~\(2 \cdot 10^{-5}\), warmup proportion~6\,\%
       \item No weight decay, no early stopping, no data augmentation, \\ no oversampling, skip missing labels
+      \item {\tiny\lstinline{python traineval.py transformers --type roberta --name roberta-base --batch 32 --learn 2e-5 map}}
     \end{itemize}
   \end{block}
 \end{frame}
