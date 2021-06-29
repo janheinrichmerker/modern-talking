@@ -21,6 +21,7 @@
 \usepackage{booktabs}
 \usepackage{graphics,graphicx}
 
+
 \newcommand{\ArgKP}{\mbox{ArgKP}\xspace}
 \newcommand{\ArgQ}{\mbox{IBM-ArgQ-Rank-30kArgs}\xspace}
 \newcommand{\BiLSTM}{\mbox{BiLSTM}\xspace}
@@ -33,6 +34,9 @@
 \newcommand{\TFIDF}{\mbox{TF/IDF}\xspace}
 \newcommand{\todocite}{{\smaller\color{red}[CITE]}\xspace}
 \newcommand{\todo}[1]{{\smaller\color{red}[#1]}}
+\renewcommand{\lg}{\color{lightgray}}
+
+
 
 \tikzset{%
   every neuron/.style={
@@ -345,8 +349,8 @@
       Term Overlap (preprocessing)
       & --- & --- & --- & 0.643 & 0.802 & 0.722 \\
       \midrule
-      \BiLSTM-GloVe
-      & --- & --- & --- & --- & 0.417 & --- \\
+      \lg\BiLSTM-GloVe
+      & \lg--- & \lg--- & \lg--- & \lg--- & \lg0.417 & \lg--- \\
       \BertBase
       & --- & --- & --- & 0.760 & 0.939 & 0.850 \\
       \RobertaBase
@@ -375,8 +379,8 @@
       Term Overlap (preprocessing)
       & 0.269 & 0.435 & 0.352 & 0.219 & 0.416 & 0.317 \\
       \midrule
-      \BiLSTM-GloVe
-      & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+      \lg\BiLSTM-GloVe
+      & \lg0.000 & \lg0.000 & \lg0.000 & \lg0.000 & \lg0.000 & \lg0.000 \\
       \BertBase
       & 0.723 & 0.950 & 0.836 & 0.428 & 0.671 & 0.550 \\
       \RobertaBase
@@ -405,8 +409,8 @@
       Term Overlap (preprocessing)
       & 0.373 & 0.377 & 0.375 & 0.355 & 0.363 & 0.359 \\
       \midrule
-      \BiLSTM-GloVe
-      & 0.275 & 0.223 & 0.249 & 0.275 & 0.215 & 0.245 \\
+      \lg\BiLSTM-GloVe
+      & \lg0.275 & \lg0.223 & \lg0.249 & \lg0.275 & \lg0.215 & \lg0.245 \\
       \BertBase
       & 0.564 & 0.594 & \textbf{\underline{0.579}} & 0.458 & 0.489 & 0.474 \\
       \RobertaBase
@@ -435,8 +439,8 @@
       Term Overlap (preprocessing)
       & 0.323 & 0.275 & 0.299 & 0.390 & 0.366 & 0.378 \\
       \midrule
-      \BiLSTM-GloVe
-      & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+      \lg\BiLSTM-GloVe
+      & \lg0.000 & \lg0.000 & \lg0.000 & \lg0.000 & \lg0.000 & \lg0.000 \\
       \BertBase
       & 0.861 & 0.596 & \textbf{\underline{0.729}} & 0.787 & 0.611 & \textbf{\underline{0.699}} \\
       \RobertaBase
@@ -465,8 +469,8 @@
       Term Overlap (preprocessing)
       & 0.379 & 0.366 & 0.373 & 0.365 & 0.361 & 0.363 \\
       \midrule
-      \BiLSTM-GloVe
-      & 0.333 & 0.333 & 0.333 & 0.333 & 0.333 & 0.333 \\
+      \lg\BiLSTM-GloVe
+      & \lg0.333 & \lg0.333 & \lg0.333 & \lg0.333 & \lg0.333 & \lg0.333 \\
       \BertBase
       & 0.597 & 0.527 & \textbf{\underline{0.562}} & 0.521 & 0.482 & 0.502 \\
       \RobertaBase
@@ -495,8 +499,8 @@
       Term Overlap (preprocessing)
       & 0.294 & 0.337 & 0.315 & 0.281 & 0.389 & 0.335 \\
       \midrule
-      \BiLSTM-GloVe
-      & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+      \lg\BiLSTM-GloVe
+      & \lg0.000 & \lg0.000 & \lg0.000 & \lg0.000 & \lg0.000 & \lg0.000 \\
       \BertBase
       & 0.786 & 0.733 & \textbf{\underline{0.759}} & 0.555 & 0.640 & 0.597 \\
       \RobertaBase
@@ -525,8 +529,8 @@
       Term Overlap (preprocessing)
       & 0.375 & 0.364 & 0.370 & 0.350 & 0.361 & 0.356 \\
       \midrule
-      \BiLSTM-GloVe
-      & 0.302 & 0.267 & 0.285 & 0.301 & 0.262 & 0.282 \\
+      \lg\BiLSTM-GloVe
+      & \lg0.302 & \lg0.267 & \lg0.285 & \lg0.301 & \lg0.262 & \lg0.282 \\
       \BertBase
       & 0.578 & 0.545 & \textbf{\underline{0.562}} & 0.469 & 0.485 & 0.477 \\
       \RobertaBase
