@@ -1,7 +1,38 @@
 \section{Approach}
 
-TODO
+In this section we present a rule-based baseline performing well, given it's simplicity. In addition to this we came up 
+with two \Bert and \Roberta based approaches. Both improving our baseline. 
 
 \subsection{Baseline}
 
-TODO
+We start with a very simple baseline. Therefore choosing a Term Overlap baseline with preprocessed terms. 
+Generally it can be assumed, that key-points are summarizing ideas of all associated arguments. We therefore came up with the idea
+that certain key-words, contained in a lot of arguments, are also very likely to be present in the associated key-point. This makes 
+sense with our intuition, because rather than using completly new words for summarization of arguments, a human would 
+rather reuse certain important words, which have been already found in the arguments.\\
+For example, the following argument exists in the \ArgKP dataset:\\
+\textit{People reach their limit when it comes to 
+their quality of life and should be able to end their {\color{blue} suffering}. This can be done with little 
+or no {\color{blue} suffering} by {\color{orange} assistance} and the person is able to say good bye.}\\ 
+
+In relation to this the following key-point can be found:\\
+\textit{{\color{orange} Assisted} suicide reduces {\color{blue} suffering}.}\\
+
+It can already be seen, that an overlap with the words \textit{suffering} exists. 
+We can further increse this overlap by performing simple preprocessing steps.\\
+First of all, we utilize stop word removal for reducing the noise within all arguments. Initially this can be seen 
+counter productive, because less words means less overlap and therefore worse performance. But at second glance this 
+makes a lot of sense. A lot of arguments and key-points contain unnecessary words like \textit{the, and, as etc.}.
+Removing these gives us purer sentences and results in less confusion with the term-overlap algorithm. Furthermore the 
+redundancy of language makes it possible to contain key-aspects in sentences, even with out these unnecessary stop words.\\
+Secondly, Stemming reduces terms to their corresponding stems and thus achieves a better generalization, 
+when comparing terms. For example, the word: \textit{weakness} will be stemmed to \textit{weak} using the Porter-Stemmer 
+\cite{Porter1980}. Thus creating an overlap between those words and increasing the possibility that an argmunt containing
+\textit{weakness} will be associated to a key-pont containing \textit{weak}.\\
+Thirdly, we increase the generalization of our term-overlap algorithm even further by creating lists of synonyms and 
+antonyms and testing if checked words can be replaced with candidates from these to increase overlap.\\
+For the actual similarity computation of given arguments and key-points we use the Jaccard similarity coefficient 
+\cite{Jaccard1902}. Meaning a higher proportion of terms that appear in an argument as well as in a key-point will 
+classify this key-point to be more likely to match.
+
+
