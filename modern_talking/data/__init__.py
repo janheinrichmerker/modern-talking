@@ -10,6 +10,7 @@ paths = [
     "test_data/key_points_test.csv",
     "kpm_data/labels_dev.csv",
     "kpm_data/labels_train.csv",
+    "test_data/labels_test.csv",
 ]
 urls = [
     f"https://github.com/IBM/KPA_2021_shared_task/raw/main/{path}"
