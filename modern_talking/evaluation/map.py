@@ -1,8 +1,11 @@
+from contextlib import redirect_stdout
+from io import StringIO
 from pathlib import Path
-from subprocess import run
 from tempfile import TemporaryDirectory
 
 from modern_talking.evaluation import Metric, EvaluationMode
+from modern_talking.evaluation.track_1_kp_matching import \
+    calc_mean_average_precision, get_predictions, load_kpm_data
 from modern_talking.model import Labels
 from modern_talking.pipeline import Pipeline
 
@@ -24,34 +27,41 @@ class MeanAveragePrecision(Metric):
             ground_truth_labels: Labels,
             mode: EvaluationMode,
     ) -> float:
-        script_dir = Path(__file__).parent
-        script_name = "track_1_kp_matching_new.py" if self.new \
-            else "track_1_kp_matching.py"
-        script_file = script_dir / script_name
-        gold_data_dir = script_dir.parent.parent / "data"
+        if mode == EvaluationMode.relaxed:
+            field = "label_relaxed"
+        else:
+            field = "label_strict"
+
+        labels_count = len(ground_truth_labels)
+        if labels_count == 20635:
+            subset = "train"
+        elif labels_count == 3458:
+            subset = "dev"
+        elif labels_count == 3426:
+            subset = "test"
+        else:
+            raise Exception(f"Can't detect data subset "
+                            f"from label count {labels_count}.")
+
+        gold_data_dir = Path(__file__).parent.parent.parent / "data"
+
+        ignore = StringIO()
+        with redirect_stdout(ignore):
+            arg_df, kp_df, labels_df = load_kpm_data(
+                gold_data_dir,
+                subset=subset
+            )
+
         with TemporaryDirectory() as temp_dir:
             predictions_file = Path(temp_dir) / "predictions.json"
             Pipeline.save_predictions(predictions_file, predicted_labels)
 
-            # Call script file.
-            result = run(
-                [
-                    "python",
-                    script_file.absolute(),
-                    gold_data_dir.absolute(),
-                    predictions_file.absolute(),
-                ],
-                capture_output=True,
-                text=True,
-            )
-
-            # Parse result.
-            result = str(result.stdout)
-            result = result.splitlines()[-1].split(";")
-            result_strict = float(result[0].split("=")[1].strip())
-            result_relaxed = float(result[1].split("=")[1].strip())
-
-        if mode == EvaluationMode.relaxed:
-            return result_relaxed
-        else:
-            return result_strict
+            with redirect_stdout(ignore):
+                merged_df = get_predictions(
+                    predictions_file,
+                    labels_df,
+                    arg_df,
+                    kp_df
+                )
+            score = calc_mean_average_precision(merged_df, field)
+            return score
