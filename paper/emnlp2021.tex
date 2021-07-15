@@ -12,6 +12,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{microtype}
 \usepackage{graphicx}
+\usepackage{relsize}
 \graphicspath{{figures/}}
 \newcommand{\ArgKP}{\mbox{ArgKP}\xspace}
 \newcommand{\ArgQ}{\mbox{IBM-ArgQ-Rank-30kArgs}\xspace}
@@ -21,6 +22,10 @@
 \newcommand{\BertLarge}{\Bert-Large\xspace}
 \newcommand{\Roberta}{\mbox{Ro\textsc{Bert}a}\xspace}
 \newcommand{\RobertaBase}{\Roberta-Base\xspace}
+
+% Draft editing helpers. Remove 
+\newcommand{\todocite}{{\smaller\color{red}[CITE]}\xspace}
+\newcommand{\todo}[1]{{\smaller\color{red}[#1]}}
 
 \title{Modern Talking: Key-Point Matching using Modern Pretrained Encoders}
 \author{%
