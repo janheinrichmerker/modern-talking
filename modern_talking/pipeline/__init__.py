@@ -158,6 +158,13 @@ class Pipeline:
     def save_matcher_summary(
             path: Path,
             matcher: Matcher,
+            train_result_strict: float,
+            train_result_relaxed: float,
+            dev_result_strict: float,
+            dev_result_relaxed: float,
+            test_result_strict: float,
+            test_result_relaxed: float,
+            metric_name: str = "mAP",
             team_name: str = "Modern Talking",
             project_url: Optional[str] = "https://github.com/"
                                          "heinrichreimer/modern-talking",
@@ -186,38 +193,56 @@ class Pipeline:
                   "using slug as name in matcher summary.")
             matcher_description = matcher.slug
 
-        summary = [
-            "# Matcher summary\n\n",
-            "#### Team name:\n",
-            f"{team_name}\n\n",
-            "#### Method name:\n",
-            f"{matcher_name}\n\n",
-            "#### Method description:\n",
-            f"{matcher_description}\n\n",
-        ]
+        summary: str = (
+            "# Matcher summary\n\n"
+            "#### Team name\n"
+            f"{team_name}\n\n"
+            "#### Method name\n"
+            f"{matcher_name}\n\n"
+            "#### Method description\n"
+            f"{matcher_description}\n\n"
+        )
+
         if project_url is not None:
-            summary.extend([
-                "#### Project URL\n",
-                f"{project_url}\n\n",
-            ])
+            summary += (
+                "#### Project URL\n"
+                f"{project_url}\n\n"
+            )
         if publication_url is not None:
-            summary.extend([
-                "#### Publication URL\n",
-                f"{publication_url}\n\n",
-            ])
+            summary += (
+                "#### Publication URL\n"
+                f"{publication_url}\n\n"
+            )
         if bibtex is not None:
-            summary.extend([
-                "#### BibTeX\n",
-                f"{bibtex}\n\n",
-            ])
+            summary += (
+                "#### BibTeX\n"
+                f"{bibtex}\n\n"
+            )
         if affiliation is not None:
-            summary.extend([
-                "#### Organization/affiliation\n",
-                f"{affiliation}\n\n",
-            ])
+            summary += (
+                "#### Organization/affiliation\n"
+                f"{affiliation}\n\n"
+            )
+
+        train_result_average = (train_result_strict + train_result_relaxed) / 2
+        dev_result_average = (dev_result_strict + dev_result_relaxed) / 2
+        test_result_average = (test_result_strict + test_result_relaxed) / 2
+        summary += (
+            "#### Scores\n"
+            f"Metric: {metric_name}\n\n"
+            "| Dataset | Strict | Relaxed | Average |\n"
+            "| :--- | :---: | :---: | :---: |\n"
+            f"| Training | {train_result_strict:.4f} | "
+            f"{train_result_relaxed:.4f} | {train_result_average:.4f} |\n"
+            f"| Validation | {dev_result_strict:.4f} | "
+            f"{dev_result_relaxed:.4f} | {dev_result_average:.4f} |\n"
+            f"| Test | {test_result_strict:.4f} | "
+            f"{test_result_relaxed:.4f} | {test_result_average:.4f} |\n"
+            "\n"
+        )
 
         with path.open("w") as file:
-            file.writelines(summary)
+            file.write(summary)
 
     def train_evaluate(self, ignore_test: bool = False) -> float:
         """
@@ -233,8 +258,6 @@ class Pipeline:
         # Prepare matcher.
         print("Prepare matcher.")
         self.matcher.prepare()
-        summary_file = output_dir / f"summary-{self.matcher.slug}.md"
-        Pipeline.save_matcher_summary(summary_file, self.matcher)
 
         # Load datasets.
         print("Load datasets.")
@@ -265,12 +288,32 @@ class Pipeline:
               f"{len(dev_labels)} on validation set, "
               f"{len(test_labels)} on test set")
 
-        print("Save test predictions.")
-        predictions_file = output_dir / f"predictions-{self.matcher.slug}.json"
-        archive_file = predictions_file.with_suffix(".zip")
-        Pipeline.save_predictions(predictions_file, test_labels)
-        Pipeline.save_predictions_archive(predictions_file, archive_file)
-        saved_test_labels = Pipeline.load_predictions(predictions_file)
+        print("Save predictions.")
+        train_predictions_file = output_dir / f"predictions-train-" \
+                                              f"{self.matcher.slug}.json"
+        train_archive_file = train_predictions_file.with_suffix(".zip")
+        Pipeline.save_predictions(train_predictions_file, train_labels)
+        Pipeline.save_predictions_archive(
+            train_predictions_file,
+            train_archive_file
+        )
+        dev_predictions_file = output_dir / f"predictions-dev-" \
+                                            f"{self.matcher.slug}.json"
+        dev_archive_file = dev_predictions_file.with_suffix(".zip")
+        Pipeline.save_predictions(dev_predictions_file, dev_labels)
+        Pipeline.save_predictions_archive(
+            dev_predictions_file,
+            dev_archive_file
+        )
+        test_predictions_file = output_dir / f"predictions-test-" \
+                                             f"{self.matcher.slug}.json"
+        test_archive_file = test_predictions_file.with_suffix(".zip")
+        Pipeline.save_predictions(test_predictions_file, test_labels)
+        Pipeline.save_predictions_archive(
+            test_predictions_file,
+            test_archive_file
+        )
+        saved_test_labels = Pipeline.load_predictions(test_predictions_file)
         assert saved_test_labels == test_labels
 
         # Evaluate labels.
@@ -354,6 +397,20 @@ class Pipeline:
             f" {test_result_relaxed:.4f} (relaxed)"
             f" {test_result_average:.4f} (average)"
             f" (Results verified on exported predictions JSON file.)"
+        )
+
+        # Save summary.
+        summary_file = output_dir / f"summary-{self.matcher.slug}.md"
+        Pipeline.save_matcher_summary(
+            path=summary_file,
+            matcher=self.matcher,
+            train_result_strict=train_result_strict,
+            train_result_relaxed=train_result_relaxed,
+            dev_result_strict=dev_result_strict,
+            dev_result_relaxed=dev_result_relaxed,
+            test_result_strict=test_result_strict,
+            test_result_relaxed=test_result_relaxed,
+            metric_name=self.metric.slug
         )
 
         return test_result_average
