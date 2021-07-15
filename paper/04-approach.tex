@@ -1,7 +1,8 @@
 \section{Approach}
 
-In this section we present a rule-based baseline performing well, given it's simplicity. In addition to this we came up 
-with two \Bert and \Roberta based approaches. Both improving our baseline. 
+To match key points to arguments, we propose two different approaches.
+First, we shortly discuss a simple yet effective baseline measuring term overlap between key points and arguments.
+Second, to improve upon the simple baseline, we introduce a fine-tuning approach using \Bert~\todocite and \Roberta~\todocite pretrained language models. We use both language models in standard configuration with only minor changes highlighted below.
 
 \subsection{Baseline}
 
@@ -10,6 +11,7 @@ Generally it can be assumed, that key-points are summarizing ideas of all associ
 that certain key-words, contained in a lot of arguments, are also very likely to be present in the associated key-point. This makes 
 sense with our intuition, because rather than using completly new words for summarization of arguments, a human would 
 rather reuse certain important words, which have been already found in the arguments.\\
+\todo{Maybe this example fits better into the data section?}
 For example, the following argument exists in the \ArgKP dataset:\\
 \textit{People reach their limit when it comes to 
 their quality of life and should be able to end their {\color{blue} suffering}. This can be done with little 
@@ -35,4 +37,5 @@ For the actual similarity computation of given arguments and key-points we use t
 \cite{Jaccard1902}. Meaning a higher proportion of terms that appear in an argument as well as in a key-point will 
 classify this key-point to be more likely to match.
 
+\subsection{Language Model Fine-tuning}
 
