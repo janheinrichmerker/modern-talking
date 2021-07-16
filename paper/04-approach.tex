@@ -2,9 +2,9 @@
 
 To match key points to arguments, we propose two different approaches.
 First, we shortly discuss a simple yet effective baseline measuring term overlap between key points and arguments.
-Second, to improve upon the simple baseline, we introduce a fine-tuning approach using \Bert~\todocite and \Roberta~\todocite pretrained language models. We use both language models in standard configuration with only minor changes highlighted below.
+Second, to improve upon the simple baseline, we introduce a fine-tuning approach using \Bert and \Roberta pretrained language models~\cite{DevlinCLT2019,LiuOGDJCLLZS2019}. We use both language models in standard configuration with only minor changes highlighted below.
 
-\subsection{Baseline}
+\subsection{Term Overlap Baseline}
 
 We start with a very simple baseline. Therefore choosing a Term Overlap baseline with preprocessed terms. 
 Generally it can be assumed, that key-points are summarizing ideas of all associated arguments. We therefore came up with the idea
@@ -12,6 +12,7 @@ that certain key-words, contained in a lot of arguments, are also very likely to
 sense with our intuition, because rather than using completly new words for summarization of arguments, a human would 
 rather reuse certain important words, which have been already found in the arguments.\\
 \todo{Maybe this example fits better into the data section?}
+\todo{Make example a figure in a floating environment.}
 For example, the following argument exists in the \ArgKP dataset:\\
 \textit{People reach their limit when it comes to 
 their quality of life and should be able to end their {\color{blue} suffering}. This can be done with little 
@@ -38,4 +39,17 @@ For the actual similarity computation of given arguments and key-points we use t
 classify this key-point to be more likely to match.
 
 \subsection{Language Model Fine-tuning}
+
+To improve upon the simple term overlap baseline, we fine-tune \Bert and \Roberta language models for classifying argument key-point matches~\cite{DevlinCLT2019,LiuOGDJCLLZS2019}.
+While \Bert is pretrained on a very large document corpus~(16GB of raw data), \Roberta is pretrained on an even larger corpus~(160GB).
+Thus \Roberta models can be fine-tuned to higher end task performance~\cite{LiuOGDJCLLZS2019}.
+We tokenize both the arguments and the key-points with \Bert's default WordPiece tokenizer and the resulting sequences are trimmed to 512~tokens for both models.
+We then fine-tune the \BertBase and \RobertaBase variants in the standard sentence-pair regression setting using the Simple Transformers library.\footnote{\url{https://simpletransformers.ai/}}
+For classification, we interpret the regression output value as the probability of an argument matching a key-point, that is, the training labels are always 0~or~1, depending on whether the corresponding pair in the training set matches or not.
+Both model variants contain 12~hidden layers with a hidden size of~768 and 12~attention heads.
+We train each of the two models for one single epoch at a learning rate of~\( \eta = 2 \cdot 10^{-5} \).
+We use an AdamW optimizer with~\( \beta = (0.9, 0.999) \) and zero weight decay.
+The optimizer is warmed up for a ratio of~0.06 and we fine-tune both models on binary cross-entropy loss.
+We explore different ways of handling argument key-point pairs in the training set with missing ground-truth label, i.e., either removing those pairs, assuming a match~(1), or no match~(0), but find that neither of the last assumptions lead to improved scores on the validation set.
+Thus, for the submitted model, we consider only training pairs that have an associated ground-truth label.
 
