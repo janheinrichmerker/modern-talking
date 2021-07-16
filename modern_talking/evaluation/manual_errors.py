@@ -30,9 +30,10 @@ class ManualErrors(Metric):
             key=lambda sample: sample[3],
             reverse=True,
         ))
-        if len(samples) > 50:
-            print("Showing only worst 50 pairs.")
-        for (arg_kp, true_label, pred_label, error) in islice(samples, 50):
+        max_count = 5
+        if len(samples) > max_count:
+            print(f"Showing only worst {max_count} pairs.")
+        for (arg_kp, true_label, pred_label, error) in islice(samples, max_count):
             arg, kp = arg_kp
             print(
                 f"Error {error} for {arg} and {kp} "
