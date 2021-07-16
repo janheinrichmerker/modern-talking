@@ -1,6 +1,6 @@
 \begin{table*}
   \centering
-  \caption{Performance of the term-overlap baseline, \BertBase, and \RobertaBase models with respect to mean average precision~(mAP), precision, recall, and F1 score of the match label. Results are reported for the training, validation, and test set. We report each metric on strict labels~(S), relaxed labels~(R), and averages between the two~(A)}
+  \caption{Performance of the term-overlap baseline, \BertBase, and \RobertaBase models with respect to mean average precision~(mAP), precision, recall, and F1 score of the match label. Results are reported for the training, validation, and test set. We report each metric on strict labels~(S), relaxed labels~(R), and averages between the two~(A). The best average result per set is \underline{underlined}.}
   \label{table-results}
   \smaller
   \begin{tabularx}{\linewidth}{Xcccccccccccc}
@@ -27,11 +27,11 @@
     0000 & 0000 & 0000 \\
     \BertBase & 
     0.889 & 0.981 & 0.935 & 
-    0.703 & 0.936 & 0.819 & 
-    0.864 & 0.607 & 0.736 & 
-    0.775 & 0.736 & 0.756 \\
+    0.703 & 0.936 & \underline{0.819} & 
+    0.864 & 0.607 & \underline{0.736} & 
+    0.775 & 0.736 & \underline{0.756} \\
     \RobertaBase & 
-    0.915 & 0.979 & 0.947 & 
+    0.915 & 0.979 & \underline{0.947} & 
     0.702 & 0.927 & 0.814 & 
     0.820 & 0.572 & 0.696 & 
     0.756 & 0.707 & 0.732 \\
@@ -51,13 +51,13 @@
     \BertBase & 
     0.717 & 0.928 & 0.822 & 
     0.397 & 0.648 & 0.522 & 
-    0.802 & 0.649 & 0.725 & 
+    0.802 & 0.649 & \underline{0.725} & 
     0.531 & 0.648 & 0.589 \\
     \RobertaBase & 
-    0.879 & 0.984 & 0.932 & 
-    0.567 & 0.816 & 0.692 & 
+    0.879 & 0.984 & \underline{0.932} & 
+    0.567 & 0.816 & \underline{0.692} & 
     0.799 & 0.569 & 0.684 & 
-    0.664 & 0.671 & 0.667 \\
+    0.664 & 0.671 & \underline{0.667} \\
     \midrule
     \multicolumn{13}{X}{\textit{Test set}} \\
     \midrule
@@ -74,13 +74,13 @@
     \BertBase & 
     0.827 & 0.940 & 0.883 & 
     0.326 & 0.526 & 0.426 & 
-    0.848 & 0.721 & 0.784 & 
+    0.848 & 0.721 & \underline{0.784} & 
     0.471 & 0.608 & 0.539 \\
     \RobertaBase & 
-    0.913 & 0.967 & 0.940 & 
-    0.490 & 0.716 & 0.603 & 
+    0.913 & 0.967 & \underline{0.940} & 
+    0.490 & 0.716 & \underline{0.603} & 
     0.741 & 0.569 & 0.655 & 
-    0.590 & 0.634 & 0.612 \\
+    0.590 & 0.634 & \underline{0.612} \\
     \bottomrule
   \end{tabularx}
 \end{table*}
