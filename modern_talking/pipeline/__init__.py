@@ -232,12 +232,12 @@ class Pipeline:
             f"Metric: {metric_name}\n\n"
             "| Dataset | Strict | Relaxed | Average |\n"
             "| :--- | :---: | :---: | :---: |\n"
-            f"| Training | {train_result_strict:.4f} | "
-            f"{train_result_relaxed:.4f} | {train_result_average:.4f} |\n"
-            f"| Validation | {dev_result_strict:.4f} | "
-            f"{dev_result_relaxed:.4f} | {dev_result_average:.4f} |\n"
-            f"| Test | {test_result_strict:.4f} | "
-            f"{test_result_relaxed:.4f} | {test_result_average:.4f} |\n"
+            f"| Training | {train_result_strict:.3f} | "
+            f"{train_result_relaxed:.3f} | {train_result_average:.3f} |\n"
+            f"| Validation | {dev_result_strict:.3f} | "
+            f"{dev_result_relaxed:.3f} | {dev_result_average:.3f} |\n"
+            f"| Test | {test_result_strict:.3f} | "
+            f"{test_result_relaxed:.3f} | {test_result_average:.3f} |\n"
             "\n"
         )
 
@@ -331,9 +331,9 @@ class Pipeline:
         train_result_average = (train_result_strict + train_result_relaxed) / 2
         print(
             f"Metric {self.metric.slug} on train dataset:"
-            f" {train_result_strict:.4f} (strict)"
-            f" {train_result_relaxed:.4f} (relaxed)"
-            f" {train_result_average:.4f} (average)"
+            f" {train_result_strict:.3f} (strict)"
+            f" {train_result_relaxed:.3f} (relaxed)"
+            f" {train_result_average:.3f} (average)"
         )
 
         dev_result_strict = self.metric.evaluate(
@@ -349,9 +349,9 @@ class Pipeline:
         dev_result_average = (dev_result_strict + dev_result_relaxed) / 2
         print(
             f"Metric {self.metric.slug} on dev dataset:"
-            f" {dev_result_strict:.4f} (strict)"
-            f" {dev_result_relaxed:.4f} (relaxed)"
-            f" {dev_result_average:.4f} (average)"
+            f" {dev_result_strict:.3f} (strict)"
+            f" {dev_result_relaxed:.3f} (relaxed)"
+            f" {dev_result_average:.3f} (average)"
         )
 
         if not isinstance(test_data, LabelledDataset):
@@ -393,9 +393,9 @@ class Pipeline:
                     and isnan(test_result_average)))
         print(
             f"Metric {self.metric.slug} on test dataset:"
-            f" {test_result_strict:.4f} (strict)"
-            f" {test_result_relaxed:.4f} (relaxed)"
-            f" {test_result_average:.4f} (average)"
+            f" {test_result_strict:.3f} (strict)"
+            f" {test_result_relaxed:.3f} (relaxed)"
+            f" {test_result_average:.3f} (average)"
             f" (Results verified on exported predictions JSON file.)"
         )
 
@@ -465,9 +465,9 @@ class Pipeline:
         train_result_average = (train_result_strict + train_result_relaxed) / 2
         print(
             f"Metric {self.metric.slug} on train dataset:"
-            f" {train_result_strict:.4f} (strict)"
-            f" {train_result_relaxed:.4f} (relaxed)"
-            f" {train_result_average:.4f} (average)"
+            f" {train_result_strict:.3f} (strict)"
+            f" {train_result_relaxed:.3f} (relaxed)"
+            f" {train_result_average:.3f} (average)"
         )
 
         dev_result_strict = self.metric.evaluate(
@@ -483,9 +483,9 @@ class Pipeline:
         dev_result_average = (dev_result_strict + dev_result_relaxed) / 2
         print(
             f"Metric {self.metric.slug} on dev dataset:"
-            f" {dev_result_strict:.4f} (strict)"
-            f" {dev_result_relaxed:.4f} (relaxed)"
-            f" {dev_result_average:.4f} (average)"
+            f" {dev_result_strict:.3f} (strict)"
+            f" {dev_result_relaxed:.3f} (relaxed)"
+            f" {dev_result_average:.3f} (average)"
         )
 
         if not isinstance(test_data, LabelledDataset):
@@ -506,9 +506,9 @@ class Pipeline:
         test_result_average = (test_result_strict + test_result_relaxed) / 2
         print(
             f"Metric {self.metric.slug} on test dataset:"
-            f" {test_result_strict:.4f} (strict)"
-            f" {test_result_relaxed:.4f} (relaxed)"
-            f" {test_result_average:.4f} (average)"
+            f" {test_result_strict:.3f} (strict)"
+            f" {test_result_relaxed:.3f} (relaxed)"
+            f" {test_result_average:.3f} (average)"
         )
 
         return test_result_average

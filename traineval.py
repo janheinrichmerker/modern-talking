@@ -19,7 +19,7 @@ def train_evaluate(pipeline: Pipeline) -> None:
     # Execute pipeline.
     result = pipeline.train_evaluate()
 
-    print(f"Final score for metric {pipeline.metric.slug}: {result:.4f}")
+    print(f"Final score for metric {pipeline.metric.slug}: {result:.3f}")
 
 
 if __name__ == "__main__":
