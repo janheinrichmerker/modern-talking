@@ -414,3 +414,101 @@ class Pipeline:
         )
 
         return test_result_average
+
+
+    def evaluate(self, ignore_test: bool = False) -> float:
+        """
+        Parse training, test, and development labels and evaluate quality.
+        :param ignore_test: If true, use the development dataset
+        instead of the test dataset for evaluation.
+        This is useful for example when the test dataset is not available
+        during model development, like in the shared task.
+        :return: The evaluated score as returned by the evaluator.
+        """
+
+        # Load datasets.
+        print("Load datasets.")
+        train_data = Pipeline.load_dataset(DatasetType.TRAIN)
+        assert isinstance(train_data, LabelledDataset)
+        dev_data = Pipeline.load_dataset(DatasetType.DEV)
+        assert isinstance(dev_data, LabelledDataset)
+        test_data: Dataset = Pipeline.load_dataset(DatasetType.TEST) \
+            if not ignore_test else dev_data
+
+        # Load predicted labels.
+        print("Load predicted labels.")
+        train_predictions_file = output_dir / f"predictions-train-" \
+                                              f"{self.matcher.slug}.json"
+        dev_predictions_file = output_dir / f"predictions-dev-" \
+                                            f"{self.matcher.slug}.json"
+        test_predictions_file = output_dir / f"predictions-test-" \
+                                             f"{self.matcher.slug}.json"
+        train_labels = Pipeline.load_predictions(train_predictions_file)
+        dev_labels = Pipeline.load_predictions(dev_predictions_file)
+        test_labels = Pipeline.load_predictions(test_predictions_file)
+        print(f"Loaded {len(train_labels)} on train set, "
+              f"{len(dev_labels)} on validation set, "
+              f"{len(test_labels)} on test set.")
+
+        # Evaluate labels.
+        print("Evaluate labels.")
+        train_result_strict = self.metric.evaluate(
+            train_labels,
+            train_data.labels,
+            EvaluationMode.strict,
+        )
+        train_result_relaxed = self.metric.evaluate(
+            train_labels,
+            train_data.labels,
+            EvaluationMode.relaxed,
+        )
+        train_result_average = (train_result_strict + train_result_relaxed) / 2
+        print(
+            f"Metric {self.metric.slug} on train dataset:"
+            f" {train_result_strict:.4f} (strict)"
+            f" {train_result_relaxed:.4f} (relaxed)"
+            f" {train_result_average:.4f} (average)"
+        )
+
+        dev_result_strict = self.metric.evaluate(
+            dev_labels,
+            dev_data.labels,
+            EvaluationMode.strict,
+        )
+        dev_result_relaxed = self.metric.evaluate(
+            dev_labels,
+            dev_data.labels,
+            EvaluationMode.relaxed,
+        )
+        dev_result_average = (dev_result_strict + dev_result_relaxed) / 2
+        print(
+            f"Metric {self.metric.slug} on dev dataset:"
+            f" {dev_result_strict:.4f} (strict)"
+            f" {dev_result_relaxed:.4f} (relaxed)"
+            f" {dev_result_average:.4f} (average)"
+        )
+
+        if not isinstance(test_data, LabelledDataset):
+            print(f"Metric {self.metric.slug} on train dataset: "
+                  "skipped because no ground truth labels were found")
+            return dev_result_average
+
+        test_result_strict = self.metric.evaluate(
+            test_labels,
+            test_data.labels,
+            EvaluationMode.strict,
+        )
+        test_result_relaxed = self.metric.evaluate(
+            test_labels,
+            test_data.labels,
+            EvaluationMode.relaxed,
+        )
+        test_result_average = (test_result_strict + test_result_relaxed) / 2
+        print(
+            f"Metric {self.metric.slug} on test dataset:"
+            f" {test_result_strict:.4f} (strict)"
+            f" {test_result_relaxed:.4f} (relaxed)"
+            f" {test_result_average:.4f} (average)"
+        )
+
+        return test_result_average
