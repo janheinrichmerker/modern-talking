@@ -1,6 +1,6 @@
 \begin{table*}
   \centering
-  \caption{Performance of the term-overlap baseline, \BertBase, and \RobertaBase models with respect to mean average precision~(mAP), precision, recall, and F1 score of the match label. Results are reported for the training, validation, and test set. We report each metric on strict labels~(S), relaxed labels~(R), and averages between the two~(A). The best average result per set is \underline{underlined}.}
+  \caption{Performance of the term-overlap baseline, \BertBase, and \RobertaBase models with respect to mean average precision~(mAP), precision, recall, and F1 score of the match label. Results are reported for the training, validation, and test set. We report each metric on strict labels~(S), relaxed labels~(R), and averages between the two~(\(\varnothing\)). The best average result per set is \underline{underlined}.}
   \label{table-results}
   \smaller
   \begin{tabularx}{\linewidth}{Xcccccccccccc}
@@ -11,20 +11,23 @@
     \multicolumn{3}{c}{\textbf{Recall}} & 
     \multicolumn{3}{c}{\textbf{F1}} \\
     \cmidrule(r{0.5em}){2-4} \cmidrule(l{0.5em}r{0.5em}){5-7} \cmidrule(l{0.5em}r{0.5em}){8-10} \cmidrule(l{0.5em}){11-13}
-    & S & R & A & S & R & A & S & R & A & S & R & A \\
+    & S & R & \(\varnothing\) & 
+    S & R & \(\varnothing\) & 
+    S & R & \(\varnothing\) & 
+    S & R & \(\varnothing\) \\
     \midrule
     \multicolumn{13}{X}{\textit{Training set}} \\
     \midrule
     Random & 
-    0000 & 0000 & 0000 & 
-    0000 & 0000 & 0000 & 
-    0000 & 0000 & 0000 & 
-    0000 & 0000 & 0000 \\
+    0.260 & 0.409 & 0.335 & 
+    0.173 & 0.330 & 0.252 & 
+    0.500 & 0.501 & 0.501 & 
+    0.258 & 0.398 & 0.328 \\
     Term Overlap & 
-    0000 & 0000 & 0000 & 
-    0000 & 0000 & 0000 & 
-    0000 & 0000 & 0000 & 
-    0000 & 0000 & 0000 \\
+    0.541 & 0.653 & 0.597 & 
+    0.269 & 0.435 & 0.352 & 
+    0.323 & 0.275 & 0.299 & 
+    0.294 & 0.337 & 0.315 \\
     \BertBase & 
     0.889 & 0.981 & 0.935 & 
     0.703 & 0.936 & \underline{0.819} & 
@@ -39,15 +42,15 @@
     \multicolumn{13}{X}{\textit{Validation set}} \\
     \midrule
     Random & 
-    0000 & 0000 & 0000 & 
-    0000 & 0000 & 0000 & 
-    0000 & 0000 & 0000 & 
-    0000 & 0000 & 0000 \\
+    0.232 & 0.430 & 0.331 & 
+    0.180 & 0.364 & 0.272 & 
+    0.523 & 0.524 & 0.524 & 
+    0.268 & 0.430 & 0.349 \\
     Term Overlap & 
-    0000 & 0000 & 0000 & 
-    0000 & 0000 & 0000 & 
-    0000 & 0000 & 0000 & 
-    0000 & 0000 & 0000 \\
+    0.643 & 0.802 & 0.722 & 
+    0.219 & 0.416 & 0.317 & 
+    0.390 & 0.366 & 0.378 & 
+    0.281 & 0.389 & 0.335 \\
     \BertBase & 
     0.717 & 0.928 & 0.822 & 
     0.397 & 0.648 & 0.522 & 
@@ -62,15 +65,15 @@
     \multicolumn{13}{X}{\textit{Test set}} \\
     \midrule
     Random & 
-    0000 & 0000 & 0000 & 
-    0000 & 0000 & 0000 & 
-    0000 & 0000 & 0000 & 
-    0000 & 0000 & 0000 \\
+    0.237 & 0.355 & 0.296 & 
+    0.150 & 0.286 & 0.218 & 
+    0.545 & 0.549 & 0.547 & 
+    0.235 & 0.376 & 0.306 \\
     Term Overlap & 
-    0000 & 0000 & 0000 & 
-    0000 & 0000 & 0000 & 
-    0000 & 0000 & 0000 & 
-    0000 & 0000 & 0000 \\
+    0.483 & 0.575 & 0.529 & 
+    0.232 & 0.350 & 0.291 & 
+    0.225 & 0.178 & 0.201 & 
+    0.228 & 0.236 & 0.232 \\
     \BertBase & 
     0.827 & 0.940 & 0.883 & 
     0.326 & 0.526 & 0.426 & 
