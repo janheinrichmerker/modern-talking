@@ -15,6 +15,18 @@ When analyzing the data, we realize that matched and unmatched key points of a g
 Many of these words belong to the set of stop words. 
 These uninformative, non-decisive words can complicate the decision process between the matched and unmatched keypoint. 
 For this reason, we remove stop words from our data during pre-processing. 
+\begin{figure}[h]
+	\label{fig:stopwords-strict}
+	\caption{Top 15 most common words of argument keypoint pair for strict labels under the given topic: \texttt{Assisted suicide should be a criminal offence}}
+	\includegraphics[scale=0.4]{figures/data_stopwords1.png}
+\end{figure}
+\begin{figure}[h]
+	\label{fig:stopwords-relaxed}
+	\caption{Top 15 most common words of argument keypoint pair for relaxed labels under the given topic: \texttt{Assisted suicide should be a criminal offence}}
+	\includegraphics[scale=0.4]{figures/data_stopwords2.png}
+\end{figure}
+In the figures \ref{fig:stopwords-strict}, \ref{fig:stopwords-relaxed}, we can see that stop words, such as: \texttt{is, are, be, not, to, do, for, have}, are used very frequently in the key points from the two labels. 
+
 Furthermore, the important words from the argument are repeated with different tenses and parts of speech in key points, for example: \textit{legalize, legalized, legalizing, legal} or \textit{marriages, marriage}.
 Because these words were used again, they can play a role in classification. 
 To achieve an unambiguous spelling, such words are normalized with a stemming method in our approach. 
@@ -54,4 +66,4 @@ It is still recognized that context understanding can be a challenge for the tas
 \texttt{We should abandon the use of school uniform}, we have in the third example an argument and a possible matched key point is \texttt{School uniform is harming the student's self-expression}. 
 We can first see that the argument and the given key point have little in common: \texttt{express, expression}. 
 To predict if the key point is aligned with the argument, we need to compare their meanings. 
-To better deal with the problem of semantic meaning, we use two well-known language models in our second approach, which we describe in more detail in the next chapter Approach.
+To better deal with the problem of context understanding, we use two well-known language models in our second approach, which we describe in more detail in the next chapter Approach.
