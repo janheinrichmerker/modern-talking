@@ -1,5 +1,5 @@
 from argparse import ArgumentParser, Namespace
-from collections import Iterable
+from typing import Iterable
 
 from modern_talking.evaluation import Metric
 from modern_talking.evaluation.f_measure import MacroF1Score, F1Score

@@ -33,7 +33,8 @@ class ManualErrors(Metric):
         max_count = 5
         if len(samples) > max_count:
             print(f"Showing only worst {max_count} pairs.")
-        for (arg_kp, true_label, pred_label, error) in islice(samples, max_count):
+        for (arg_kp, true_label, pred_label, error) \
+                in islice(samples, max_count):
             arg, kp = arg_kp
             print(
                 f"Error {error} for {arg} and {kp} "

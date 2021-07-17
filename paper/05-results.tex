@@ -1,14 +1,31 @@
 \section{Results}\label{results}
 
-\todo{Discuss results.}
+Submissions to the ArgMining~2021 shared task on Quantitative Summarization and Key Point Analysis are evaluated with respect to mean average precision~(mAP)~\todocite~\todo{Cite shared task overview paper}.
+The organizers calculate the score by pairing each argument with the best matching key-point according to the predicted matching probabilities.
+Within each topic-stance combination, only the 50\,\% of arguments with the highest predicted matching score are then considered for evaluation.
+The task organizers claim that this removal of 50\,\% of the pairs is sensible because some arguments do not match any of the key points, thus would influence mean average precision negatively~\todocite.
+For the remaining argument key-point pairs in each topic-stance combination, average precision is calculated and the final score is computed as the mean of all average precision scores.
+
+The task organizers now consider two variants of ground-truth labels: strict labels and relaxed labels.
+Both variants are based on the ground-truth labels from the ArgKP dataset~\cite{Bar-HaimEFKLS2020}. But as the ArgKP dataset contains argument key-point pairs with undecided labels~(i.e. not enough agreement between annotators), the shared task organizers derive strict labels by considering those pairs as no match, and relaxed labels by considering them as match~\todocite.
+To compute each evaluation score, the strict score is calculated based on strict ground-truth labels and the relaxed score based on relaxed ground-truth labels~\todocite.
+
+We stress that in the complex evaluation setup of the mean average precision score, the relaxed mAP score would favor assuming matches in case of model uncertainty while the strict mAP on the opposite would favor assuming no match.
+Though, as only the most-probable matching key-point is being considered for evaluation, this effect is minor.
+The evaluation score in general favors matchers that can match a single key-point for each argument with high precision.
+It is however not important if a matcher does predict non-matches with high certainty.
 
 \subsection{Automatic Evaluation}
 \input{figures/table-results.tex}
-In Table~\ref{table-results}, we report mean average precision, precision, recall, and F1 scores of the match label for the training, validation, and test set of the ArgKP dataset. We include scores from the term-overlap baseline model as well as for the fine-tuned \BertBase and \RobertaBase models.
-We assess these four metrices to allow for automated and unbiased evaluation of our models.
+In Table~\ref{table-results}, we report mean average precision for strict and relaxed labels of the training, validation, and test set in the ArgKP dataset.
+We complement the mAP scores by adding precision, recall, and F1 scores of the match label, both in the strict and relaxed label setting.
+To aggregate results with strict and relaxed ground-truth labels we also report the average score of the two variants.
+The reported scores should allow for automated and unbiased evaluation of our models and easier comparison with competitive approaches.
+We report all 36~scores for the term-overlap baseline model as well as for the fine-tuned \BertBase and \RobertaBase models.
+To make our results more comparable, we add a second baseline, where matches between arguments and key-points of same topic and stance are predicted with uniform random probability.
+That random baseline represents a worst-case matcher and any weak matcher should exceed it's evaluation scores.
 
-\todo{Shortly describe metric.}
-\todo{Report results for \Roberta model and baseline.}
+\todo{Discuss results for \Roberta model and baseline.}
 
 \subsection{Manual Error Analysis}
 
