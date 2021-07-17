@@ -20,7 +20,7 @@ Key-point: \texttt{{\color{orange} Assisted} suicide reduces {\color{blue} suffe
 We can further increase the term overlap between arguments and key-points by preprocessing their terms:
 First, we remove stop words for reducing noise within all arguments.
 Initially this can seem counter-productive, because with less words the highest possible overlap would also decrease and therefore could lead to worse performance.
-However, a lot of arguments and key-points contain unnecessary words like \texttt{the, and, as} etc.
+However, a lot of arguments and key-points contain unnecessary words like \texttt{the}, \texttt{and}, \texttt{as} etc.
 Removing these results in sentences that contain more specific information and thus lead to less confusion with the term-overlap matcher.
 Furthermore, the redundancy of language makes it possible to contain key aspects in sentences, even without these mostly meaningless stop words.
 As a second preprocessing step, we apply reduce terms to their corresponding stems by applying stemming using the Snowball stemmer~\todocite. 
@@ -48,10 +48,12 @@ While \Bert is pretrained on a very large document corpus~(16GB of raw data), \R
 Thus \Roberta models can be fine-tuned to higher end task performance~\cite{LiuOGDJCLLZS2019}.
 We tokenize both the arguments and the key-points with \Bert's default WordPiece tokenizer and the resulting sequences are trimmed to 512~tokens for both models.
 We then fine-tune the \BertBase and \RobertaBase variants in the standard sentence-pair regression setting using the Simple Transformers library.\footnote{\url{https://simpletransformers.ai/}}
-For classification, we interpret the regression output value as the probability of an argument matching a key-point, that is, the training labels are always 0~or~1, depending on whether the corresponding pair in the training set matches or not.
+For classification, we interpret the regression output value as the probability of an argument matching a key-point.
+That is, the training labels are always 0~or~1, depending on whether the corresponding pair in the training set matches or not.
 Both model variants contain 12~hidden layers with a hidden size of~768 and 12~attention heads.
 We train each of the two models for one single epoch at a learning rate of~\( \eta = 2 \cdot 10^{-5} \).
 We use an AdamW optimizer with~\( \beta = (0.9, 0.999) \) and zero weight decay.
 The optimizer is warmed up for a ratio of~0.06 and we fine-tune both models on binary cross-entropy loss.
 We explore different ways of handling argument key-point pairs in the training set with missing ground-truth label, i.e., either removing those pairs, assuming a match~(1), or no match~(0), but find that neither of the last assumptions lead to improved scores on the validation set.
 Thus, for the submitted model, we consider only training pairs that have an associated ground-truth label.
+We don't restrict the model's output to the interval~\([0,1]\)---like we did for the baseline---, as the shared task did not mention constraints on the score value that should be returned by a matcher.
