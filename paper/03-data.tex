@@ -9,23 +9,23 @@ The section used for training has over 5500 arguments belonging to over 200 key 
 dev dataset with over 900 arguments and 36 key points for 4 topics.
 
 \subsection{Characteristics}
+\begin{figure}
+	\caption{Top 15 most common words of argument keypoint pair for strict labels under the topic \texttt{Assisted suicide should be a criminal offence}.}
+	\label{fig:stopwords-strict}
+	\includegraphics[width=\linewidth]{figures/data_stopwords1.png}
+\end{figure}
+\begin{figure}
+	\caption{Top 15 most common words of argument keypoint pair for relaxed labels under the topic \texttt{Assisted suicide should be a criminal offence}.}
+	\label{fig:stopwords-relaxed}
+	\includegraphics[width=\linewidth]{figures/data_stopwords2.png}
+\end{figure}
 
 \todo{Report data characteristics from exploratory data analysis.}
 When analyzing the data, we realize that matched and unmatched key points of a given argument contain a certain proportion of the same words. 
 Many of these words belong to the set of stop words. 
 These uninformative, non-decisive words can complicate the decision process between the matched and unmatched keypoint. 
 For this reason, we remove stop words from our data during pre-processing. 
-\begin{figure}[h]
-	\label{fig:stopwords-strict}
-	\caption{Top 15 most common words of argument keypoint pair for strict labels under the given topic: \texttt{Assisted suicide should be a criminal offence}}
-	\includegraphics[scale=0.4]{figures/data_stopwords1.png}
-\end{figure}
-\begin{figure}[h]
-	\label{fig:stopwords-relaxed}
-	\caption{Top 15 most common words of argument keypoint pair for relaxed labels under the given topic: \texttt{Assisted suicide should be a criminal offence}}
-	\includegraphics[scale=0.4]{figures/data_stopwords2.png}
-\end{figure}
-In the figures \ref{fig:stopwords-strict}, \ref{fig:stopwords-relaxed}, we can see that stop words, such as: \texttt{is, are, be, not, to, do, for, have}, are used very frequently in the key points from the two labels. 
+In Figures~\ref{fig:stopwords-strict} and~\ref{fig:stopwords-relaxed}, we can see that stop words, such as: \texttt{is, are, be, not, to, do, for, have}, are used very frequently in the key points from the two labels. 
 
 Furthermore, the important words from the argument are repeated with different tenses and parts of speech in key points, for example: \textit{legalize, legalized, legalizing, legal} or \textit{marriages, marriage}.
 Because these words were used again, they can play a role in classification. 
@@ -33,7 +33,7 @@ To achieve an unambiguous spelling, such words are normalized with a stemming me
 Moreover, this conversion to the word root reduces the size of the vocabulary or the dimensions of the text input. 
 With a low number of dimensions, the assumption of independence of individual features in general machine learning algorithms is violated with a low probability. 
 
-\begin{table*}[]
+\begin{table*}
 \caption{Examples of arguments key points from the ArgKP dataset \cite{Bar-HaimEFKLS2020}}
 \label{tab:data-example}
 \begin{tabular}{l|l|l}
