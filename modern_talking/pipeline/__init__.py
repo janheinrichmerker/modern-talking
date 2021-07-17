@@ -415,7 +415,6 @@ class Pipeline:
 
         return test_result_average
 
-
     def evaluate(self, ignore_test: bool = False) -> float:
         """
         Parse training, test, and development labels and evaluate quality.
