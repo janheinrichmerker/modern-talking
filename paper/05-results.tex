@@ -64,21 +64,21 @@ That random baseline represents a worst-case matcher and any weak matcher should
 
 Plotting the density curves, shown in Figure \ref{fig:density}, of the given distributions of scores, predicted by our proposed approaches, provides 
 insight about possible errors and therefore possible improvements.\\
-As can be seen the majority of predictions returned prove to be corretly, hence seeing obvious spikes in all four density
+As can be seen, the majority of predictions prove to be correctly, hence seeing obvious spikes in all four density
 curves around $0$ and $1$.\\
 It can also be seen that, predictions on the training set performe better than on the development set for both 
 \Roberta and \Bert, concluding that better generalization is needed.\\
 In Figures \ref{subfig:bert_train} and \ref{subfig:roberta_train} it's noticeable that
-both approaches tend to better predict for non-matching arguments and key-points on the training set. A possible explanation 
-could be the higher amount of non-matching arguments and key-points provided. Most arguments match with only a few, if 
+both approaches tend to predict better for non-matching arguments and key-points on the training set. A possible explanation 
+could be the higher amount of non-matching pairs provided. Most arguments match with only a few, if 
 not only a single key-point, but they get compared to all other key-points, hence creating an imbalance in the distribution 
 of data to learn from. It's possible to think of a more balanced approach, where providing the same amount of matching and 
 non-matching key-points for a given argument could resolve this problem.\\
-Keeping an eye on the performance at the training set, we can further identify, that for matching arguments and key-points 
-scores from \Bert tend to be spread more than scores from \Roberta.\\
+Keeping an eye on the performance at the training set, we can further identify, that for matching arguments and key-points, 
+scores from \Bert tend to be spread more than scores from \Roberta.
 
 Investigating Figures \ref{subfig:bert_dev} and \ref{subfig:roberta_dev} reveals that \Bert seems to have a problem with 
-predicting certain arguments for non-matching as well as for matching. For example: \\
+predicting certain non-matching and matching pairs. For example: \\
 
 \begin{figure}[H]
     \begin{tabularx}{\linewidth}{lp{0.7\linewidth}}
@@ -89,11 +89,11 @@ predicting certain arguments for non-matching as well as for matching. For examp
 \end{figure}
 
 poses a problem for it. Possibly because this argument has no matching key-point given. Hence it's imaginable that 
-\Bert doesn't know how to handle it and therefore giving it a score arround $0.5$.\\
+\Bert doesn't know how to handle it and therefore gives it a score arround $0.5$.
 
-It's also striking, that \Bert predictes a bunch of matching argument and key-point pairs as non-matching. It seems for 
-example very difficult to distinguish for the key-point: \texttt{Affirmative action reduces quality.} A lot of 
-arguments are quite long, for example:\\
+It's also striking, that \Bert predictes a bunch of matching argument and key-point pairs as non-matching. For example, 
+it seems to be very difficult to predict for the key-point: \texttt{Affirmative action reduces quality.} A lot of 
+arguments are quite long:\\
 
 \begin{figure}[H]
     \begin{tabularx}{\linewidth}{lp{0.7\linewidth}}
@@ -102,15 +102,16 @@ arguments are quite long, for example:\\
     \end{tabularx}
 \end{figure}
 
-thus beeing in total contrast to the length of the key-point. Therefore it seems to be quite challenging to reduce 
+,thus beeing in total contrast to the length of the key-point. Therefore it seems to be quite challenging to reduce 
 such long arguments, filled with a lot of information, to very compact key-points. And indeed, 
-calculating the Arithmetic Mean of the difference of key-point and argument length reveals, that 
-for all wrongly predicted labels (prediction score $< 0.5$) the mean difference is $75.55$ characters while 
-correctly predicted labels (prediction score $> 0.5$) have a mean difference of $66.59$ characters.\\
+calculating the Arithmetic Mean of the difference of matching key-point and argument lengths reveals, that 
+for all wrongly predicted labels (Score $< 0.5$) the mean difference is $75.55$ characters while 
+correctly predicted labels (Score $> 0.5$) have a mean difference of $66.59$ characters.
 
 \Roberta reports a similar indication for matching pairs (wrong predictions: $70.09$, correct predictions: $67.93$ ), 
-thus it could be assumed that the character difference is a general problem for both approaches. 
-But in contrast to \Bert, \Roberta performes way better when it comes to predicting non-matching pairs
+it could thus be assumed that character difference is a general problem for both approaches. 
+
+In contrast to \Bert, \Roberta performes way better when it comes to predicting non-matching pairs
 almost reproducing a similar performance as on the training set.
 
 % \todo{Find example errors from our classifier. How can we improve?}
