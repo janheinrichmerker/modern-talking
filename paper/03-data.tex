@@ -10,12 +10,12 @@ dev dataset with over 900 arguments and 36 key points for 4 topics.
 
 \subsection{Characteristics}
 \begin{figure}
-	\caption{Top 15 most common words of key points for strict labels under the topic \texttt{Assisted suicide should be a criminal offence}.}
+	\caption{Top 15 most common words of key points for strict label under the topic \texttt{Assisted suicide should be a criminal offence}.}
 	\label{fig:stopwords-strict}
 	\includegraphics[width=\linewidth]{figures/data_stopwords1.png}
 \end{figure}
 \begin{figure}
-	\caption{Top 15 most common words of key points for relaxed labels under the topic \texttt{Assisted suicide should be a criminal offence}.}
+	\caption{Top 15 most common words of key points for relaxed label under the topic \texttt{Assisted suicide should be a criminal offence}.}
 	\label{fig:stopwords-relaxed}
 	\includegraphics[width=\linewidth]{figures/data_stopwords2.png}
 \end{figure}
@@ -54,14 +54,12 @@ With a low number of dimensions, the assumption of independence of individual fe
 
 In Table \ref{tab:data-example} we show examples of arguments key-point pairs from the ArgKP dataset \cite{Bar-HaimEFKLS2020}. 
 We identify followed major difficulties in matching key points to arguments: semantic similar words, synonyms, and context understanding.
-
 In the first example pair (Table \ref{tab:data-example}), the key point can be matched with its argument with a high probability. 
 The two sentences were written on the topic of children actors and their education, although the word \texttt{actors} is not explicitly used in the key point. 
 We know that \texttt{performer} and \texttt{actors} are semantically relevant and \texttt{performer} and \texttt{actor} both perform. Next, the argument and the key point from the second example were expressed completely differently. 
 The important words \texttt{capital punishment}, \texttt{state-sanctioned killing} show us that the two sentences were written at least about the same topic. 
 This poses a challenge for us to design our approach in such a way that it knows the different written words with the same meaning. 
 A simple method we use is to apply the well-known lexical database WordNet for the English language \cite{Miller1995}.
-
 It is still recognized that context understanding can be a challenge for the task. For this topic from the test dataset:
 \texttt{We should abandon the use of school uniform}, we have in the third example an argument and a possible matched key point is \texttt{School uniform is harming the student's self-expression}. 
 We can first see that the argument and the given key point have little in common: \texttt{express, expression}. 

@@ -1,18 +1,18 @@
 \section{Results}\label{results}
 
 Submissions to the ArgMining~2021 shared task on Quantitative Summarization and Key Point Analysis are evaluated with respect to mean average precision~(mAP)~\todocite~\todo{Cite shared task overview paper}.
-The organizers calculate the score by pairing each argument with the best matching key-point according to the predicted matching probabilities.
+The organizers calculate the score by pairing each argument with the best matching key point according to the predicted matching probabilities.
 Within each topic-stance combination, only the 50\,\% of arguments with the highest predicted matching score are then considered for evaluation.
 The task organizers claim that this removal of 50\,\% of the pairs is sensible because some arguments do not match any of the key points, thus would influence mean average precision negatively~\todocite.
-For the remaining argument key-point pairs in each topic-stance combination, average precision is calculated and the final score is computed as the mean of all average precision scores.
+For the remaining argument key point pairs in each topic-stance combination, average precision is calculated and the final score is computed as the mean of all average precision scores.
 
 The task organizers now consider two variants of ground-truth labels: strict labels and relaxed labels.
-Both variants are based on the ground-truth labels from the ArgKP dataset~\cite{Bar-HaimEFKLS2020}. But as the ArgKP dataset contains argument key-point pairs with undecided labels~(i.e. not enough agreement between annotators), the shared task organizers derive strict labels by considering those pairs as no match, and relaxed labels by considering them as match~\todocite.
+Both variants are based on the ground-truth labels from the ArgKP dataset~\cite{Bar-HaimEFKLS2020}. But as the ArgKP dataset contains argument key point pairs with undecided labels~(i.e. not enough agreement between annotators), the shared task organizers derive strict labels by considering those pairs as no match, and relaxed labels by considering them as match~\todocite.
 To compute each evaluation score, the strict score is calculated based on strict ground-truth labels and the relaxed score based on relaxed ground-truth labels~\todocite.
 
 We stress that in the complex evaluation setup of the mean average precision score, the relaxed mAP score would favor assuming matches in case of model uncertainty while the strict mAP on the opposite would favor assuming no match.
-Though, as only the most-probable matching key-point is being considered for evaluation, this effect is minor.
-The evaluation score in general favors matchers that can match a single key-point for each argument with high precision.
+Though, as only the most-probable matching key point is being considered for evaluation, this effect is minor.
+The evaluation score in general favors matchers that can match a single key point for each argument with high precision.
 It is however not important if a matcher does predict non-matches with high certainty.
 
 \subsection{Automatic Evaluation}
@@ -22,7 +22,7 @@ We complement the mAP scores by adding precision, recall, and F1 scores of the m
 To aggregate results with strict and relaxed ground-truth labels we also report the average score of the two variants.
 The reported scores should allow for automated and unbiased evaluation of our models and easier comparison with competitive approaches.
 We report all 36~scores for the term-overlap baseline model as well as for the fine-tuned \BertBase and \RobertaBase models.
-To make our results more comparable, we add a second baseline, where matches between arguments and key-points of same topic and stance are predicted with uniform random probability.
+To make our results more comparable, we add a second baseline, where matches between arguments and key points of same topic and stance are predicted with uniform random probability.
 That random baseline represents a worst-case matcher and any weak matcher should exceed it's evaluation scores.
 
 \todo{Discuss results for \Roberta model and baseline.}
@@ -69,12 +69,12 @@ curves around $0$ and $1$.\\
 It can also be seen that, predictions on the training set performe better than on the development set for both 
 \Roberta and \Bert, concluding that better generalization is needed.\\
 In Figures \ref{subfig:bert_train} and \ref{subfig:roberta_train} it's noticeable that
-both approaches tend to predict better for non-matching arguments and key-points on the training set. A possible explanation 
+both approaches tend to predict better for non-matching arguments and key points on the training set. A possible explanation 
 could be the higher amount of non-matching pairs provided. Most arguments match with only a few, if 
-not only a single key-point, but they get compared to all other key-points, hence creating an imbalance in the distribution 
+not only a single key point, but they get compared to all other key points, hence creating an imbalance in the distribution 
 of data to learn from. It's possible to think of a more balanced approach, where providing the same amount of matching and 
-non-matching key-points for a given argument could resolve this problem.\\
-Keeping an eye on the performance at the training set, we can further identify, that for matching arguments and key-points, 
+non-matching key points for a given argument could resolve this problem.\\
+Keeping an eye on the performance at the training set, we can further identify, that for matching arguments and key points, 
 scores from \Bert tend to be spread more than scores from \Roberta.
 
 Investigating Figures \ref{subfig:bert_dev} and \ref{subfig:roberta_dev} reveals that \Bert seems to have a problem with 
@@ -88,11 +88,11 @@ predicting certain non-matching and matching pairs. For example: \\
     \end{tabularx}
 \end{figure}
 
-poses a problem for it. Possibly because this argument has no matching key-point given. Hence it's imaginable that 
+poses a problem for it. Possibly because this argument has no matching key point given. Hence it's imaginable that 
 \Bert doesn't know how to handle it and therefore gives it a score arround $0.5$.
 
-It's also striking, that \Bert predictes a bunch of matching argument and key-point pairs as non-matching. For example, 
-it seems to be very difficult to predict for the key-point: \texttt{Affirmative action reduces quality.} A lot of 
+It's also striking, that \Bert predictes a bunch of matching argument and key point pairs as non-matching. For example, 
+it seems to be very difficult to predict for the key point: \texttt{Affirmative action reduces quality.} A lot of 
 arguments are quite long:\\
 
 \begin{figure}[H]
@@ -102,9 +102,9 @@ arguments are quite long:\\
     \end{tabularx}
 \end{figure}
 
-,thus beeing in total contrast to the length of the key-point. Therefore it seems to be quite challenging to reduce 
-such long arguments, filled with a lot of information, to very compact key-points. And indeed, 
-calculating the Arithmetic Mean of the difference of matching key-point and argument lengths reveals, that 
+,thus beeing in total contrast to the length of the key point. Therefore it seems to be quite challenging to reduce 
+such long arguments, filled with a lot of information, to very compact key points. And indeed, 
+calculating the Arithmetic Mean of the difference of matching key point and argument lengths reveals, that 
 for all wrongly predicted labels (Score $< 0.5$) the mean difference is $75.55$ characters while 
 correctly predicted labels (Score $> 0.5$) have a mean difference of $66.59$ characters.
 

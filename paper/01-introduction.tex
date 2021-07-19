@@ -2,9 +2,9 @@
 
 Arguments influence our decisions in many places of our cultural life~\cite{Bar-HaimEFKLS2020}.
 But with the increasingly larger amount of information found on the Web\footnote{\url{https://internetlivestats.com/}} and more efficient argument mining, people often need to summarize arguments~\cite{LawrenceR2019,Bar-HaimEFKLS2020}.
-\citet{Bar-HaimEFKLS2020} see matching key-points to arguments as an intermediate step towards automatically generating argumentative summaries~(Section~\ref{related-work}).
-The ArgMining~2021 shared task on Quantitative Summarization and Key Point Analysis is the first task on key-point matching, hence taking a step towards summarizing arguments~\todocite.
-Different approaches of matching argument key-point pairs, here called matchers, should be proposed and discussed.
+\citet{Bar-HaimEFKLS2020} see matching key points to arguments as an intermediate step towards automatically generating argumentative summaries~(Section~\ref{related-work}).
+The ArgMining~2021 shared task on Quantitative Summarization and Key Point Analysis is the first task on key point matching, hence taking a step towards summarizing arguments~\todocite.
+Different approaches of matching argument key point pairs, here called matchers, should be proposed and discussed.
 \todo{Cite the task overview paper once the citation is announced.}
 The shared task organizers therefore introduce a customized mean average precision evaluation metric and publish the ArgKP benchmark dataset~(Section~\ref{data}) to compare matchers~\todocite~\cite{Bar-HaimEFKLS2020}.
 
@@ -13,4 +13,4 @@ Because of their extensive pretraining, often fine-tuning those language models 
 As the ArgKP dataset~\cite{Bar-HaimEFKLS2020} used in the ArgMining~2021 shared task on Quantitative Summarization is relatively small~(24\,000 labelled matches), we decide to fine-tune \Bert and \Roberta language models rather than train a neural classifier from scratch~(Section~\ref{approach}).
 Our fine-tuned \RobertaBase model achieves a mean average precision score of up to~0.967 and ranks second in the shared task's leaderboard~(Section~\ref{results}).
 
-Contrasting the deep learning fine-tuning approach, we discus a simple rule-based baseline matcher that compares preprocessed terms of each argument to the terms of each key point~(Section~\ref{approach}). For the baseline, we compute term overlap similar to the Jaccard coefficient~\cite{Jaccard1902} after removing stop words, adding synonyms and antonyms, and stemming the tokens from both argument and key-point using the NLTK~toolkit~\cite{BirdL2004}.
+Contrasting the deep learning fine-tuning approach, we discus a simple rule-based baseline matcher that compares preprocessed terms of each argument to the terms of each key point~(Section~\ref{approach}). For the baseline, we compute term overlap similar to the Jaccard coefficient~\cite{Jaccard1902} after removing stop words, adding synonyms and antonyms, and stemming the tokens from both argument and key point using the NLTK~toolkit~\cite{BirdL2004}.
