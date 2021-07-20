@@ -30,88 +30,86 @@ That random baseline represents a worst-case matcher and any weak matcher should
 \subsection{Manual Error Analysis}
 
 \begin{figure*}
-    % \begin{tabularx}{\linewidth}{XX}
+    \centering
+    \begin{subfigure}{0.485\textwidth}
         \centering
-        \begin{subfigure}{0.485\textwidth}
-            \centering
-            \includegraphics[width=\linewidth]{histogram-labels-bert-train.pdf}
-            \subcaption{Predictions with \BertBase on the training set.}
-            \label{subfig:bert_train}
-        \end{subfigure}
-        \hfill
-        \begin{subfigure}{0.485\textwidth}
-            \centering
-            \includegraphics[width=\linewidth]{histogram-labels-bert-dev.pdf}
-            \subcaption{Predictions with \BertBase on the validation set.}
-            \label{subfig:bert_dev}
-        \end{subfigure}
-        \begin{subfigure}{0.485\textwidth}
-            \centering
-            \includegraphics[width=\linewidth]{histogram-labels-roberta-train.pdf}
-            \subcaption{Predictions with \RobertaBase on the training set.}
-            \label{subfig:roberta_train}
-        \end{subfigure}
-        \hfill
-        \begin{subfigure}{0.485\textwidth}
-            \centering
-            \includegraphics[width=\linewidth]{histogram-labels-roberta-dev.pdf}
-            \subcaption{Predictions with \RobertaBase on the validation set.}
-            \label{subfig:roberta_dev}
-        \end{subfigure}
-    % \end{tabularx}
+        \includegraphics[width=\linewidth]{histogram-labels-bert-train.pdf}
+        \subcaption{Predictions with \BertBase on the training set.}
+        \label{subfig:bert_train}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.485\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{histogram-labels-bert-dev.pdf}
+        \subcaption{Predictions with \BertBase on the validation set.}
+        \label{subfig:bert_dev}
+    \end{subfigure}
+    \begin{subfigure}{0.485\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{histogram-labels-roberta-train.pdf}
+        \subcaption{Predictions with \RobertaBase on the training set.}
+        \label{subfig:roberta_train}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.485\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{histogram-labels-roberta-dev.pdf}
+        \subcaption{Predictions with \RobertaBase on the validation set.}
+        \label{subfig:roberta_dev}
+    \end{subfigure}
     \caption{Histograms of predicted labels on the training and validation sets for argument key point pairs with the \BertBase and \RobertaBase classifiers. For good classifiers, predicted labels should approximately equal the true label~(0~or~1).}
     \label{fig:frequency}
 \end{figure*}
+To find errors in the two trained matchers, \BertBase and \RobertaBase, in Figure~\ref{fig:frequency} we show histograms of predicted labels with respect to true labels.
+Both matchers classify most pairs correctly, which can be seen because the histogram spikes around~0 for the true no-match label and around~1 for the true match label.
+We also observe that predictions on the training set are closer to the true label than on the development set for both \RobertaBase and \BertBase.
+Even though we expect any machine-learned matcher to perform better on training data than on validation data, we see this as room for improvement with better generalization.
+We notice that in Figures~\ref{subfig:bert_train} and~\ref{subfig:roberta_train} both approaches predict non-matching argument key point pairs better than matching key points.
+This effect is likely to occur because of the higher amount of non-matching pairs provided.
+Most arguments match with only a few or even just a single key point.
+But nonetheless each argument is compared to all other key points, hence the underlying data to learn from is imbalanced. 
+\todo{Cite a paper about imbalanced data in ML.}
+Though, experiments with using textual data augmentation to balance the dataset were unsuccessful.
+Other approaches to balance the amount of matching and non-matching key points for each argument, e.g., oversampling or undersampling~\todocite, could resolve this issue.
+We further identify, that for matching arguments and key points, predicted scores from \BertBase are spread a bit more than scores from \RobertaBase.
 
-Plotting the histograms, shown in Figure \ref{fig:frequency}, of the given distributions of scores, predicted by our proposed approaches, provides 
-insight about possible errors and therefore possible improvements.\\
-As can be seen, the majority of predictions prove to be correctly, hence seeing obvious spikes in all four histograms around $0$ and $1$.\\
-It can also be seen that, predictions on the training set performe better than on the development set for both 
-\Roberta and \Bert, concluding that better generalization is needed.\\
-In Figures \ref{subfig:bert_train} and \ref{subfig:roberta_train} it's noticeable that
-both approaches tend to predict better for non-matching arguments and key points on the training set. A possible explanation 
-could be the higher amount of non-matching pairs provided. Most arguments match with only a few, if 
-not only a single key point, but they get compared to all other key points, hence creating an imbalance in the distribution 
-of data to learn from. It's possible to think of a more balanced approach, where providing the same amount of matching and 
-non-matching key points for a given argument could resolve this problem.\\
-Keeping an eye on the performance at the training set, we can further identify, that for matching arguments and key points, 
-scores from \Bert tend to be spread more than scores from \Roberta.
-
-Investigating Figures \ref{subfig:bert_dev} and \ref{subfig:roberta_dev} reveals that \Bert seems to have a problem with 
-predicting certain non-matching and matching pairs. For example: \\
-
-\begin{figure}[H]
-    \begin{tabularx}{\linewidth}{lp{0.7\linewidth}}
-            ARG: & \texttt{School uniforms can be less comfortable than students' regular clothes.}\\
-            KP: & \texttt{School uniforms are expensive.}\\
-            Score:& $0.479004$\\
+\begin{figure}
+    \begin{tabularx}{\linewidth}{@{}lX@{}}
+        Argument & \texttt{School uniforms can be less comfortable than students' regular clothes.} \\
+        Key point & \texttt{School uniforms are expensive.} \\
+        Prediction & \(0.48\) \\
     \end{tabularx}
+    \caption{Argument~162 and key point~6 for the topic \texttt{We should abandon the use of school uniform} from the ArgKP dataset~\cite{Bar-HaimEFKLS2020}.}
+    \label{example-4-162-6}
 \end{figure}
+In Figures~\ref{subfig:bert_dev} and~\ref{subfig:roberta_dev}, we observe that the \BertBase matcher falsely classifies certain non-matching and matching pairs. The argument key point pair shown in Figure~\ref{example-4-162-6} seems to be particularily hard to classify.
+One reason we identify is that this argument has no matching key points given in the training dataset.
+Hence it is plausible that the \BertBase has not learned well how to classify matches for that type of argument, and therefore predicts a label of~\(0.48\).
 
-poses a problem for it. Possibly because this argument has no matching key point given. Hence it's imaginable that 
-\Bert doesn't know how to handle it and therefore gives it a score arround $0.5$.
-
-It's also striking, that \Bert predictes a bunch of matching argument and key point pairs as non-matching. For example, 
-it seems to be very difficult to predict for the key point: \texttt{Affirmative action reduces quality.} A lot of 
-arguments are quite long:\\
-
-\begin{figure}[H]
-    \begin{tabularx}{\linewidth}{lp{0.7\linewidth}}
-            ARG: & \texttt{affirmative action can lead to people who are less qualified getting positions they would otherwise not be able to achieve}\\
-            ARG: & \texttt{affirmative action discriminates the majority, preventing skilled workers from gaining employment over someone less qualified but considered to be a member of a protected minority group.}
+\begin{figure}
+    \begin{tabularx}{\linewidth}{@{}p{4em}X@{}}
+        Argument 110 & \texttt{affirmative action can lead to people who are less qualified getting positions they would otherwise not be able to achieve} \\
+        Argument 113 & \texttt{affirmative action discriminates the majority, preventing skilled workers from gaining employment over someone less qualified but considered to be a member of a protected minority group.}
     \end{tabularx}
+    \caption{Matching arguments to the key point \texttt{Affirmative action reduces quality.} that are falsely classified as non-matching by the \BertBase matcher.}
+    \label{example-5-110-113}
 \end{figure}
-
-,thus beeing in total contrast to the length of the key point. Therefore it seems to be quite challenging to reduce 
-such long arguments, filled with a lot of information, to very compact key points. And indeed, 
-calculating the Arithmetic Mean of the difference of matching key point and argument lengths reveals, that 
-for all wrongly predicted labels (Score $< 0.5$) the mean difference is $75.55$ characters while 
-correctly predicted labels (Score $> 0.5$) have a mean difference of $66.59$ characters.
-
-\Roberta reports a similar indication for matching pairs (wrong predictions: $70.09$, correct predictions: $67.93$ ), 
-it could thus be assumed that character difference is a general problem for both approaches. 
+\begin{figure}
+    \includegraphics[width=\linewidth]{classification-error-length-difference-bert-train.pdf}
+    \caption{Squared classification error for argument key point pairs from the validation set when matching with \BertBase. The horizontal axis shows the absolute length difference between the argument and the key point from each pair.}
+    \label{classification-error-length}
+\end{figure}
+The same \BertBase matcher falsely predicts some argument key point pairs as non-matching.
+For example, it seems to be very difficult to predict matches for the key point~7 \texttt{Affirmative action reduces quality.} from the topic \texttt{We should end affirmative action}, as shown in Figure~\ref{example-5-110-113}. These two arguments are longer than most arguments \todo{from that topic?},
+and especially longer than the key point.
+It might be more challenging to reduce such longer arguments, containing more complex information, to very compact key points.
+We confirm that observation by comparing the squared classification error with respect to the absolute difference between argument and key point lengths.
+Figure~\ref{classification-error-length} shows that the more argument and key point differ in length, the greater the squared classification error gets when using the \BertBase matcher.
+Comparable results can be observed for the \Roberta model.
+We therefore identify length difference as a second general problem for both approaches.
 
 In contrast to \Bert, \Roberta performes way better when it comes to predicting non-matching pairs
 almost reproducing a similar performance as on the training set.
+\todo{Elaborate}
 
 % \todo{Find example errors from our classifier. How can we improve?}
