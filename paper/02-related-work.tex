@@ -1,11 +1,10 @@
 \section{Related Work}\label{related-work}
 
-\todo{Shorten subsections. We probably don't need subsection headers in this section.}
-\todo{Add paragraph about \Bert and \Roberta.}
+% \todo{Shorten subsections. We probably don't need subsection headers in this section.}
 
-\subsection{Key Point Analysis}
-Given the first track of the shared task analyzing key points is crucial. In their work \cite{Bar-HaimEFKLS2020} 
-\citeauthor{Bar-HaimEFKLS2020} propose an approach for summarising large argument collections to small sets of key points. Thus
+% \subsection{Key Point Analysis}
+Given the first track of the shared task, analyzing key points is crucial.  
+\citet{Bar-HaimEFKLS2020} propose an approach for summarising large argument collections to small sets of key points. Thus
 covering a sufficient amount of all arguments. They show that domain experts can very quickly
 create pro and con key points, which are able to "capture the gist" of the arguments on the given topic. All this
 without being exposed to the arguments themself. Furthermore they develop the large-scale dataset ArgKP
@@ -21,37 +20,30 @@ $0.773$) is chosen for key point extraction since it has a 6 times faster infere
 occure in online political debates. By extracting verbs and their syntactic arguments they retrieve points which
 can make key content accessible. By grouping these points they propose to create discussion summaries.
 
-\subsection{Argument Clustering}
-Argument Clustering is a mighty tool that enables algorithms to assign multiple arguments, which adress a similar
-key message to a given topic. \citet{reimers2019classification} make use of 
-"contextualize word embeddings to classify and cluster topic-dependet arguments". Having performed argument
-classification they then compute similar and dissimilar pairs of arguments. Two approaches one with clustering
-and one without are being used. 
-Clustering arguments is achieved by usage of agglomerative hierarchical clustering \cite{day1984efficient}. 
-Without clustering a fine-tuned BERT-base-uncased model reached a F1 mean score for similar and dissimilar
-arguments of $0.7401$. 
-Agglomerative hierarchical clustering being a strict partitioning algorithm, results for clustering perform
-worse by up to 7.64pp (Bert-large F1 mean score: $0.7135$). Hence they conclude that "strict partitioning 
-clustering methods introduce a new source of errors".
-Another approach proposed by \citet{ajjour2019modeling} revolves around clustering 
-arguments into so called frames which are "a set of arguments that focus on the same aspect". 
-Thereby framing \cite{entman1993framing} only a specific information to present to the listeners and convince 
-them of your stance.
-They propose that an argument consists of two crucial parts. The topic and the frame.
-Hence their approch splits into three steps: First, all arguments are clustered into $m$ topics. Second,
-topical features are extracted from all arguments and therefore from its cluster. Third, the arguments are 
-reclustered into $k$ non-overlapping frames. By utilizing k-means \cite{hartigan1979ak} for clustering
-and \textit{Term Frequency-Inverse Document Frequency} (TF-IDF) for topic removal they achieved a F1 score of 
-$0.28$.
+% \subsection{Argument Clustering}
+% Argument Clustering is a mighty tool that enables algorithms to assign multiple arguments, which adress a similar
+% key message to a given topic. \citet{reimers2019classification} make use of 
+% "contextualize word embeddings to classify and cluster topic-dependet arguments". Having performed argument
+% classification they then compute similar and dissimilar pairs of arguments. Two approaches one with clustering
+% and one without are being used. 
+% Clustering arguments is achieved by usage of agglomerative hierarchical clustering \cite{day1984efficient}. 
+% Without clustering a fine-tuned BERT-base-uncased model reached a F1 mean score for similar and dissimilar
+% arguments of $0.7401$. 
+% Agglomerative hierarchical clustering being a strict partitioning algorithm, results for clustering perform
+% worse by up to 7.64pp (Bert-large F1 mean score: $0.7135$). Hence they conclude that "strict partitioning 
+% clustering methods introduce a new source of errors".
+% Another approach proposed by \citet{ajjour2019modeling} revolves around clustering 
+% arguments into so called frames which are "a set of arguments that focus on the same aspect". 
+% Thereby framing \cite{entman1993framing} only a specific information to present to the listeners and convince 
+% them of your stance.
+% They propose that an argument consists of two crucial parts. The topic and the frame.
+% Hence their approch splits into three steps: First, all arguments are clustered into $m$ topics. Second,
+% topical features are extracted from all arguments and therefore from its cluster. Third, the arguments are 
+% reclustered into $k$ non-overlapping frames. By utilizing k-means \cite{hartigan1979ak} for clustering
+% and \textit{Term Frequency-Inverse Document Frequency} (TF-IDF) for topic removal they achieved a F1 score of 
+% $0.28$.
 
-\todo{Third paper: Argument Invention from First Principles (probably not crucial)}
-
-\subsection{Stance Classification}
-By knowing the stance of an argument it becomes nearly effortless for a human to classify it as pro or con 
-to a given topic. 
-\todo{is it necessary?}
-
-\subsection{\Bert and \Roberta}
+% \subsection{Pretrained Language Models}
 
 \Bert stands for Bidirectional Encoder Representations from Transformers and is an open-source bidirectional language representation model published by Google~\cite{DevlinCLT2019}. 
 %\Bert is based on the transformer architecture, however, \Bert only uses the encoder in multi-layers. 
