@@ -26,7 +26,17 @@ We report all 36~scores for the term-overlap baseline model as well as for the f
 To make our results more comparable, we add a second baseline, where matches between arguments and key points of same topic and stance are predicted with uniform random probability.
 That random baseline represents a worst-case matcher and any weak matcher should exceed it's evaluation scores.
 
-\todo{Discuss results for \Roberta model and baseline.}
+The term overlap baseline achieves a mean average precision of~0.483 with strict labels and~0.575 with relaxed labels on the test set.
+Thus it is nearly twice as good as a random matcher with respect to mAP.
+Even though this baseline has reasonably good scores on all datasets, we are concerned about the large discrepancies between its scores on the validation set and the training and test dataset.
+Likely, the rarher simple baseline is not very robust and thus is prone to variation in performance based on how good the dataset is described by its terms.
+
+Both fine-tuned matchers outperform the baselines by a large margin.
+While the \BertBase matcher has higher relaxed mAP on the training set than the \RobertaBase matcher, the \RobertaBase matcher is overall better than \Bert.
+It achieves a mean average precision of 0.913 with strict labels on the test set, and 0.967 with relaxed labels. As these scores are nearly as high on the test set like on the training set, we argue that \Roberta, as a robust language model, generalizes better than \Bert.
+Also the \RobertaBase matcher is trained more on precision, while the \BertBase matcher is better with respect to recall for all datasets and strict or relaxed labels.
+
+% \todo{Discuss precision, recall, and F1-score.}
 
 \subsection{Manual Error Analysis}
 
