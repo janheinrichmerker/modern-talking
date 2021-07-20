@@ -9,14 +9,17 @@ To be able to compare more sophisticated matchers, we first propose a very simpl
 In general, key points summarize ideas of their matched arguments.
 Our intuition therefore is, that certain words or terms from an argument are also likely to be present in its matched key points.
 Rather than using completly new words for summarization of arguments, a human would tend to reuse most important words from the argument.
-\todo{Do they really? Maybe cite a source.}
-For example, the following argument and key point from the \ArgKP dataset both contain the term \texttt{suffering}: \\
-
-\todo{Maybe this example fits better into the data section?}
-\begin{figure}[H]
-    Argument: \texttt{People reach their limit when it comes to their quality of life and should be able to end their {\color{blue} suffering}. This can be done with little or no {\color{blue} suffering} by {\color{orange} assistance} and the person is able to say good bye.} \\
-    Key point: \texttt{{\color{orange} Assisted} suicide reduces {\color{blue} suffering}.}    
+% \todo{Do they really? Maybe cite a source.}
+% \todo{Maybe this example fits better into the data section?}
+\begin{figure}
+    \begin{tabularx}{\linewidth}{lX}
+        Argument & \texttt{People reach their limit when it comes to their quality of life and should be able to end their {\color{blue} suffering}. This can be done with little or no {\color{blue} suffering} by {\color{orange} assistance} and the person is able to say good bye.} \\
+        Key point & \texttt{{\color{orange} Assisted} suicide reduces {\color{blue} suffering}.}
+    \end{tabularx}
+    \caption{Example argument key point pair from the ArgKP dataset~\cite{Bar-HaimEFKLS2020} where terms occur in both the argument and the key point.}
+    \label{example-overlap}
 \end{figure}
+For example, the argument and key point shown in Figure~\ref{example-overlap} both contain the term \texttt{suffering}.
 
 We can further increase the term overlap between arguments and key points by preprocessing their terms:
 First, we remove stop words for reducing noise within all arguments.
