@@ -3,5 +3,5 @@ For key point matching the task is to decide if a short key point matches the co
 We approach this task in two ways:
 First, we develop a simple rule-based baseline matcher by computing term overlap after removing stop words, stemming, and adding synonyms/antonyms.
 Second, we fine-tune pretrained \Bert and \Roberta language models as a regression classifier for only a single epoch.
-We manually examine errors of our proposed matcher models and find that \todo{insert interesting result}.
+We manually examine errors of our proposed matcher models and find that long arguments and arguments without any matching key point in the training data are harder to classify.
 Our fine-tuned \RobertaBase model achieves a mean average precision score of~0.913, the best score for strict labels of all participating teams.
