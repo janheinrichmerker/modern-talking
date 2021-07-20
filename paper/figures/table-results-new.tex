@@ -1,0 +1,133 @@
+\begin{table*}
+  \centering
+  \caption{Performance of the random and term-overlap baseline, \BertBase, and \RobertaBase models with respect to mean average precision~(mAP), precision, recall, and F1 score of the match label. Results are reported for the training, validation, and test set. We report each metric on strict labels~(S), relaxed labels~(R), and averages between the two~(\(\varnothing\)). The best average result per set is \underline{underlined}.}
+  \label{table-results}
+  \smaller
+  \setlength{\tabcolsep}{1.9mm}
+  \begin{tabularx}{\linewidth}{Xcccccccccccc}
+    \toprule
+    \textbf{Approach} & 
+    \multicolumn{4}{c}{\textbf{Strict}} & 
+    \multicolumn{4}{c}{\textbf{Relaxed}} \\
+    \cmidrule(r{0.5em}){2-5} \cmidrule(l{0.5em}r{0.5em}){6-9} \cmidrule(l{0.5em}r{0.5em}){8-10} \cmidrule(l{0.5em}){11-13}
+    & mAP & P & R & F1 & mAP & P & R & F1 \\
+    \midrule
+    \multicolumn{13}{X}{\textit{Training set}} \\
+    \midrule
+    Random & 
+    0.26 & 
+    0.17 & 
+    0.50 & 
+    0.26 &
+    0.41 & 
+    0.33 & 
+    0.50 & 
+    0.40 \\
+    Term Overlap & 
+    0.54 & 
+    0.27 & 
+    0.32 & 
+    0.29 & 
+    0.65 & 
+    0.44 & 
+    0.28 & 
+    0.34 \\
+    \BertBase & 
+    0.89 & 
+    0.70 & 
+    0.86 & 
+    0.78 & 
+    0.98 & 
+    0.94 & 
+    0.61 & 
+    0.74 \\
+    \RobertaBase & 
+    0.92 & 
+    0.70 & 
+    0.82 & 
+    0.76 & 
+    0.98 & 
+    0.93 & 
+    0.57 & 
+    0.71 \\
+    \midrule
+    \multicolumn{13}{X}{\textit{Validation set}} \\
+    \midrule
+    Random & 
+    0.23 & 
+    0.18 & 
+    0.52 & 
+    0.27 & 
+    0.43 & 
+    0.36 & 
+    0.52 & 
+    0.43 \\
+    Term Overlap & 
+    0.64 & 
+    0.22 & 
+    0.39 & 
+    0.28 & 
+    0.80 & 
+    0.42 & 
+    0.37 & 
+    0.39 \\
+    \BertBase & 
+    0.72 & 
+    0.40 & 
+    0.80 & 
+    0.53 & 
+    0.93 & 
+    0.65 & 
+    0.65 & 
+    0.65 \\
+    \RobertaBase & 
+    0.88 & 
+    0.57 & 
+    0.80 & 
+    0.66 & 
+    0.98 & 
+    0.82 & 
+    0.57 & 
+    0.67 \\
+    \midrule
+    \multicolumn{13}{X}{\textit{Test set}} \\
+    \midrule
+    Random & 
+    0.24 & 
+    0.15 & 
+    0.55 & 
+    0.24 & 
+    0.36 & 
+    0.29 & 
+    0.55 & 
+    0.38 \\
+    Term Overlap & 
+    0.48 & 
+    0.23 & 
+    0.23 & 
+    0.23 & 
+    0.58 & 
+    0.35 & 
+    0.18 & 
+    0.24 \\
+    \BertBase & 
+    0.83 & 
+    0.33 & 
+    0.85 & 
+    0.47 & 
+    0.94 & 
+    0.53 & 
+    0.72 & 
+    0.61 \\
+    \RobertaBase & 
+    0.91 & 
+    0.49 & 
+    0.74 & 
+    0.59 & 
+    0.97 & 
+    0.72 & 
+    0.57 & 
+    0.63 \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}
