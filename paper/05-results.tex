@@ -29,43 +29,43 @@ That random baseline represents a worst-case matcher and any weak matcher should
 
 \subsection{Manual Error Analysis}
 
-\begin{figure*}[t]
-    \caption{ Plotted density of \Roberta and \Bert based approaches on training and development set predicted scores.}
-    \label{fig:density}
-    \centering
-    \begin{subfigure}[b]{0.475\textwidth}
+\begin{figure*}
+    % \begin{tabularx}{\linewidth}{XX}
         \centering
-        \subcaption{\Bert on training set}
-        \label{subfig:bert_train}
-        \includegraphics[width=\textwidth]{bert_train_df.png}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.475\textwidth}
-        \centering
-        \subcaption{\Bert on development set}
-        \label{subfig:bert_dev}
-        \includegraphics[width=\textwidth]{bert_dev_df.png}
-    \end{subfigure}
-    \vskip\baselineskip
-    \begin{subfigure}[b]{0.475\textwidth}
-        \centering
-        \subcaption{\Roberta on training set}
-        \label{subfig:roberta_train}
-        \includegraphics[width=\textwidth]{roberta_train_df.png}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.475\textwidth}
-        \centering
-        \subcaption{\Roberta on development set}
-        \label{subfig:roberta_dev}
-        \includegraphics[width=\textwidth]{roberta_dev_df.png}
-    \end{subfigure}
+        \begin{subfigure}{0.485\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{histogram-labels-bert-train.pdf}
+            \subcaption{Predictions with \BertBase on the training set.}
+            \label{subfig:bert_train}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}{0.485\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{histogram-labels-bert-dev.pdf}
+            \subcaption{Predictions with \BertBase on the validation set.}
+            \label{subfig:bert_dev}
+        \end{subfigure}
+        \begin{subfigure}{0.485\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{histogram-labels-roberta-train.pdf}
+            \subcaption{Predictions with \RobertaBase on the training set.}
+            \label{subfig:roberta_train}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}{0.485\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{histogram-labels-roberta-dev.pdf}
+            \subcaption{Predictions with \RobertaBase on the validation set.}
+            \label{subfig:roberta_dev}
+        \end{subfigure}
+    % \end{tabularx}
+    \caption{Histograms of predicted labels on the training and validation sets for argument key point pairs with the \BertBase and \RobertaBase classifiers. For good classifiers, predicted labels should approximately equal the true label~(0~or~1).}
+    \label{fig:frequency}
 \end{figure*}
 
-Plotting the density curves, shown in Figure \ref{fig:density}, of the given distributions of scores, predicted by our proposed approaches, provides 
+Plotting the histograms, shown in Figure \ref{fig:frequency}, of the given distributions of scores, predicted by our proposed approaches, provides 
 insight about possible errors and therefore possible improvements.\\
-As can be seen, the majority of predictions prove to be correctly, hence seeing obvious spikes in all four density
-curves around $0$ and $1$.\\
+As can be seen, the majority of predictions prove to be correctly, hence seeing obvious spikes in all four histograms around $0$ and $1$.\\
 It can also be seen that, predictions on the training set performe better than on the development set for both 
 \Roberta and \Bert, concluding that better generalization is needed.\\
 In Figures \ref{subfig:bert_train} and \ref{subfig:roberta_train} it's noticeable that
