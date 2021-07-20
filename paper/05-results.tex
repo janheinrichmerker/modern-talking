@@ -42,27 +42,27 @@ Also the \RobertaBase matcher is trained more on precision, while the \BertBase 
 
 \begin{figure*}
     \centering
-    \begin{subfigure}{0.485\textwidth}
+    \begin{subfigure}{0.42\textwidth}
         \centering
         \includegraphics[width=\linewidth]{histogram-labels-bert-train.pdf}
         \subcaption{Predictions with \BertBase on the training set.}
         \label{subfig:bert_train}
     \end{subfigure}
     \hfill
-    \begin{subfigure}{0.485\textwidth}
+    \begin{subfigure}{0.42\textwidth}
         \centering
         \includegraphics[width=\linewidth]{histogram-labels-bert-dev.pdf}
         \subcaption{Predictions with \BertBase on the validation set.}
         \label{subfig:bert_dev}
     \end{subfigure}
-    \begin{subfigure}{0.485\textwidth}
+    \begin{subfigure}{0.42\textwidth}
         \centering
         \includegraphics[width=\linewidth]{histogram-labels-roberta-train.pdf}
         \subcaption{Predictions with \RobertaBase on the training set.}
         \label{subfig:roberta_train}
     \end{subfigure}
     \hfill
-    \begin{subfigure}{0.485\textwidth}
+    \begin{subfigure}{0.42\textwidth}
         \centering
         \includegraphics[width=\linewidth]{histogram-labels-roberta-dev.pdf}
         \subcaption{Predictions with \RobertaBase on the validation set.}
@@ -85,9 +85,9 @@ We further identify, that for matching arguments and key points, predicted score
 
 \begin{figure}
     \begin{tabularx}{\linewidth}{@{}lX@{}}
-        Argument & \texttt{School uniforms can be less comfortable than students' regular clothes.} \\
-        Key point & \texttt{School uniforms are expensive.} \\
-        Prediction & \(0.48\) \\
+        Arg. & \texttt{School uniforms can be less comfortable than students' regular clothes.} \\
+        KP & \texttt{School uniforms are expensive.} \\
+        Pred. & \(0.48\) \\
     \end{tabularx}
     \caption{Argument~162 and key point~6 for the topic \texttt{We should abandon the use of school uniform} from the ArgKP dataset~\cite{Bar-HaimEFKLS2020}.}
     \label{example-4-162-6}
@@ -97,9 +97,9 @@ One reason we identify is that this argument has no matching key points given in
 Hence it is plausible that the \BertBase has not learned well how to classify matches for that type of argument, and therefore predicts a label of~\(0.48\).
 
 \begin{figure}
-    \begin{tabularx}{\linewidth}{@{}p{4em}X@{}}
-        Argument 110 & \texttt{affirmative action can lead to people who are less qualified getting positions they would otherwise not be able to achieve} \\
-        Argument 113 & \texttt{affirmative action discriminates the majority, preventing skilled workers from gaining employment over someone less qualified but considered to be a member of a protected minority group.}
+    \begin{tabularx}{\linewidth}{@{}p{2em}X@{}}
+        Arg. 110 & \texttt{affirmative action can lead to people who are less qualified getting positions they would otherwise not be able to achieve} \\
+        Arg. 113 & \texttt{affirmative action discriminates the majority, preventing skilled workers from gaining employment over someone less qualified but considered to be a member of a protected minority group.}
     \end{tabularx}
     \caption{Matching arguments to the key point \texttt{Affirmative action reduces quality.} that are falsely classified as non-matching by the \BertBase matcher.}
     \label{example-5-110-113}
