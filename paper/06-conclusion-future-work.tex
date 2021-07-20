@@ -1,9 +1,8 @@
 \section{Conclusion and Future Work}\label{conclusion}
 
 % \todo{Conclude findings in this paper.}
-
-This work deals with a practical problem that a large set of arguments can be summarized automatically by short key points.
-Although the baseline approach is a simple idea, the approach has achieved a mean average precision of up to 0.575 on the test set, nearly double the score of a random matcher. 
+We approach the practical problem of matching arguments to summarizing, short key points.
+Although our term overlap baseline approach is very simple, it achieves a mean average precision of up to 0.575 on the test set, nearly double the score of a random matcher. 
 The baseline approach is straightforward to implement but cannot eliminate the problem of context understanding. 
 \Roberta and \Bert have achieved good performance, because they can capture the context understanding challenge. 
 Our matcher fine-tuning the \RobertaBase model also performed better than \Bert in this task and scores a mean average precision of up to~0.967. %\todo{especially for the long arguments}
