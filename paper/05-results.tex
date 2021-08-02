@@ -4,41 +4,42 @@ Submissions to the ArgMining~2021 shared task on Quantitative Summarization and 
 %\todo{Cite the task overview paper once the citation is announced.}
 The organizers calculate the score by pairing each argument with the best matching key point according to the predicted matching probabilities.
 Within each topic-stance combination, only the 50\,\% of arguments with the highest predicted matching score are then considered for evaluation.
-The task organizers claim that this removal of 50\,\% of the pairs is sensible because some arguments do not match any of the key points, thus would influence mean average precision negatively. % \todocite
+The task organizers claim that this removal of 50\,\% of the pairs is sensible because some arguments do not match any of the key points, which would influence mean average precision negatively. % \todo{Overview paper.}
 For the remaining argument key point pairs in each topic-stance combination, average precision is calculated and the final score is computed as the mean of all average precision scores.
 
 The task organizers now consider two variants of ground-truth labels: strict labels and relaxed labels.
-Both variants are based on the ground-truth labels from the ArgKP dataset~\cite{Bar-HaimEFKLS2020}. But as the ArgKP dataset contains argument key point pairs with undecided labels~(i.e. not enough agreement between annotators), the shared task organizers derive strict labels by considering those pairs as no match, and relaxed labels by considering them as match. % \todocite
-To compute each evaluation score, the strict score is calculated based on strict ground-truth labels and the relaxed score based on relaxed ground-truth labels. % \todocite
+Both variants are based on the ground-truth labels from the ArgKP dataset~\cite{Bar-HaimEFKLS2020}. But as the ArgKP dataset contains argument key point pairs with undecided labels~(i.e. not enough agreement between annotators), the shared task organizers derive strict labels by considering those pairs as no match, and relaxed labels by considering them as match. % \todo{Overview paper.}
+To compute each evaluation score, the strict score is calculated based on strict ground-truth labels and the relaxed score is calculated based on relaxed ground-truth labels. % \todo{Overview paper.}
 
-We stress that in the complex evaluation setup of the mean average precision score, the relaxed mAP score would favor assuming matches in case of model uncertainty while the strict mAP on the opposite would favor assuming no match.
-Though, as only the most-probable matching key point is being considered for evaluation, this effect is minor.
+We stress that in the complex evaluation setup of the mean average precision score, the relaxed mAP score would favor assuming matches in case of model uncertainty while the strict mAP on the opposite would favor assuming no match between an argument and key point.
+However, we find that because only the most-probable matching key point is being considered for evaluation, this effect is minor.
 The evaluation score in general favors matchers that can match a single key point for each argument with high precision.
 It is however not important if a matcher does predict non-matches with high certainty.
 
-\subsection{Automatic Evaluation}
+\subsection{Discussion}
 \input{figures/table-results.tex}
 In Table~\ref{table-results}, we report mean average precision for strict and relaxed labels of the training, validation, and test set in the ArgKP dataset.
 We complement the mAP scores by adding precision, recall, and F1 scores of the match label, both in the strict and relaxed label setting.
-To aggregate results with strict and relaxed ground-truth labels we also report the average score of the two variants.
+To aggregate results of the strict and relaxed settings, we also report the average score of the two variants.
 The reported scores should allow for automated and unbiased evaluation of our models and easier comparison with competitive approaches.
 We report all 36~scores for the token overlap baseline model as well as for the fine-tuned \BertBase and \RobertaBase models.
 To make our results more comparable, we add a second baseline, where matches between arguments and key points of same topic and stance are predicted with uniform random probability.
 That random baseline represents a worst-case matcher and any weak matcher should exceed it's evaluation scores.
 
-The token overlap baseline achieves a mean average precision of~0.483 with strict labels and~0.575 with relaxed labels on the test set.
+The token overlap baseline achieves a mean average precision of~0.483 in the strict setting and~0.575 in the relaxed setting on the test set.
 Thus it is nearly twice as good as a random matcher with respect to mAP.
 Even though this baseline has reasonably good scores on all datasets, we are concerned about the large discrepancies between its scores on the validation set and the training and test dataset.
-Likely, the rarher simple baseline is not very robust and thus is prone to variation in performance based on how good the dataset is described by its tokens.
+Similarly, the rarher simple baseline is not very robust and thus is prone to variation in performance based on how good the dataset is described by its tokens.
 
 Both fine-tuned matchers outperform the baselines by a large margin.
-While the \BertBase matcher has higher relaxed mAP on the training set than the \RobertaBase matcher, the \RobertaBase matcher is overall better than \Bert.
-It achieves a mean average precision of 0.913 with strict labels on the test set, and 0.967 with relaxed labels. As these scores are nearly as high on the test set like on the training set, we argue that \Roberta, as a robust language model, generalizes better than \Bert.
-Also the \RobertaBase matcher is trained more on precision, while the \BertBase matcher is better with respect to recall for all datasets and strict or relaxed labels.
+While the \BertBase matcher achieves higher relaxed mAP on the training set than the \RobertaBase matcher, the \RobertaBase matcher is overall better than \Bert.
+It achieves a mean average precision of 0.913 in the strict setting on the test set, and 0.967 in the relaxed setting.
+As these scores are nearly as high on the test set like on the training set, we argue that \Roberta is a more robust language model and generalizes better than \Bert.
+Also the \RobertaBase matcher is trained more on precision, while the \BertBase matcher is better with respect to recall for all dataset splits in both the strict and relaxed settings.
 
 % \todo{Discuss precision, recall, and F1-score.}
 
-\subsection{Manual Error Analysis}
+\subsection{Error Analysis}
 
 \begin{figure*}
     \centering
@@ -71,10 +72,10 @@ Also the \RobertaBase matcher is trained more on precision, while the \BertBase 
     \caption{Histograms of predicted labels on the training and validation sets for argument key point pairs with the \BertBase and \RobertaBase classifiers. For good classifiers, predicted labels should approximately equal the true label~(0~or~1).}
     \label{fig:frequency}
 \end{figure*}
-To find errors in the two trained matchers, \BertBase and \RobertaBase, in Figure~\ref{fig:frequency} we show histograms of predicted labels with respect to true labels.
+To find errors in the two trained matchers, \BertBase and \RobertaBase, in Figure~\ref{fig:frequency} we show histograms of predicted match scores with respect to ground-truth labels.
 Both matchers classify most pairs correctly, which can be seen because the histogram spikes around~0 for the true no-match label and around~1 for the true match label.
 We also observe that predictions on the training set are closer to the true label than on the development set for both \RobertaBase and \BertBase.
-Even though we expect any machine-learned matcher to perform better on training data than on validation data, we see this as room for improvement with better generalization.
+Even though we expect any machine-learned matcher to perform better on training data than on validation data, we see this as a room for improvement with better generalization.
 We notice that in Figures~\ref{subfig:bert_train} and~\ref{subfig:roberta_train} both approaches predict non-matching argument key point pairs better than matching key points.
 This effect is likely to occur because of the higher amount of non-matching pairs provided.
 Most arguments match with only a few or even just a single key point.
@@ -89,7 +90,7 @@ We further identify, that for matching arguments and key points, predicted score
         KP & \texttt{School uniforms are expensive.} \\
         Pred. & \(0.48\) \\
     \end{tabularx}
-    \caption{Argument~162 and key point~6 for the topic \texttt{We should abandon the use of school uniform} from the ArgKP dataset~\cite{Bar-HaimEFKLS2020}.}
+    \caption{Argument and key point for the topic \texttt{We should abandon the use of school uniform} from the ArgKP dataset~\cite{Bar-HaimEFKLS2020}.}
     \label{example-4-162-6}
 \end{figure}
 In Figures~\ref{subfig:bert_dev} and~\ref{subfig:roberta_dev}, we observe that the \BertBase matcher falsely classifies certain non-matching and matching pairs. The argument key point pair shown in Figure~\ref{example-4-162-6} seems to be particularily hard to classify.
@@ -106,20 +107,14 @@ Hence it is plausible that the \BertBase has not learned well how to classify ma
 \end{figure}
 \begin{figure}
     \includegraphics[width=\linewidth]{classification-error-length-difference-bert-train.pdf}
-    \caption{Squared classification error for argument key point pairs from the validation set when matching with \BertBase. The horizontal axis shows the absolute length difference between the argument and the key point from each pair.}
+    \caption{Squared classification error and absolute length difference between each argument and key point pair from the validation set with the \BertBase matcher. The red line indicates the least squares polynomial fit.}
     \label{classification-error-length}
 \end{figure}
 The same \BertBase matcher falsely predicts some argument key point pairs as non-matching.
-For example, it seems to be very difficult to predict matches for the key point~7 \texttt{Affirmative action reduces quality.} from the topic \texttt{We should end affirmative action}, as shown in Figure~\ref{example-5-110-113}. These two arguments are longer than most arguments %\todo{from that topic?}
+For example, it seems to be very difficult to predict matches for the key point \texttt{Affirmative action reduces quality.} from the topic \texttt{We should end affirmative action}, as shown in Figure~\ref{example-5-110-113}. These two arguments are longer than most arguments %\todo{from that topic?}
 and especially longer than the key point.
 It might be more challenging to reduce such longer arguments, containing more complex information, to very compact key points.
 We confirm that observation by comparing the squared classification error with respect to the absolute difference between argument and key point lengths.
-Figure~\ref{classification-error-length} shows that the more argument and key point differ in length, the greater the squared classification error gets when using the \BertBase matcher.
+Figure~\ref{classification-error-length} shows a tendency of higher error with the \BertBase when the length difference between the argument and key point is large.
 Comparable results can be observed for the \Roberta model.
 We therefore identify length difference as a second general problem for both approaches.
-
-% In contrast to \Bert, \Roberta performes way better when it comes to predicting non-matching pairs
-% almost reproducing a similar performance as on the training set.
-% \todo{Elaborate}
-
-% \todo{Find example errors from our classifier. How can we improve?}
