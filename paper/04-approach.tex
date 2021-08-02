@@ -58,5 +58,6 @@ We train each of the two models for one single epoch at a learning rate of~\( \e
 We use an AdamW optimizer with~\( \beta = (0.9, 0.999) \) and zero weight decay~\cite{LoshchilovH2019}.
 The optimizer is warmed up with a ratio of~6\,\% of the training data and we fine-tune both models on binary cross-entropy loss.
 We explore different ways of handling argument key point pairs in the training set with missing ground-truth label, i.e., either removing those pairs, assuming the argument and key point to match~(1), or not to match~(0), but find that neither of the last assumptions lead to improved scores on the validation set.
-Thus, for the submitted model, we consider only training pairs that have an associated ground-truth label.
+Similarly, we experiment with textual data augmentation\footnote{\url{https://github.com/makcedward/nlpaug}}~(swapping synonyms, randomly omitting words) to increase the amount of training data, but that did not improve validation scores either.
+Thus, for the submitted model, we consider only training pairs that have an associated ground-truth label and do not oversample.
 We don't restrict the model's output to the interval~\([0,1]\)---like we did for the baseline---, as the shared task did not mention constraints on the score value that should be returned by a matcher.
