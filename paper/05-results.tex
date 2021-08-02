@@ -4,41 +4,41 @@ Submissions to the ArgMining~2021 shared task on Quantitative Summarization and 
 %\todo{Cite the task overview paper once the citation is announced.}
 The organizers calculate the score by pairing each argument with the best matching key point according to the predicted matching probabilities.
 Within each topic-stance combination, only the 50\,\% of arguments with the highest predicted matching score are then considered for evaluation.
-The task organizers claim that this removal of 50\,\% of the pairs is sensible because some arguments do not match any of the key points, thus would influence mean average precision negatively. % \todocite
+The task organizers claim that this removal of 50\,\% of the pairs is sensible because some arguments do not match any of the key points, which would influence mean average precision negatively. % \todocite
 For the remaining argument key point pairs in each topic-stance combination, average precision is calculated and the final score is computed as the mean of all average precision scores.
 
 The task organizers now consider two variants of ground-truth labels: strict labels and relaxed labels.
 Both variants are based on the ground-truth labels from the ArgKP dataset~\cite{Bar-HaimEFKLS2020}. But as the ArgKP dataset contains argument key point pairs with undecided labels~(i.e. not enough agreement between annotators), the shared task organizers derive strict labels by considering those pairs as no match, and relaxed labels by considering them as match. % \todocite
-To compute each evaluation score, the strict score is calculated based on strict ground-truth labels and the relaxed score based on relaxed ground-truth labels. % \todocite
+To compute each evaluation score, the strict score is calculated based on strict ground-truth labels and the relaxed score is calculated based on relaxed ground-truth labels. % \todocite
 
 We stress that in the complex evaluation setup of the mean average precision score, the relaxed mAP score would favor assuming matches in case of model uncertainty while the strict mAP on the opposite would favor assuming no match.
 Though, as only the most-probable matching key point is being considered for evaluation, this effect is minor.
 The evaluation score in general favors matchers that can match a single key point for each argument with high precision.
 It is however not important if a matcher does predict non-matches with high certainty.
 
-\subsection{Automatic Evaluation}
+\subsection{Discussion}
 \input{figures/table-results.tex}
 In Table~\ref{table-results}, we report mean average precision for strict and relaxed labels of the training, validation, and test set in the ArgKP dataset.
 We complement the mAP scores by adding precision, recall, and F1 scores of the match label, both in the strict and relaxed label setting.
-To aggregate results with strict and relaxed ground-truth labels we also report the average score of the two variants.
+To aggregate the results of the strict and relaxed settings we also report the average score of the two variants.
 The reported scores should allow for automated and unbiased evaluation of our models and easier comparison with competitive approaches.
 We report all 36~scores for the token overlap baseline model as well as for the fine-tuned \BertBase and \RobertaBase models.
 To make our results more comparable, we add a second baseline, where matches between arguments and key points of same topic and stance are predicted with uniform random probability.
 That random baseline represents a worst-case matcher and any weak matcher should exceed it's evaluation scores.
 
-The token overlap baseline achieves a mean average precision of~0.483 with strict labels and~0.575 with relaxed labels on the test set.
+The token overlap baseline achieves a mean average precision of~0.483 in the strict settings and~0.575 with relaxed labels on the test set.
 Thus it is nearly twice as good as a random matcher with respect to mAP.
 Even though this baseline has reasonably good scores on all datasets, we are concerned about the large discrepancies between its scores on the validation set and the training and test dataset.
-Likely, the rarher simple baseline is not very robust and thus is prone to variation in performance based on how good the dataset is described by its tokens.
+Similarly, the rarher simple baseline is not very robust and thus is prone to variation in performance based on how good the dataset is described by its tokens.
 
 Both fine-tuned matchers outperform the baselines by a large margin.
-While the \BertBase matcher has higher relaxed mAP on the training set than the \RobertaBase matcher, the \RobertaBase matcher is overall better than \Bert.
+While the \BertBase matcher achieves a higher relaxed mAP on the training set than the \RobertaBase matcher, the \RobertaBase matcher is overall better than \Bert.
 It achieves a mean average precision of 0.913 with strict labels on the test set, and 0.967 with relaxed labels. As these scores are nearly as high on the test set like on the training set, we argue that \Roberta, as a robust language model, generalizes better than \Bert.
 Also the \RobertaBase matcher is trained more on precision, while the \BertBase matcher is better with respect to recall for all datasets and strict or relaxed labels.
 
 % \todo{Discuss precision, recall, and F1-score.}
 
-\subsection{Manual Error Analysis}
+\subsection{Error Analysis}
 
 \begin{figure*}
     \centering
@@ -71,10 +71,10 @@ Also the \RobertaBase matcher is trained more on precision, while the \BertBase 
     \caption{Histograms of predicted labels on the training and validation sets for argument key point pairs with the \BertBase and \RobertaBase classifiers. For good classifiers, predicted labels should approximately equal the true label~(0~or~1).}
     \label{fig:frequency}
 \end{figure*}
-To find errors in the two trained matchers, \BertBase and \RobertaBase, in Figure~\ref{fig:frequency} we show histograms of predicted labels with respect to true labels.
+To find errors in the two trained matchers, \BertBase and \RobertaBase, in Figure~\ref{fig:frequency} we show histograms of predicted scores with respect to true labels.
 Both matchers classify most pairs correctly, which can be seen because the histogram spikes around~0 for the true no-match label and around~1 for the true match label.
 We also observe that predictions on the training set are closer to the true label than on the development set for both \RobertaBase and \BertBase.
-Even though we expect any machine-learned matcher to perform better on training data than on validation data, we see this as room for improvement with better generalization.
+Even though we expect any machine-learned matcher to perform better on training data than on validation data, we see this as a room for improvement with better generalization.
 We notice that in Figures~\ref{subfig:bert_train} and~\ref{subfig:roberta_train} both approaches predict non-matching argument key point pairs better than matching key points.
 This effect is likely to occur because of the higher amount of non-matching pairs provided.
 Most arguments match with only a few or even just a single key point.
@@ -98,8 +98,8 @@ Hence it is plausible that the \BertBase has not learned well how to classify ma
 
 \begin{figure}
     \begin{tabularx}{\linewidth}{@{}p{2em}X@{}}
-        Arg. 110 & \texttt{affirmative action can lead to people who are less qualified getting positions they would otherwise not be able to achieve} \\
-        Arg. 113 & \texttt{affirmative action discriminates the majority, preventing skilled workers from gaining employment over someone less qualified but considered to be a member of a protected minority group.}
+        Arg. & \texttt{affirmative action can lead to people who are less qualified getting positions they would otherwise not be able to achieve} \\
+        Arg. & \texttt{affirmative action discriminates the majority, preventing skilled workers from gaining employment over someone less qualified but considered to be a member of a protected minority group.}
     \end{tabularx}
     \caption{Matching arguments to the key point \texttt{Affirmative action reduces quality.} that are falsely classified as non-matching by the \BertBase matcher.}
     \label{example-5-110-113}
