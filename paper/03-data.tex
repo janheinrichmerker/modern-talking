@@ -1,38 +1,19 @@
 \section{Data}\label{data}
 
-The dataset used in this shared task is the ArgKP dataset~\cite{Bar-HaimEFKLS2020} which consists of over
-24\,000 argument and key point pairs labeled as matching/non-matching.
-They all belong to one of 28 controversial topics ranging from \texttt{Assisted suicide should be a criminal offence.} to 
-\texttt{We should abandon marriage.}, therefore drawing a clear line between supporting and non-supporting key points.
+The dataset used in this shared task is the ArgKP dataset~\cite{Bar-HaimEFKLS2020} which consists of 24\,083 argument and key point pairs labeled as matching/non-matching. They all belong to one of 28 controversial topics, for example: \texttt{Assisted suicide should be a criminal offence.} . Each of the pairs is also assiged a stance towards the topic. 
+%They all belong to one of 28 controversial topics. 
+%ranging from \texttt{Assisted suicide should be a criminal offence.} to 
+%\texttt{We should abandon marriage.}, therefore drawing a clear line between supporting and non-supporting key points.
 
-The section used for training has over 5\,500~arguments belonging to over 200~key points within 24~topics. This leaves the 
-validation dataset with over 900~arguments and 36~key points for 4~topics.
+The split used for training has 5\,583~arguments belonging to 207 key points within 24~topics. This leaves the 
+validation dataset with 932~arguments and 36~key points for 4~topics. The test dataset, which is used for evaluation of all submissions, contains 723~ arguments with 33~ key points. There are 3~ topics given in the test dataset.
 % \todo{What about the test dataset used in the shared task?}
 
 \subsection{Characteristics}
-\begin{figure}
-	\caption{Top 15 most common words of key points for strict label under the topic \texttt{Assisted suicide should be a criminal offence}.}
-	\label{fig:stopwords-strict}
-	\includegraphics[width=\linewidth]{figures/data_stopwords1.png}
-\end{figure}
-\begin{figure}
-	\caption{Top 15 most common words of key points for relaxed label under the topic \texttt{Assisted suicide should be a criminal offence}.}
-	\label{fig:stopwords-relaxed}
-	\includegraphics[width=\linewidth]{figures/data_stopwords2.png}
-\end{figure}
-
 When analyzing the data, we realize that matched and unmatched key points of a given argument contain a certain proportion of the same words. 
-Many of these words belong to the set of stop words. 
-These uninformative, non-decisive words can complicate the decision process between the matched and unmatched keypoint. 
-For this reason, we remove stop words from our data during pre-processing. 
-In Figures~\ref{fig:stopwords-strict} and~\ref{fig:stopwords-relaxed}, we can see that stop words, such as: \texttt{is, are, be, not, to, do, for, have}, are used very frequently in the key points from the two labels. 
-
-Furthermore, the important words from the argument are repeated with different tenses and parts of speech in key points, for example: \textit{legalize, legalized, legalizing, legal} or \textit{marriages, marriage}.
-Because these words were used again, they can play a role in classification. 
+Many of these words belong to the set of stop words, which are uninformativ for our prediction process. Therefore, we remove stop words from our data during pre-processing. Furthermore, the important words from the argument are repeated with different tenses and parts of speech in key points, for example: \textit{legalize, legalized, legalizing, legal}. 
 To achieve an unambiguous spelling, such words are normalized with a stemming method in our approach. 
-Moreover, this conversion to the word root reduces the size of the vocabulary or the dimensions of the text input. 
-With a low number of dimensions, the assumption of independence of individual features in general machine learning algorithms is violated with a low probability. 
-
+%This conversion to the word root reduces the size of the vocabulary or the dimensions of the text input. 
 \begin{table*}
   \caption{Examples of argument key point pairs from the ArgKP dataset~\cite{Bar-HaimEFKLS2020}}
   \label{tab:data-example}
@@ -41,21 +22,16 @@ With a low number of dimensions, the assumption of independence of individual fe
     \textbf{\#} & \textbf{Argument} & \textbf{Key point} \\
     \midrule
     1 & \texttt{child actors can be overworked and they can miss out on their education} & \texttt{Being a performer harms the child's education} \\
-    2 & \texttt{capital punishment breaks the human rights of the individuals being punished} & \texttt{State-sanctioned killing is principally wrong} \\
-    3 & \texttt{it is not fair to not allow children to express their personality through dress as long as it is appropriate} & \texttt{School uniform is harming the student's self-expression}
+    2 & \texttt{it is not fair to not allow children to express their personality through dress as long as it is appropriate} & \texttt{School uniform is harming the student's self-expression}
   \end{tabularx}
 \end{table*}
 
 In Table \ref{tab:data-example} we show examples of arguments key point pairs from the ArgKP dataset \cite{Bar-HaimEFKLS2020}. 
-We identify followed major difficulties in matching key points to arguments: semantic similar words, synonyms, and context understanding.
-In the first example pair (Table \ref{tab:data-example}), the key point can be matched with its argument with a high probability. 
-The two sentences were written on the topic of children actors and their education, although the word \texttt{actors} is not explicitly used in the key point. 
-We know that \texttt{performer} and \texttt{actors} are semantically relevant and \texttt{performer} and \texttt{actor} both perform. Next, the argument and the key point from the second example were expressed completely differently. 
-The important words \texttt{capital punishment}, \texttt{state-sanctioned killing} show us that the two sentences were written at least about the same topic. 
+We identify followed major difficulties in matching key points to arguments: semantically similar words and meaning understanding.
+In the first example pair (Table \ref{tab:data-example}), the key point can be matched with its argument. Both sentences were written about children actors and their education. The word \texttt{actors} is not explicitly used in the key point but is semantically similar to the word \texttt{performer}. 
 This poses a challenge for us to design our approach in such a way that it knows the different written words with the same meaning. 
-A simple method we use is to apply the well-known lexical database WordNet for the English language \cite{Miller1995}.
-It is still recognized that context understanding can be a challenge for the task. For this topic from the test dataset:
-\texttt{We should abandon the use of school uniform}, we have in the third example an argument and a possible matched key point is \texttt{School uniform is harming the student's self-expression}. 
-We can first see that the argument and the given key point have little in common: \texttt{express, expression}. 
-To predict if the key point is aligned with the argument, we need to compare their meanings. 
-To better deal with the problem of context understanding, we use two well-known language models in our second approach~(Section~\ref{approach}).
+A simple method we use is to apply the well-known lexical database WordNet for our baseline, to find the synonyms and antonyms \cite{Miller1995}.
+It is recognized that the meaning of sentences understanding can be a challenge for the task. In the second example, the argument and the key point were expressed differently. We can also see that two negations \texttt{not fair to not allow} and additionally a restriction with \texttt{as long as} for the first part were used in the argument. 
+To predict if the key point is aligned with the argument, we need to understand and compare their meanings. 
+To better deal with this problem, we use two well-known language models in our second approach~(Section~\ref{approach}).
+
