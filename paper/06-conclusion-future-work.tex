@@ -2,7 +2,7 @@
 
 % \todo{Conclude findings in this paper.}
 We approach the practical problem of matching arguments to summarizing, short key points.
-Although our term overlap baseline approach is very simple, it achieves a mean average precision of up to 0.575 on the test set, nearly double the score of a random matcher. 
+Although our token overlap baseline approach is very simple, it achieves a mean average precision of up to 0.575 on the test set, nearly double the score of a random matcher. 
 The baseline approach is straightforward to implement but cannot eliminate the problem of context understanding. 
 \Roberta and \Bert have achieved good performance, because they can capture the context understanding challenge. 
 Our matcher fine-tuning the \RobertaBase model also performed better than \Bert in this task and scores a mean average precision of up to~0.967. %\todo{especially for the long arguments}
@@ -15,7 +15,7 @@ We identify two main issues with the language model approach:
 First, both the \BertBase and \RobertaBase model cannot adequately match arguments that have no matching key point in the training set.
 This could maybe be improved by re-sampling data or transfer learning.
 Second, both models tend to classify argument key point pairs worse if the argument and key point largely differ in length.
-We see this as a possible use-case for the simple term-overlap baseline or other simple matchers, because for longer arguments it can be more likely that all terms from the key point occur in it.
+We see this as a possible use-case for the simple token overlap baseline or other simple matchers, because for longer arguments it can be more likely that all tokens from the key point occur in it.
 Another possible improvement are recent improvements in language models. % \todocite
 If a language model is even more robust than, for example, \Roberta, we expect a fine-tuned matcher to outperform the \RobertaBase matcher as well.
 We release our source code online under the free MIT~license to encourage researchers to examine, amongst others, the aforementioned directions.\footnote{\url{https://github.com/heinrichreimer/modern-talking}}

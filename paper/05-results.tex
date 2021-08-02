@@ -22,14 +22,14 @@ In Table~\ref{table-results}, we report mean average precision for strict and re
 We complement the mAP scores by adding precision, recall, and F1 scores of the match label, both in the strict and relaxed label setting.
 To aggregate results with strict and relaxed ground-truth labels we also report the average score of the two variants.
 The reported scores should allow for automated and unbiased evaluation of our models and easier comparison with competitive approaches.
-We report all 36~scores for the term-overlap baseline model as well as for the fine-tuned \BertBase and \RobertaBase models.
+We report all 36~scores for the token overlap baseline model as well as for the fine-tuned \BertBase and \RobertaBase models.
 To make our results more comparable, we add a second baseline, where matches between arguments and key points of same topic and stance are predicted with uniform random probability.
 That random baseline represents a worst-case matcher and any weak matcher should exceed it's evaluation scores.
 
-The term overlap baseline achieves a mean average precision of~0.483 with strict labels and~0.575 with relaxed labels on the test set.
+The token overlap baseline achieves a mean average precision of~0.483 with strict labels and~0.575 with relaxed labels on the test set.
 Thus it is nearly twice as good as a random matcher with respect to mAP.
 Even though this baseline has reasonably good scores on all datasets, we are concerned about the large discrepancies between its scores on the validation set and the training and test dataset.
-Likely, the rarher simple baseline is not very robust and thus is prone to variation in performance based on how good the dataset is described by its terms.
+Likely, the rarher simple baseline is not very robust and thus is prone to variation in performance based on how good the dataset is described by its tokens.
 
 Both fine-tuned matchers outperform the baselines by a large margin.
 While the \BertBase matcher has higher relaxed mAP on the training set than the \RobertaBase matcher, the \RobertaBase matcher is overall better than \Bert.
