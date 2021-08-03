@@ -9,6 +9,8 @@ The split used for training has 5\,583~arguments belonging to 207 key points wit
 validation dataset with 932~arguments and 36~key points for 4~topics. The test dataset, which is used for evaluation of all submissions, contains 723~ arguments with 33~ key points. There are 3~ topics given in the test dataset.
 
 \subsection{Characteristics}
+\input{figures/table-examples.tex}
+
 When analyzing the data, we realize that matched and unmatched key points of a given argument contain a certain proportion of the same words. 
 Many of these words belong to the set of stop words, such as \textquote{the}, \textquote{to}, \textquote{is}, \textquote{of}, \textquote{be}, \textquote{a}, \textquote{are}, \textquote{in}, \textquote{should}, \textquote{for}, \textquote{can}, \textquote{not}.
 \todo{Less example words.}
@@ -16,8 +18,7 @@ They are also a part of the most common words from whole training set.
 These words are uninformative for our prediction process, so that we remove stop words from our data during pre-processing. 
 Furthermore, the important words from the argument are repeated with different tenses and parts of speech in key points, for example: \textquote{legalize}, \textquote{legalized}, \textquote{legalizing}, \textquote{legal}. 
 To achieve an unambiguous spelling, such words are normalized with a stemming method in our approach. 
-%This conversion to the word root reduces the size of the vocabulary or the dimensions of the text input. 
-\input{figures/table-examples.tex}
+%This conversion to the word root reduces the size of the vocabulary or the dimensions of the text input.
 
 In Table \ref{examples} we show examples of arguments key point pairs from the \ArgKP dataset \cite{Bar-HaimEFKLS2020}. 
 We identify followed major difficulties in matching key points to arguments: semantically similar words and meaning understanding.
