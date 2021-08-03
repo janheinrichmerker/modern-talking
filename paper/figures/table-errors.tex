@@ -1,0 +1,23 @@
+\begin{table*}
+    \caption{Examples of argument key point pairs from the \ArgKP dataset~\cite{Bar-HaimEFKLS2020} where the predicted score is off the ground truth label~(True) with either the \BertBase or \RobertaBase matcher.}
+    \label{error-examples}
+    \begin{tabularx}{\linewidth}{lXp{2.5cm}ccc}
+      \toprule
+      \textbf{\#} & \textbf{Argument} & \textbf{Key point} & \textbf{True} & \textbf{\Bert} & \textbf{\Roberta} \\
+      \midrule
+      D & % from validation set
+      School uniforms can be less comfortable than students' regular clothes. & % arg_4_162
+      School uniforms are expensive & % kp_4_6
+      0 & \phantom{-}0.48 & 0.03 \\
+      E & % from validation set
+      affirmative action discriminates the majority, preventing skilled workers from gaining employment over someone less qualified but considered to be a member of a protected minority group. & % arg_15_113
+      Affirmative action reduces quality & % kp_15_7
+      1 & -0.05 & 0.03 \\
+      % F & % from validation set
+      % affirmative action can lead to people who are less qualified getting positions they would otherwise not be able to achieve, & % arg_15_110
+      % Affirmative action reduces quality & % kp_15_7
+      % 1 & -0.04 & 0.01 \\
+      \bottomrule
+    \end{tabularx}
+  \end{table*}
+  
