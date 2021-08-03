@@ -1,6 +1,6 @@
 \section{Data}\label{data}
 
-The dataset used in this shared task is the ArgKP dataset~\cite{Bar-HaimEFKLS2020} which consists of 24\,083 argument and key point pairs labeled as matching/non-matching. They all belong to one of 28 controversial topics, for example: \texttt{Assisted suicide should be a criminal offence.} . Each of the pairs is also assiged a stance towards the topic. 
+The dataset used in this shared task is the ArgKP dataset~\cite{Bar-HaimEFKLS2020} which consists of 24\,083 argument and key point pairs labeled as matching/non-matching. They all belong to one of 28 controversial topics, for example: \texttt{Assisted suicide should be a criminal offence}. Each of the pairs is also assigned a stance towards the topic. 
 %They all belong to one of 28 controversial topics. 
 %ranging from \texttt{Assisted suicide should be a criminal offence.} to 
 %\texttt{We should abandon marriage.}, therefore drawing a clear line between supporting and non-supporting key points.
@@ -11,7 +11,9 @@ validation dataset with 932~arguments and 36~key points for 4~topics. The test d
 
 \subsection{Characteristics}
 When analyzing the data, we realize that matched and unmatched key points of a given argument contain a certain proportion of the same words. 
-Many of these words belong to the set of stop words, which are uninformativ for our prediction process. Therefore, we remove stop words from our data during pre-processing. Furthermore, the important words from the argument are repeated with different tenses and parts of speech in key points, for example: \textit{legalize, legalized, legalizing, legal}. 
+Many of these words belong to the set of stop words, such as \textit{the, to, is, of, be, a, are, in, should, for, can, not}. They are also a part of the most common words from whole training set.
+These words are uninformative for our prediction process, so that we remove stop words from our data during pre-processing. 
+Furthermore, the important words from the argument are repeated with different tenses and parts of speech in key points, for example: \textit{legalize, legalized, legalizing, legal}. 
 To achieve an unambiguous spelling, such words are normalized with a stemming method in our approach. 
 %This conversion to the word root reduces the size of the vocabulary or the dimensions of the text input. 
 \begin{table*}
@@ -31,7 +33,7 @@ We identify followed major difficulties in matching key points to arguments: sem
 In the first example pair (Table \ref{tab:data-example}), the key point can be matched with its argument. Both sentences were written about children actors and their education. The word \texttt{actors} is not explicitly used in the key point but is semantically similar to the word \texttt{performer}. 
 This poses a challenge for us to design our approach in such a way that it knows the different written words with the same meaning. 
 A simple method we use is to apply the well-known lexical database WordNet for our baseline, to find the synonyms and antonyms \cite{Miller1995}.
-It is recognized that the meaning of sentences understanding can be a challenge for the task. In the second example, the argument and the key point were expressed differently. We can also see that two negations \texttt{not fair to not allow} and additionally a restriction with \texttt{as long as} for the first part were used in the argument. 
-To predict if the key point is aligned with the argument, we need to understand and compare their meanings. 
+It is recognized that the meaning of sentences understanding can be a challenge for the task. In the second example, the argument and the key point were expressed differently. There are two negations \texttt{not fair to not allow} and additionally a restriction with \texttt{as long as} for the main clause before used in the argument. 
+To predict if the key point is aligned with the argument, we need to understand their meanings and compare them. 
 To better deal with this problem, we use two well-known language models in our second approach~(Section~\ref{approach}).
 
