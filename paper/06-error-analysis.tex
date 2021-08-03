@@ -1,36 +1,51 @@
 \section{Error Analysis}\label{error-analysis}
-
 \begin{figure*}
     \centering
-    \begin{subfigure}{0.445\textwidth}
+    \begin{subfigure}{0.49\linewidth}
+        \vspace*{-1ex}
         \centering
         \includegraphics[width=\linewidth]{histogram-labels-bert-train.pdf}
+        \vspace*{-3ex}
         \subcaption{Predictions with \BertBase on the training set.}
         \label{subfig:bert_train}
     \end{subfigure}
     \hfill
-    \begin{subfigure}{0.445\textwidth}
+    \begin{subfigure}{0.49\linewidth}
+        \vspace*{-1ex}
         \centering
         \includegraphics[width=\linewidth]{histogram-labels-bert-dev.pdf}
+        \vspace*{-3ex}
         \subcaption{Predictions with \BertBase on the validation set.}
         \label{subfig:bert_dev}
     \end{subfigure}
-    \begin{subfigure}{0.445\textwidth}
+    \begin{subfigure}{0.49\linewidth}
+        \vspace*{-1ex}
         \centering
         \includegraphics[width=\linewidth]{histogram-labels-roberta-train.pdf}
+        \vspace*{-3ex}
         \subcaption{Predictions with \RobertaBase on the training set.}
         \label{subfig:roberta_train}
     \end{subfigure}
     \hfill
-    \begin{subfigure}{0.445\textwidth}
+    \begin{subfigure}{0.49\linewidth}
+        \vspace*{-1ex}
         \centering
         \includegraphics[width=\linewidth]{histogram-labels-roberta-dev.pdf}
+        \vspace*{-3ex}
         \subcaption{Predictions with \RobertaBase on the validation set.}
         \label{subfig:roberta_dev}
     \end{subfigure}
     \caption{Histograms of predicted labels on the training and validation sets for argument key point pairs with the \BertBase and \RobertaBase classifiers. For good classifiers, predicted labels should approximately equal the true label~(0~or~1).}
     \label{fig:frequency}
 \end{figure*}
+\input{figures/table-errors.tex}
+\begin{figure}
+    \includegraphics[width=\linewidth]{classification-error-length-difference-bert-train.pdf}
+    \vspace*{-5ex}
+    \caption{Squared classification error and absolute length difference between in characters each argument and key point pair from the validation set with the \BertBase matcher. The red line indicates the least squares polynomial fit.}
+    \label{classification-error-length}
+\end{figure}
+
 To find errors in the two trained matchers, \BertBase and \RobertaBase, in Figure~\ref{fig:frequency} we show histograms of predicted match scores with respect to ground-truth labels.
 Both matchers classify most pairs correctly, which can be seen because the histogram spikes around~0 for the true no-match label and around~1 for the true match label.
 We also observe that predictions on the training set are closer to the true label than on the development set for both \RobertaBase and \BertBase.
@@ -43,18 +58,12 @@ Though, experiments with using textual data augmentation or simple oversampling 
 More advanced oversampling or undersampling approaches could possibly resolve this issue.
 We further identify, that for matching arguments and key points, predicted scores from \BertBase are spread a bit more than scores from \RobertaBase.
 
-\input{figures/table-errors.tex}
 In Figure~\ref{subfig:bert_dev}, we observe that the \BertBase matcher falsely predicts certain non-matching pairs with scores around~0.5.
 An example of such uncertain pair is the argument key point pair~D from Table~\ref{error-examples}.
 One reason we identify is that this argument has no matching key points given in the training dataset.
 Hence it is plausible that the \BertBase matcher has not learned well how to classify matches for that type of argument, and therefore predicts a neutral score of~\(0.48\).
 The \RobertaBase matcher does not make that error, presumably because during pretraining \Roberta was given much more general-purpose information to infer from.
 
-\begin{figure}
-    \includegraphics[width=\linewidth]{classification-error-length-difference-bert-train.pdf}
-    \caption{Squared classification error and absolute length difference between in characters each argument and key point pair from the validation set with the \BertBase matcher. The red line indicates the least squares polynomial fit.}
-    \label{classification-error-length}
-\end{figure}
 The same \BertBase matcher, but also \RobertaBase, falsely predict some argument key point pairs as non-matching that are in fact labelled as a match.
 For example, it seems to be difficult to predict a match for the argument key point pair~E from Table~\ref{error-examples}.
 The argument from the example is longer than most arguments and especially much longer than the key point~(431\,\%~more characters).
