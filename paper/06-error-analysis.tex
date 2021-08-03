@@ -1,50 +1,7 @@
 \section{Error Analysis}\label{error-analysis}
-\begin{figure*}
-    \centering
-    \begin{subfigure}{0.49\linewidth}
-        \vspace*{-1ex}
-        \centering
-        \includegraphics[width=\linewidth]{histogram-labels-bert-train.pdf}
-        \vspace*{-3ex}
-        \subcaption{Predictions with \BertBase on the training set.}
-        \label{subfig:bert_train}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{0.49\linewidth}
-        \vspace*{-1ex}
-        \centering
-        \includegraphics[width=\linewidth]{histogram-labels-bert-dev.pdf}
-        \vspace*{-3ex}
-        \subcaption{Predictions with \BertBase on the validation set.}
-        \label{subfig:bert_dev}
-    \end{subfigure}
-    \begin{subfigure}{0.49\linewidth}
-        \vspace*{-1ex}
-        \centering
-        \includegraphics[width=\linewidth]{histogram-labels-roberta-train.pdf}
-        \vspace*{-3ex}
-        \subcaption{Predictions with \RobertaBase on the training set.}
-        \label{subfig:roberta_train}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{0.49\linewidth}
-        \vspace*{-1ex}
-        \centering
-        \includegraphics[width=\linewidth]{histogram-labels-roberta-dev.pdf}
-        \vspace*{-3ex}
-        \subcaption{Predictions with \RobertaBase on the validation set.}
-        \label{subfig:roberta_dev}
-    \end{subfigure}
-    \caption{Histograms of predicted labels on the training and validation sets for argument key point pairs with the \BertBase and \RobertaBase classifiers. For good classifiers, predicted labels should approximately equal the true label~(0~or~1).}
-    \label{fig:frequency}
-\end{figure*}
+\input{figures/figure-prediction-frequnecies.tex}
 \input{figures/table-errors.tex}
-\begin{figure}
-    \includegraphics[width=\linewidth]{classification-error-length-difference-bert-train.pdf}
-    \vspace*{-5ex}
-    \caption{Squared classification error and absolute length difference between in characters each argument and key point pair from the validation set with the \BertBase matcher. The red line indicates the least squares polynomial fit.}
-    \label{classification-error-length}
-\end{figure}
+\input{figures/figure-classification-error.tex}
 
 To find errors in the two trained matchers, \BertBase and \RobertaBase, in Figure~\ref{fig:frequency} we show histograms of predicted match scores with respect to ground-truth labels.
 Both matchers classify most pairs correctly, which can be seen because the histogram spikes around~0 for the true no-match label and around~1 for the true match label.
