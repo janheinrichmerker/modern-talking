@@ -1,4 +1,5 @@
 \section{Results}\label{results}
+\input{figures/table-results.tex}
 
 Submissions to the ArgMining~2021 shared task on Quantitative Summarization and Key Point Analysis are evaluated with respect to mean average precision.\footnote{\url{https://2021.argmining.org/shared_task_ibm.html}}
 %\todo{Cite the task overview paper once the citation is announced.}
@@ -18,7 +19,6 @@ The evaluation score in general favors matchers that can match a single key poin
 It is however not important if a matcher does predict non-matches with high certainty.
 
 \subsection{Discussion}
-\input{figures/table-results.tex}
 In Table~\ref{table-results}, we report mean average precision for strict and relaxed labels of the training, validation, and test set in the \ArgKP dataset.
 We complement the mean average precision scores by adding precision, recall, and F1 scores of the match label, both in the strict and relaxed label setting.
 To aggregate results of the strict and relaxed settings, we also report the average score of the two variants.
