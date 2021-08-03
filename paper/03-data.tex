@@ -1,9 +1,6 @@
 \section{Data}\label{data}
 
 The dataset used in this shared task is the \ArgKP dataset~\cite{Bar-HaimEFKLS2020} which consists of 24\,083 argument and key point pairs labeled as matching/non-matching. They all belong to one of 28 controversial topics, for example: \textquote{Assisted suicide should be a criminal offence}. Each of the pairs is also assigned a stance towards the topic. 
-%They all belong to one of 28 controversial topics. 
-%ranging from \textquote{Assisted suicide should be a criminal offence.} to 
-%\textquote{We should abandon marriage.}, therefore drawing a clear line between supporting and non-supporting key points.
 
 The split used for training has 5\,583~arguments belonging to 207 key points within 24~topics. This leaves the 
 validation dataset with 932~arguments and 36~key points for 4~topics. The test dataset, which is used for evaluation of all submissions, contains 723~ arguments with 33~ key points. There are 3~ topics given in the test dataset.
@@ -12,8 +9,7 @@ validation dataset with 932~arguments and 36~key points for 4~topics. The test d
 \input{figures/table-examples.tex}
 
 When analyzing the data, we realize that matched and unmatched key points of a given argument contain a certain proportion of the same words. 
-Many of these words belong to the set of stop words, such as \textquote{the}, \textquote{to}, \textquote{is}, \textquote{of}, \textquote{be}, \textquote{a}, \textquote{are}, \textquote{in}, \textquote{should}, \textquote{for}, \textquote{can}, \textquote{not}.
-\todo{Less example words.}
+Many of these words belong to the set of stop words, such as \textquote{the}, \textquote{to}, \textquote{of}, \textquote{be}, \textquote{a}, \textquote{in}, \textquote{for}.
 They are also a part of the most common words from whole training set.
 These words are uninformative for our prediction process, so that we remove stop words from our data during pre-processing. 
 Furthermore, the important words from the argument are repeated with different tenses and parts of speech in key points, for example: \textquote{legalize}, \textquote{legalized}, \textquote{legalizing}, \textquote{legal}. 
@@ -25,7 +21,9 @@ We identify followed major difficulties in matching key points to arguments: sem
 In the example pair~A from Table~\ref{examples}, the key point can be matched with its argument. Both sentences were written about children actors and their education. The word \textquote{actors} is not explicitly used in the key point but is semantically similar to the word \textquote{performer}. 
 This poses a challenge for us to design our approach in such a way that it knows the different written words with the same meaning. 
 A simple method we use is to apply the well-known lexical database WordNet for our baseline, to find the synonyms and antonyms \cite{Miller1995}.
-It is recognized that the meaning of sentences understanding can be a challenge for the task. In the example~B from Table~\ref{examples}, the argument and the key point were expressed differently. There are two negations \textquote{not fair to not allow} and additionally a restriction with \textquote{as long as} for the main clause before used in the argument. 
-To predict if the key point is aligned with the argument, we need to understand their meanings and compare them. 
+It is recognized that the meaning of sentences understanding can be a challenge for the task. 
+In the example~B from Table~\ref{examples}, the argument and the key point were expressed differently. 
+We have in the key point these words \textquote{wrong hands} as figurative meaning of \textquote{nations} and \textquote{terrorists} from the argument. 
+%There are two negations \textquote{not fair to not allow} and additionally a restriction with \textquote{as long as} for the main clause before used in the argument. 
+To predict if the key point is aligned with the argument, we need to understand their meanings with different meaning arts and compare them. 
 To better deal with this problem, we use two well-known language models in our second approach~(Section~\ref{approach}).
-
