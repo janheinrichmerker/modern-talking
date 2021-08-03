@@ -1,76 +1,76 @@
 \begin{table*}
   \centering
-  \caption{Performance of the random and token overlap baseline, \BertBase, and \RobertaBase models with respect to mean average precision~(mAP), precision, and recall of the match label. We report scores for the training, validation, and test set in the strict~(S) and relaxed~(R) label settings, as well as the averages of the two settings~(\(\varnothing\)). The best result per set is highlighted \textbf{bold}.}
+  \caption{Performance of the random and token overlap baseline, \BertBase, and \RobertaBase models with respect to mean average precision~(mAP), precision~(P), and recall~(R) of the match label. We report scores for the training, validation, and test set in the strict and relaxed label settings, as well as the averages of the two settings. The best result per set is highlighted \textbf{bold}.}
   \label{table-results}
   \smaller
   \setlength{\tabcolsep}{2.5mm}
   \begin{tabularx}{\linewidth}{X>{\hspace{1.0em}}ccc<{\hspace{1.0em}}>{\hspace{1.0em}}ccc<{\hspace{1.0em}}>{\hspace{1.0em}}ccc}
     \toprule
     \textbf{Approach} & 
-    \multicolumn{3}{c}{\textbf{mAP}} & 
-    \multicolumn{3}{c}{\textbf{Precision}} & 
-    \multicolumn{3}{c}{\textbf{Recall}} \\
+    \multicolumn{3}{>{\hspace{1.0em}}c<{\hspace{1.0em}}}{\textbf{Strict}} & 
+    \multicolumn{3}{>{\hspace{1.0em}}c<{\hspace{1.0em}}}{\textbf{Relaxed}} & 
+    \multicolumn{3}{>{\hspace{1.0em}}c}{\textbf{Average}} \\
     \cmidrule(l{1em}r{1em}){2-4} \cmidrule(l{1em}r{1em}){5-7} \cmidrule(l{1em}){8-10}
-    & S & R & \(\varnothing\) & 
-    S & R & \(\varnothing\) & 
-    S & R & \(\varnothing\) \\
+    & mAP & P & R & 
+    mAP & P & R & 
+    mAP & P & R \\
     \midrule
     \multicolumn{10}{X}{\textit{Training set}} \\
     \midrule
     Random & 
-    0.260 & 0.409 & 0.335 & 
-    0.173 & 0.330 & 0.252 & 
-    0.500 & 0.501 & 0.501 \\
+    0.260 & 0.173 & 0.500 & 
+    0.409 & 0.330 & 0.501 & 
+    0.335 & 0.252 & 0.501 \\
     Token Overlap & 
-    0.541 & 0.653 & 0.597 & 
-    0.269 & 0.435 & 0.352 & 
-    0.323 & 0.275 & 0.299 \\
+    0.541 & 0.269 & 0.323 & 
+    0.653 & 0.435 & 0.275 & 
+    0.597 & 0.352 & 0.299 \\
     \BertBase & 
-    0.889 & \textbf{0.981} & 0.935 & 
-    \textbf{0.703} & \textbf{0.936} & \textbf{0.819} & 
-    \textbf{0.864} & \textbf{0.607} & \textbf{0.736} \\
+    0.889 & \textbf{0.703} & \textbf{0.864} & 
+    \textbf{0.981} & \textbf{0.936} & \textbf{0.607} & 
+    0.935 & \textbf{0.819} & \textbf{0.736} \\
     \RobertaBase & 
-    \textbf{0.915} & 0.979 & \textbf{0.947} & 
-    0.702 & 0.927 & 0.814 & 
-    0.820 & 0.572 & 0.696 \\
+    \textbf{0.915} & 0.702 & 0.820 & 
+    0.979 & 0.927 & 0.572 & 
+    \textbf{0.947} & 0.814 & 0.696 \\
     \midrule
     \multicolumn{10}{X}{\textit{Validation set}} \\
     \midrule
     Random & 
-    0.232 & 0.430 & 0.331 & 
-    0.180 & 0.364 & 0.272 & 
-    0.523 & 0.524 & 0.524 \\
+    0.232 & 0.180 & 0.523 & 
+    0.430 & 0.364 & 0.524 & 
+    0.331 & 0.272 & 0.524 \\
     Token Overlap & 
-    0.643 & 0.802 & 0.722 & 
-    0.219 & 0.416 & 0.317 & 
-    0.390 & 0.366 & 0.378 \\
+    0.643 & 0.219 & 0.390 & 
+    0.802 & 0.416 & 0.366 & 
+    0.722 & 0.317 & 0.378 \\
     \BertBase & 
-    0.717 & 0.928 & 0.822 & 
-    0.397 & 0.648 & 0.522 & 
-    \textbf{0.802} & \textbf{0.649} & \textbf{0.725} \\
+    0.717 & 0.397 & \textbf{0.802} & 
+    0.928 & 0.648 & \textbf{0.649} & 
+    0.822 & 0.522 & \textbf{0.725} \\
     \RobertaBase & 
-    \textbf{0.879} & \textbf{0.984} & \textbf{0.932} & 
-    \textbf{0.567} & \textbf{0.816} & \textbf{0.692} & 
-    0.799 & 0.569 & 0.684 \\
+    \textbf{0.879} & \textbf{0.567} & 0.799 & 
+    \textbf{0.984} & \textbf{0.816} & 0.569 & 
+    \textbf{0.932} & \textbf{0.692} & 0.684 \\
     \midrule
     \multicolumn{10}{X}{\textit{Test set}} \\
     \midrule
     Random & 
-    0.237 & 0.355 & 0.296 & 
-    0.150 & 0.286 & 0.218 & 
-    0.545 & 0.549 & 0.547 \\
+    0.237 & 0.150 & 0.545 & 
+    0.355 & 0.286 & 0.549 & 
+    0.296 & 0.218 & 0.547 \\
     Token Overlap & 
-    0.483 & 0.575 & 0.529 & 
-    0.232 & 0.350 & 0.291 & 
-    0.225 & 0.178 & 0.201 \\
+    0.483 & 0.232 & 0.225 & 
+    0.575 & 0.350 & 0.178 & 
+    0.529 & 0.291 & 0.201 \\
     \BertBase & 
-    0.827 & 0.940 & 0.883 & 
-    0.326 & 0.526 & 0.426 & 
-    \textbf{0.848} & \textbf{0.721} & \textbf{0.784} \\
+    0.827 & 0.326 & \textbf{0.848} & 
+    0.940 & 0.526 & \textbf{0.721} & 
+    0.883 & 0.426 & \textbf{0.784} \\
     \RobertaBase & 
-    \textbf{0.913} & \textbf{0.967} & \textbf{0.940} & 
-    \textbf{0.490} & \textbf{0.716} & \textbf{0.603} & 
-    0.741 & 0.569 & 0.655 \\
+    \textbf{0.913} & \textbf{0.490} & 0.741 & 
+    \textbf{0.967} & \textbf{0.716} & 0.569 & 
+    \textbf{0.940} & \textbf{0.603} & 0.655 \\
     \bottomrule
   \end{tabularx}
 \end{table*}
