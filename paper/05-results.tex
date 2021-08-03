@@ -1,8 +1,9 @@
 \section{Results}\label{results}
 \input{figures/table-results.tex}
 
-Submissions to the ArgMining~2021 shared task on Quantitative Summarization and Key Point Analysis are evaluated with respect to mean average precision.\footnote{\url{https://2021.argmining.org/shared_task_ibm.html}}
-%\todo{Cite the task overview paper once the citation is announced.}
+Submissions to the ArgMining~2021 shared task on Quantitative Summarization and Key Point Analysis are evaluated with respect to mean average precision.%
+\footnote{\url{https://2021.argmining.org/shared_task_ibm.html}}
+%\todo{Overview paper.}
 The organizers calculate the score by pairing each argument with the best matching key point according to the predicted matching probabilities.
 Within each topic-stance combination, only the 50\,\% of arguments with the highest predicted matching score are then considered for evaluation.
 The task organizers claim that this removal of 50\,\% of the pairs is sensible because some arguments do not match any of the key points, which would influence mean average precision negatively. % \todo{Overview paper.}
