@@ -17,24 +17,14 @@ These words are uninformative for our prediction process, so that we remove stop
 Furthermore, the important words from the argument are repeated with different tenses and parts of speech in key points, for example: \textquote{legalize}, \textquote{legalized}, \textquote{legalizing}, \textquote{legal}. 
 To achieve an unambiguous spelling, such words are normalized with a stemming method in our approach. 
 %This conversion to the word root reduces the size of the vocabulary or the dimensions of the text input. 
-\begin{table*}
-  \caption{Examples of argument key point pairs from the \ArgKP dataset~\cite{Bar-HaimEFKLS2020}}
-  \label{tab:data-example}
-  \begin{tabularx}{\linewidth}{lX>{\hsize=.6\hsize}X}
-    \toprule
-    \textbf{\#} & \textbf{Argument} & \textbf{Key point} \\
-    \midrule
-    1 & \textquote{child actors can be overworked and they can miss out on their education} & \textquote{Being a performer harms the child's education} \\
-    2 & \textquote{it is not fair to not allow children to express their personality through dress as long as it is appropriate} & \textquote{School uniform is harming the student's self-expression}
-  \end{tabularx}
-\end{table*}
+\input{figures/table-examples.tex}
 
-In Table \ref{tab:data-example} we show examples of arguments key point pairs from the \ArgKP dataset \cite{Bar-HaimEFKLS2020}. 
+In Table \ref{examples} we show examples of arguments key point pairs from the \ArgKP dataset \cite{Bar-HaimEFKLS2020}. 
 We identify followed major difficulties in matching key points to arguments: semantically similar words and meaning understanding.
-In the first example pair (Table \ref{tab:data-example}), the key point can be matched with its argument. Both sentences were written about children actors and their education. The word \textquote{actors} is not explicitly used in the key point but is semantically similar to the word \textquote{performer}. 
+In the example pair~A from Table~\ref{examples}, the key point can be matched with its argument. Both sentences were written about children actors and their education. The word \textquote{actors} is not explicitly used in the key point but is semantically similar to the word \textquote{performer}. 
 This poses a challenge for us to design our approach in such a way that it knows the different written words with the same meaning. 
 A simple method we use is to apply the well-known lexical database WordNet for our baseline, to find the synonyms and antonyms \cite{Miller1995}.
-It is recognized that the meaning of sentences understanding can be a challenge for the task. In the second example, the argument and the key point were expressed differently. There are two negations \textquote{not fair to not allow} and additionally a restriction with \textquote{as long as} for the main clause before used in the argument. 
+It is recognized that the meaning of sentences understanding can be a challenge for the task. In the example~B from Table~\ref{examples}, the argument and the key point were expressed differently. There are two negations \textquote{not fair to not allow} and additionally a restriction with \textquote{as long as} for the main clause before used in the argument. 
 To predict if the key point is aligned with the argument, we need to understand their meanings and compare them. 
 To better deal with this problem, we use two well-known language models in our second approach~(Section~\ref{approach}).
 
