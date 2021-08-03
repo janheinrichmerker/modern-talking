@@ -45,11 +45,11 @@ We further identify, that for matching arguments and key points, predicted score
 
 \begin{figure}
     \begin{tabularx}{\linewidth}{@{}lX@{}}
-        Arg. & \texttt{School uniforms can be less comfortable than students' regular clothes.} \\
-        KP & \texttt{School uniforms are expensive.} \\
+        Arg. & \textquote{School uniforms can be less comfortable than students' regular clothes.} \\
+        KP & \textquote{School uniforms are expensive.} \\
         Pred. & \(0.48\) \\
     \end{tabularx}
-    \caption{Argument and key point for the topic \texttt{We should abandon the use of school uniform} from the ArgKP dataset~\cite{Bar-HaimEFKLS2020}.}
+    \caption{Argument and key point for the topic \textquote{We should abandon the use of school uniform} from the \ArgKP dataset~\cite{Bar-HaimEFKLS2020}.}
     \label{example-4-162-6}
 \end{figure}
 In Figures~\ref{subfig:bert_dev} and~\ref{subfig:roberta_dev}, we observe that the \BertBase matcher falsely classifies certain non-matching and matching pairs. The argument key point pair shown in Figure~\ref{example-4-162-6} seems to be particularily hard to classify.
@@ -58,10 +58,10 @@ Hence it is plausible that the \BertBase has not learned well how to classify ma
 
 \begin{figure}
     \begin{tabularx}{\linewidth}{@{}p{2em}X@{}}
-        Arg. & \texttt{affirmative action can lead to people who are less qualified getting positions they would otherwise not be able to achieve} \\
-        Arg. & \texttt{affirmative action discriminates the majority, preventing skilled workers from gaining employment over someone less qualified but considered to be a member of a protected minority group.}
+        Arg. & \textquote{affirmative action can lead to people who are less qualified getting positions they would otherwise not be able to achieve} \\
+        Arg. & \textquote{affirmative action discriminates the majority, preventing skilled workers from gaining employment over someone less qualified but considered to be a member of a protected minority group.}
     \end{tabularx}
-    \caption{Matching arguments to the key point \texttt{Affirmative action reduces quality.} that are falsely classified as non-matching by the \BertBase matcher.}
+    \caption{Matching arguments to the key point \textquote{Affirmative action reduces quality.} that are falsely classified as non-matching by the \BertBase matcher.}
     \label{example-5-110-113}
 \end{figure}
 \begin{figure}
@@ -70,7 +70,7 @@ Hence it is plausible that the \BertBase has not learned well how to classify ma
     \label{classification-error-length}
 \end{figure}
 The same \BertBase matcher falsely predicts some argument key point pairs as non-matching.
-For example, it seems to be very difficult to predict matches for the key point \texttt{Affirmative action reduces quality.} from the topic \texttt{We should end affirmative action}, as shown in Figure~\ref{example-5-110-113}. These two arguments are longer than most arguments %\todo{from that topic?}
+For example, it seems to be very difficult to predict matches for the key point \textquote{Affirmative action reduces quality.} from the topic \textquote{We should end affirmative action}, as shown in Figure~\ref{example-5-110-113}. These two arguments are longer than most arguments %\todo{from that topic?}
 and especially longer than the key point.
 It might be more challenging to reduce such longer arguments, containing more complex information, to very compact key points.
 We confirm that observation by comparing the squared classification error with respect to the absolute difference between argument and key point lengths.

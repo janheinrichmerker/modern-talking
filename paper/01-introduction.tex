@@ -7,17 +7,17 @@ The ArgMining~2021 shared task on Quantitative Summarization and Key Point Analy
 Different approaches of matching argument key point pairs, here called matchers, should be proposed and discussed.%
 \footnote{\url{https://2021.argmining.org/shared_task_ibm.html}}
 %\todo{Cite the task overview paper once the citation is announced.}
-For evaluating different argument key point matchers, the shared task organizers introduce a customized mean average precision evaluation metric and publish the ArgKP benchmark dataset~(Section~\ref{data}) to compare matchers~\cite{Bar-HaimEFKLS2020}. % \todo{Overview paper}
+For evaluating different argument key point matchers, the shared task organizers introduce a customized mean average precision evaluation metric and publish the \ArgKP benchmark dataset~(Section~\ref{data}) to compare matchers~\cite{Bar-HaimEFKLS2020}. % \todo{Overview paper}
 
 Pretrained language models like \Bert and \Roberta are nowadays becoming standard approaches to tackle various natural language processing tasks~\cite{DevlinCLT2019,LiuOGDJCLLZS2019}.
 Because of their extensive pretraining, often fine-tuning these language models with even a small task-specific dataset can achieve state-of-the-art performance~\cite{DevlinCLT2019}.
-As the ArgKP dataset~\cite{Bar-HaimEFKLS2020} used in the ArgMining~2021 shared task on Quantitative Summarization is relatively small~(24\,083 labelled pairs), we decide to fine-tune \Bert and \Roberta language models rather than train a neural classifier from scratch~(Section~\ref{approach}).
+As the \ArgKP dataset~\cite{Bar-HaimEFKLS2020} used in the ArgMining~2021 shared task on Quantitative Summarization is relatively small~(24\,083 labelled pairs), we decide to fine-tune \Bert and \Roberta language models rather than train a neural classifier from scratch~(Section~\ref{approach}).
 
 Contrasting this neural approach, we introduce a simple rule-based baseline matcher that compares preprocessed tokens of each argument to the tokens of each key point~(Section~\ref{approach}).
 For the baseline, we compute token overlap after removing stop words, adding synonyms and antonyms, and stemming the tokens from both argument and key point using the NLTK~toolkit~\cite{BirdL2004}.
 
 Our fine-tuned \RobertaBase matcher achieves a mean average precision score of up to~0.967 and ranks second in the shared task's leaderboard~(Section~\ref{results}).
-In a manual error analysis, we find that the imbalanced ArgKP dataset causes neural models to predict non-matching argument key point pairs more precisely than matching pairs~(Section~\ref{error-analysis}).
+In a manual error analysis, we find that the imbalanced \ArgKP dataset causes neural models to predict non-matching argument key point pairs more precisely than matching pairs~(Section~\ref{error-analysis}).
 We further observe a tendency that large length differences between arguments and key points can cause errors.
 To encourage researchers to train more robust argument key point matchers, we release our source code under a free license.%
 \footnote{\url{https://github.com/heinrichreimer/modern-talking}}

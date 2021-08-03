@@ -8,7 +8,7 @@ The task organizers claim that this removal of 50\,\% of the pairs is sensible b
 For the remaining argument key point pairs in each topic-stance combination, average precision is calculated and the final score is computed as the mean of all average precision scores.
 
 The task organizers now consider two variants of ground-truth labels: strict labels and relaxed labels.
-Both variants are based on the ground-truth labels from the ArgKP dataset~\cite{Bar-HaimEFKLS2020}. But as the ArgKP dataset contains argument key point pairs with undecided labels~(i.e. not enough agreement between annotators), the shared task organizers derive strict labels by considering those pairs as no match, and relaxed labels by considering them as match. % \todo{Overview paper.}
+Both variants are based on the ground-truth labels from the \ArgKP dataset~\cite{Bar-HaimEFKLS2020}. But as the \ArgKP dataset contains argument key point pairs with undecided labels~(i.e. not enough agreement between annotators), the shared task organizers derive strict labels by considering those pairs as no match, and relaxed labels by considering them as match. % \todo{Overview paper.}
 To compute each evaluation score, the strict score is calculated based on strict ground-truth labels and the relaxed score is calculated based on relaxed ground-truth labels. % \todo{Overview paper.}
 
 We stress that in this complex evaluation setup, the mean average precision score in the relaxed label setting would favor assuming matches in case of model uncertainty.
@@ -19,7 +19,7 @@ It is however not important if a matcher does predict non-matches with high cert
 
 \subsection{Discussion}
 \input{figures/table-results.tex}
-In Table~\ref{table-results}, we report mean average precision for strict and relaxed labels of the training, validation, and test set in the ArgKP dataset.
+In Table~\ref{table-results}, we report mean average precision for strict and relaxed labels of the training, validation, and test set in the \ArgKP dataset.
 We complement the mean average precision scores by adding precision, recall, and F1 scores of the match label, both in the strict and relaxed label setting.
 To aggregate results of the strict and relaxed settings, we also report the average score of the two variants.
 The reported scores should allow for automated and unbiased evaluation of our models and easier comparison with competitive approaches.
