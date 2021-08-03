@@ -9,7 +9,7 @@ validation dataset with 932~arguments and 36~key points for 4~topics. The test d
 \input{figures/table-examples.tex}
 
 When analyzing the data, we realize that matched and unmatched key points of a given argument contain a certain proportion of the same words. 
-Many of these words belong to the set of stop words, such as \textquote{as}, \textquote{for} and \textquote{not}.
+Many of these words belong to the set of stop words, such as \textquote{as}, \textquote{for}, and \textquote{not}.
 They are also a part of the most common words from whole training set.
 These words are uninformative for our prediction process, so that we remove stop words from our data during pre-processing. 
 Furthermore, the important words from the argument are repeated with different tenses and parts of speech in key points, for example: \textquote{legalize}, \textquote{legalized}, \textquote{legalizing}, \textquote{legal}. 
@@ -26,4 +26,11 @@ In the example~B from Table~\ref{examples}, the argument and the key point were 
 We have in the key point these words \textquote{wrong hands} as figurative meaning of \textquote{nations} and \textquote{terrorists} from the argument. 
 %There are two negations \textquote{not fair to not allow} and additionally a restriction with \textquote{as long as} for the main clause before used in the argument. 
 To predict if the key point is aligned with the argument, we need to understand their meanings with different meaning arts and compare them. 
-To better deal with this problem, we use two well-known language models in our second approach~(Section~\ref{approach}).
+To better deal with this problem, we use two well-known language models in our second approach~(Section~\ref{approach}). 
+
+Furthermore, the arguments are expressed longer than the key points on both datasets, training set and validation set \todo{(see the figure)}. 
+The average length of arguments is about 111 tokens and of key points about 52 tokens. 
+An argument can be supported by several key points. This set of all matched key points can be called a summary of the given argument. 
+From the validation set, the key points have an average length of 41 tokens, lower than in the training data set, while the average length of the arguments remains almost the same. 
+From this, we can interpret that the long arguments in the validation set are summarised strongly. 
+We analyze the effect of this characteristic on the classification model further by evaluation and error analysis section \ref{error-analysis}.
