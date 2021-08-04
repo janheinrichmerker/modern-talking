@@ -3,11 +3,12 @@
 % \todo{Shorten subsections. We probably don't need subsection headers in this section.}
 
 % \subsection{Key Point Analysis}
-Given the first track of the shared task, analyzing key points is crucial.  
-\citet{Bar-HaimEFKLS2020} propose an approach for summarising large argument collections to small sets of key points. Thus
+Key point analysis is the task of matching a given argument with one or more pre-defined key points~\cite{Bar-HaimEFKLS2020}. Key points capture the gist of the main arguments on a given topic. The goal of matching arguments with key points is to automatically produce a quantitative summary of a given discussion. The summary is made up of the count of found arguments in a discussion for each key point. To develop models to perform the task, \citet{Bar-HaimEFKLS2020} introduced a dataset \ArgKP which contains 24 093~argument key point pairs on 28~topics. Each argument and key point is labeled manually as \texttt{match} or \texttt{no-match}.
+
+
 covering a sufficient amount of all arguments. They show that domain experts can very quickly
 create pro and con key points, which are able to "capture the gist" of the arguments on the given topic. All this
-without being exposed to the arguments themself. Furthermore they develop the large-scale dataset \ArgKP
+without being exposed to the arguments themself. Furthermore they develop the large-scale dataset 
 which is the foundation of this shared task. 
 In a later work \citet{Bar-HaimKEFLS2020} construct an automatic method for key point 
 extraction which can compete with key points created by human domain experts. The method consists of two aspects. 
