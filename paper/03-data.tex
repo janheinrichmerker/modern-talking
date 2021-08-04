@@ -27,9 +27,13 @@ We have in the key point these words \textquote{wrong hands} as figurative meani
 To predict if the key point is aligned with the argument, we need to understand their meanings with different meaning arts and compare them. 
 To better deal with this problem, we use two well-known language models in our second approach~(Section~\ref{approach}). 
 
-Furthermore, the arguments are expressed longer than the key points on both datasets, training set and validation set \todo{(see the figure)}. 
-The average length of arguments is about 111 tokens and of key points about 52 tokens. 
-An argument can be supported by several key points. This set of all matched key points can be called a summary of the given argument. 
-From the validation set, the key points have an average length of 41 tokens, lower than in the training data set, while the average length of the arguments remains almost the same. 
-From this, we can interpret that the long arguments in the validation set are summarised strongly. 
-We analyze the effect of this characteristic on the classification model further by evaluation and error analysis section \ref{error-analysis}.
+Furthermore, the arguments in both datasets, the training set, and the validation set, are longer than the key points \todo{see figure}. 
+The average length of the arguments is about 109 tokens and of the key points is about 51.7 tokens. 
+An argument can be supported by several key points. This set of all matching key points can be called the summary of the given argument.  
+In the validation dataset, the key points have an average length of 41.3 tokens, less than in the training dataset, while the average length of the arguments remains almost the same at 107 tokens. 
+We also have the average length of a token from the training dataset of 7.5 characters and from the validation dataset of 7 characters. 
+The differences in length between arguments and key points from the training dataset and validation dataset are 57.8 and 66.3 respectively. 
+This means that the arguments from the training data set are on average about 7.6 tokens longer than the key points and the validation data set is about 9.5 tokens longer. 
+From this, we can interpret that the long arguments in the validation set are summarised stronger than the arguments from the training set. 
+The proportion of arguments that are more than 66.3 letters longer than key points is about 39\% of the training set and about 44\% of the validation set. We can see that there are more long arguments in the validation set. 
+We analyze the effect of this characteristic on the classification model further by results and error analysis (Section \ref{error-analysis}).
