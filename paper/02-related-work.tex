@@ -17,6 +17,7 @@ Our approaches for the key point analysis are based on \Bert and \Roberta. \Bert
 \Bert is pre-trained over unlabeled text to learn a language representation and can be fine-tuned on downstream tasks. During pre-training, \Bert is trained on two unsupervised tasks: Masked Language Model and Next Structure Prediction. \Roberta is an improved variant of \Bert that is introduced by Facebook in 2019~\cite{LiuOGDJCLLZS2019}. \citet{LiuOGDJCLLZS2019} tweaked \Bert by using a larger training data size of 160GB of uncompressed text, more compute power, larger batch-training size, and optimized hyper-parameters. In comparison to \Bert, pre-training tasks for \Roberta were done with full-length sentences and include only Masked Language Model while applying different masks in each training epoch (dynamic masking). \Roberta outperforms BERT on all 9 GLUE tasks in the single-task setting and 4 out of 9 tasks in the ensembles setting~\cite{WangSMHLB2018,LiuOGDJCLLZS2019}.
 
 
+
 % \subsection{Argument Clustering}
 % Argument Clustering is a mighty tool that enables algorithms to assign multiple arguments, which adress a similar
 % key message to a given topic. \citet{reimers2019classification} make use of 
