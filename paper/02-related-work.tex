@@ -3,7 +3,12 @@
 % \todo{Shorten subsections. We probably don't need subsection headers in this section.}
 
 % \subsection{Key Point Analysis}
-Key point analysis is the task of matching a given argument with one or more pre-defined key points~\cite{Bar-HaimEFKLS2020}. To develop models for the task, \citet{Bar-HaimEFKLS2020} introduced a dataset \ArgKP which contains 24 093~argument key point pairs on 28~topics. Each argument and key point is labeled manually as \texttt{match} or \texttt{no-match}. The authors experimented with several unsupervised and supervised approaches to perform the task in a cross-topic experimental setting. BERT~\cite{DevlinCLT2019} performed the best in their experiments by reaching an F1 score of $0.68$.
+
+
+
+Similar tasks to key point analysis include clustering arguments~\cite{reimers2019classification,ajjour2019modeling}, detecting similar arguments in a pairwise fashion~\cite{misra:2016} and matching arguments to generic-arguments~\cite{naderi:2017}. Using points to summarize arguments were approached by~\citet{egan2016summarising} on online discussion. Points were extracted by using the verbs and their syntactic arguments and are then clustered together to deliver a summary of the discussion. 
+
+Key point analysis is the task of matching a given argument with one or more pre-defined key points~\cite{Bar-HaimEFKLS2020}. To develop models for the task, \citet{Bar-HaimEFKLS2020} introduced a dataset (\ArgKP) which contains 24 093~argument key point pairs on 28~topics. Each argument and key point is labeled manually as \texttt{match} or \texttt{no-match}. The authors experimented with several unsupervised and supervised approaches to perform the task in a cross-topic experimental setting. BERT~\cite{DevlinCLT2019} performed the best in their experiments by reaching an F1 score of $0.68$.
 
 In a later work, \citet{Bar-HaimKEFLS2020} develop a summarization approach for online discussions that
 uses key point analysis. The summrization approach takes as input a set of comments on a given topic and returns a set of representative key points from them, each key point with the count of matched comments. In its essence, the summarization approach uses a matching model that gives a score for a given comment and key point or a couple of key points. For matching models, \citet{Bar-HaimKEFLS2020} compare different variants of BERT~\cite{DevlinCLT2019}. Among the tested models,
@@ -15,7 +20,6 @@ ALBERT \cite{lan2019albert} performed the best with an F1 score $0.809$, but RoB
 
 \Roberta is an improved variant of \Bert that is introduced by Facebook in 2019~\cite{LiuOGDJCLLZS2019}. \citet{LiuOGDJCLLZS2019} tweaked \Bert by using a larger training data size of 160GB of uncompressed text, more compute power, larger batch-training size, and optimized hyperparameters. Unlike in the BERT model, \Roberta is pre-trained with sequences of with full-length sequences of 512~tokens. In comparison to \Bert, pre-training tasks for \Roberta include only Maked Language Model while applying different masks in each training epoch (dynamic masking). Results in the GLUE leaderboard have shown that \Roberta outperforms BERT on all 9 GLUE tasks in the single-task setting and 4 out of 9 tasks in the ensembles setting~\cite{WangSMHLB2018,LiuOGDJCLLZS2019}.
 
-Most similar work to the spirit of key point Analysis is that of \citet{egan2016summarising} who propose a summarising for informal arguments such as they occur in online political debates. By extracting verbs and their syntactic arguments they retrieve points which can summarize the discussion.
 
 % \subsection{Argument Clustering}
 % Argument Clustering is a mighty tool that enables algorithms to assign multiple arguments, which adress a similar
