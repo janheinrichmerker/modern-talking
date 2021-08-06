@@ -11,17 +11,11 @@ ALBERT \cite{lan2019albert} performed the best with an F1 score $0.809$, but RoB
 
 \Bert stands for Bidirectional Encoder Representations from Transformers and is an open-source bidirectional language representation model published by Google~\cite{DevlinCLT2019}. 
 %\Bert is based on the transformer architecture, however, \Bert only uses the encoder in multi-layers. 
-\Bert is pre-trained over unlabeled text to learn a language representation and can be fine-tuned on downstream tasks. During pre-training, BERT is trained on two unsupervised tasks: Masked Language Model and Next Structure Prediction. \Bert achieved state-of-the-art results on eleven natural language processing tasks \cite{WangSMHLB2018}, for example, Textual Entailment which is close to Key Point Analysis.
+\Bert is pre-trained over unlabeled text to learn a language representation and can be fine-tuned on downstream tasks. During pre-training, \Bert is trained on two unsupervised tasks: Maked Language Model and Next Structure Prediction. \Bert achieved state-of-the-art results on eleven natural language processing tasks \cite{WangSMHLB2018}, for example, Textual Entailment which is close to Key Point Analysis.
 
-\Roberta (robustly optimized \Bert approach= is introduced by Facebook in 2019~\cite{LiuOGDJCLLZS2019}. 
-\Roberta is an improved variant of BERT with improved training methods, such as a larger training data size of 160GB of uncompressed text, more compute power, larger batch-training size, and optimization of BERT’s multiple hyperparameters. 
-In the \Roberta model, the peak learning rate, number of warmup steps are tuned for each setting and another value for one Adam optimizer parameter is applied to improve the stability during training. 
-Unlike in the BERT model, \Roberta is pre-trained with sequences of at most 512 tokens and with full-length sequences. 
-\Roberta removed Next Structure Prediction and uses dynamic masking. 
-Results in the GLUE leaderboard have shown that \Roberta outperforms BERT on all 9 GLUE tasks in the single-task setting and 4 out of 9 tasks in the ensembles setting~\cite{WangSMHLB2018,LiuOGDJCLLZS2019}.
+\Roberta is an improved variant of \Bert that is introduced by Facebook in 2019~\cite{LiuOGDJCLLZS2019}. \citet{LiuOGDJCLLZS2019} tweaked \Bert by using a larger training data size of 160GB of uncompressed text, more compute power, larger batch-training size, and optimized hyperparameters. Unlike in the BERT model, \Roberta is pre-trained with sequences of with full-length sequences of 512~tokens. In comparison to \Bert, pre-training tasks for \Roberta include only Maked Language Model while applying different masks in each training epoch (dynamic masking). Results in the GLUE leaderboard have shown that \Roberta outperforms BERT on all 9 GLUE tasks in the single-task setting and 4 out of 9 tasks in the ensembles setting~\cite{WangSMHLB2018,LiuOGDJCLLZS2019}.
 
-\citet{egan2016summarising} propose a summarising for informal arguments such as they
-occure in online political debates. By extracting verbs and their syntactic arguments they retrieve points which can make key content accessible. By grouping these points they propose to create discussion summaries.
+Most similar work to the spirit of key point Analysis is that of \citet{egan2016summarising} who propose a summarising for informal arguments such as they occur in online political debates. By extracting verbs and their syntactic arguments they retrieve points which can summarize the discussion.
 
 % \subsection{Argument Clustering}
 % Argument Clustering is a mighty tool that enables algorithms to assign multiple arguments, which adress a similar
