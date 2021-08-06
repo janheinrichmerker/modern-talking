@@ -1,19 +1,24 @@
 \section{Conclusion and Future Work}\label{conclusion}
 
 We approach the practical problem of matching arguments to summarizing, short key points.
-Although our token overlap baseline approach is very simple, it achieves a mean average precision of up to 0.575 on the test set, nearly double the score of a random matcher. 
+Although our token overlap baseline approach is very simple, it achieves a mean average precision of up to~0.575 on 
+the test set, nearly double the score of a random matcher. 
 The baseline approach is straightforward to implement but cannot eliminate the problem of context understanding. 
-\Roberta and \Bert have achieved good performance, because they can capture the context understanding challenge. 
-Our matcher fine-tuning the \RobertaBase model also performed better than \Bert in this task and scores a mean average precision of up to~0.967.
-With strict ground truth labels it achieves a mean average precision score of~0.913 on the test set, which is the best score of the participating teams in the shared task.
-This point again showed the importance of architecture, training objectives, and hyperparameter selection.
+\RobertaBase and \BertBase have achieved good performance, because they can overcome the context understanding challenge. 
+Our fine-tuned \RobertaBase model also performed better than \BertBase in this task and scores a mean average 
+precision of up to~0.967.
+With strict ground truth labels it achieves a mean average precision score of~0.913 on the test set, which is the best 
+score of the participating teams in the shared task.
+This again shows the importance of architecture, training objectives, and hyperparameter selection.
 
 \subsection{Future Work}
 
 We identify two main issues with the language model approach:
 First, both the \BertBase and \RobertaBase model cannot adequately match arguments that have no matching key point in the training set.
-This could maybe be improved by re-sampling data or transfer learning.
+This could maybe be improved by resampling data or transfer learning.
 Second, both models tend to classify argument key point pairs worse if the argument and key point largely differ in length.
-We see this as a potential to combine the transformer matchers with the token overlap baseline because for longer arguments it can be more likely that all tokens from the key point occur in it.
+We see this as a potential to combine the transformer matchers with the token overlap baseline because for longer arguments 
+it can be more likely that all tokens from the key point occur in it.
 Another possible improvement are recent improvements in language models~\cite{Sun2021WFDPSLCZLLWGLSSLOYTWW}.
-If a language model is even more robust than, for example, \Roberta, we expect a fine-tuned matcher to outperform the \RobertaBase matcher as well.
+If a language model is even more robust than, for example, \Roberta, we expect a fine-tuned matcher to outperform 
+the \RobertaBase matcher as well.

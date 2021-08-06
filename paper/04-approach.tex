@@ -2,53 +2,69 @@
 
 To match key points to arguments, we propose two different approaches.
 First, we discuss a simple yet effective baseline measuring token overlap between key points and arguments.
-Second, to improve upon the simple baseline, we introduce an approach based on \Bert and \Roberta~\cite{DevlinCLT2019,LiuOGDJCLLZS2019}. We fine-tune both language models in standard configuration with only minor changes highlighted below.
+Second, to improve upon this simple baseline, we introduce an approach based on \Bert and \Roberta~\cite{DevlinCLT2019,LiuOGDJCLLZS2019}. 
+We fine-tune both language models in standard configuration with only minor changes highlighted below.
 
 \subsection{Token Overlap Baseline}
-To be able to compare more sophisticated matchers, we first propose a very simple token overlap baseline using preprocessed tokens from each argument and key point, as parsed by the NLTK toolkit~\cite{BirdL2004}. 
+To be able to compare more sophisticated matchers, we first propose a very simple token overlap baseline using preprocessed tokens 
+from each argument and key point, as parsed by the NLTK toolkit~\cite{BirdL2004}. 
 In general, key points summarize ideas of their matched arguments.
 Our intuition therefore is, that certain words or tokens from an argument are also likely to be present in its matched key points.
-Rather than using completly new words for summarization of arguments, a human would tend to reuse most important words from the argument.
-\todo{Do they really? Maybe cite a source.}
-For example, in the argument and key point pair~C from Table~\ref{examples} both the argument and key point contain the token \textquote{suffering}.
+Rather than using completly new words for summarization of arguments, a human would tend to reuse important words from the argument.
+\todo{Do they really? Maybe cite a source. - Tried but didn't find a proportion of abstractive vs. extractive summarazition by humans.}
+For example, in the argument and key point pair~C from Table~\ref{examples} both, the argument and key point, contain the token \textquote{suffering}.
 
 We can further increase the token overlap between arguments and key points by preprocessing their tokens:
 First, we remove stop words for reducing noise within all arguments.
-Initially this can seem counter-productive, because with less words the highest possible overlap would also decrease and therefore could lead to worse performance.
+Initially this can seem counterproductive, because with less words the highest possible overlap would also decrease and 
+therefore could lead to worse performance.
 However, a lot of arguments and key points contain unnecessary words like \textquote{the}, \textquote{and}, \textquote{as} etc.
-Removing these results in sentences that contain more specific information and thus lead to less confusion with the token overlap matcher.
+Removing these, results in sentences that contain more specific information and thus leads to less confusion with the token overlap matcher.
 Furthermore, the redundancy of language makes it possible to contain key aspects in sentences, even without these mostly meaningless stop words.
 As a second preprocessing step, we reduce tokens to their corresponding stems by applying stemming using the Snowball stemmer~\cite{Porter1980}. 
 We expect the token overlap matcher to be able to generalize more when comparing tokens.
-For example, the words \textquote{assistance} and \textquote{assisted} from the above example~(Table~\ref{examples},~C) are both stemmed to \textquote{assist} with the Snowball stemmer. 
-Consequently, stemming creates an overlap between different forms of the same word and, for instance, increases the probability that an argument containing \textquote{assistance} be associated to a key point containing \textquote{assisted}.
-Last, we increase generalization for token overlap even further by supplementing the set of tokens with synonyms and antonyms. This step should also increase the chance of overlapping tokens.
+For example, the words \textquote{assistance} and \textquote{assisted} from the above example~(Table~\ref{examples},~C) 
+are both stemmed to \textquote{assist} with the Snowball Stemmer. 
+Consequently, stemming creates an overlap between different forms of the same word and, for instance, increases the 
+probability that an argument containing \textquote{assistance} is associated with a key point containing \textquote{assisted}.
+Last, we increase generalization for token overlap even further by supplementing the set of tokens with synonyms and antonyms. 
+This step should also increase the chance of overlapping tokens.
 
-To compute the similarity between an argument and a key point, let~\(\text{tokens}_a\) be the set of tokens from an argument~\(a\) and \(\text{tokens}_k\)~the set of tokens from a key point~\(k\).
+To compute the similarity between an argument and a key point, let~\(\text{tokens}_a\) be the set of tokens from an 
+argument~\(a\) and \(\text{tokens}_k\)~the set of tokens from a key point~\(k\).
 We calculate the set of overlapping tokens like this:
 \begin{equation}
     \text{overlap}_{a,k} = \{ t : t \in \text{tokens}_a \land t \in \text{tokens}_k \}
 \end{equation}
-The token overlap matcher returns matching scores based on the overlap size weighted against the minimum size of either the argument or the key point:
+The token overlap matcher returns matching scores based on the overlap size weighted against the minimum size of either 
+the argument or the key point:
 \begin{equation}
     \text{score}_{a,k} = \frac{ |\text{overlap}_{a,k}| }{ \min\{ |\text{tokens}_a|, |\text{tokens}_k| \} }
 \end{equation}
-That is, pairs with a higher proportion of tokens that appear both in the argument as well as in the key point are classified with a higher matching score.
+That is, pairs with a higher proportion of tokens that appear both in the argument as well as in the key point are 
+classified with a higher matching score.
 
 \subsection{Transformers Fine-tuning}
 
-To improve upon the simple token overlap baseline, we fine-tune \Bert and \Roberta Transformer models for classifying argument key point matches~\cite{DevlinCLT2019,LiuOGDJCLLZS2019}.
+To improve upon this simple token overlap baseline, we fine-tune \Bert and \Roberta Transformer models for classifying 
+argument key point matches~\cite{DevlinCLT2019,LiuOGDJCLLZS2019}.
 While \Bert is pretrained on a very large document corpus~(16GB of raw data), \Roberta is pretrained on an even larger corpus~(160GB).
 Thus \Roberta models can be fine-tuned on higher end task performance~\cite{LiuOGDJCLLZS2019}.
-We tokenize both the arguments and the key points with \Bert's default WordPiece tokenizer and the resulting sequences are trimmed to 512~tokens for both models.
-We then fine-tune the \BertBase and \RobertaBase variants in the standard sentence-pair regression setting using the Simple Transformers library.\footnote{\url{https://simpletransformers.ai/}}
+We tokenize both the arguments and the key points with \Bert's default WordPiece tokenizer and the resulting sequences 
+are trimmed to 512~tokens for both models.
+We then fine-tune the \BertBase and \RobertaBase variants in the standard sentence-pair regression setting using 
+the Simple Transformers library.\footnote{\url{https://simpletransformers.ai/}}
 For classification, we interpret the regression output value as the probability of an argument matching a key point.
 That is, the training labels are always 0~or~1, depending on whether the corresponding pair in the training set matches or not.
 Both model variants contain 12~hidden layers with a hidden size of~768 and 12~attention heads.
 We train each of the two models for one single epoch at a learning rate of~\( \eta = 2 \cdot 10^{-5} \).
 We use an AdamW optimizer with~\( \beta = (0.9, 0.999) \) and zero weight decay~\cite{LoshchilovH2019}.
 The optimizer is warmed up with a ratio of~6\,\% of the training data and we fine-tune both models on binary cross-entropy loss.
-We explore different ways of handling argument key point pairs in the training set with missing ground-truth label, i.e., either removing those pairs, assuming the argument and key point to match~(1), or not to match~(0), but find that neither of the last assumptions lead to improved scores on the validation set.
-Similarly, we experiment with textual data augmentation\footnote{\url{https://github.com/makcedward/nlpaug}}~(swapping synonyms, randomly omitting words) to increase the amount of training data, but that did not improve validation scores either.
+We explore different ways of handling argument key point pairs in the training set with missing ground-truth label, i.e., 
+either removing those pairs, assuming the argument and key point to match~(1), or not to match~(0), but find that neither 
+of the last assumptions lead to improved scores on the validation set.
+Similarly, we experiment with textual data augmentation\footnote{\url{https://github.com/makcedward/nlpaug}}~(swapping synonyms, 
+randomly omitting words) to increase the amount of training data, leading to no improvement on validation scores either.
 Thus, for the submitted model, we consider only training pairs that have an associated ground-truth label and do not oversample.
-We don't restrict the model's output to the interval~\([0,1]\)---like we did for the baseline---, as the shared task did not mention constraints on the score value that should be returned by a matcher.
+We don't restrict the models output to the interval~\([0,1]\)---like we did for the baseline---, as the shared task did not 
+mention constraints on the score value that should be returned by a matcher.
