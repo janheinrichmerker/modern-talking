@@ -9,44 +9,41 @@
 
 The dataset used in this shared task is the \ArgKP dataset~\cite{Bar-HaimEFKLS2020} which consists of 24\,083 argument 
 and key point pairs labeled as matching/non-matching. They all belong to one of 28~controversial topics, for example: 
-\textquote{Assisted suicide should be a criminal offence}. Every pair is annotated with its stance towards the topic. 
+\textquote{Assisted suicide should be a criminal offence}. Every key point and argument pair is annotated with its stance towards the topic. 
 
-The training split from the \ArgKP dataset has 5\,583~arguments belonging to 207~key points within 24~topics. This leaves the validation split with 932~arguments and 36~key points for 4~topics.
-\citet{kpa-2021-overview} complement the \ArgKP dataset's training and validation split with a test split, that is used to evaluate submissions to the shared task. The test split contains 723~arguments with 33~key points from 3~topics.
+The training split of the \ArgKP dataset has 5\,583~arguments belonging to 207~key points within 24~topics. This leaves the validation split with 932~arguments and 36~key points for 4~topics.
+\citet{kpa-2021-overview} complement the \ArgKP dataset's training and validation split with a test split that is used to evaluate submissions to the shared task. The test split contains 723~arguments with 33~key points from 3~topics.
 
 \subsection{Characteristics}
 
-We analyze the \ArgKP dataset and observe that matched and unmatched key points of a given argument both contain a similar most frequent words. 
-Many of these are stopwords such as \textquote{as}, \textquote{for}, and \textquote{not} and are common in Natural Language Processing.
-Stopwords are redundant and often uniformative and thus should not influence token overlap.
-We therefore remove stop words from our data during preprocessing to avoid such a problem. 
+We analyze the \ArgKP dataset and observe that matched and unmatched key points of a given argument both contain very frequent words. 
+Many of these are stopwords such as \textquote{as}, \textquote{for}, and \textquote{not} and are very common in natural language.
+Because of their high frequency, stop words tend to be less distinctive in assessing the semantic similarity of two texts, especially while using bag-of-words to represent texts.
+We therefore remove stop words from our data during preprocessing arguments and key points for our baseline. 
 Furthermore, important words found in arguments are repeated with different tenses and parts of speech in key points, for example: 
 \textquote{legalize}, \textquote{legalized}, \textquote{legalizing}, \textquote{legal}. 
-To achieve an unambiguous spelling, such words are normalized with a stemming method in our approach.
+To achieve an unambiguous vocabulary, such words are normalized with a stemming method in our approach.
 
 In Table~\ref{examples} we show examples of argument key point pairs from the \ArgKP dataset~\cite{Bar-HaimEFKLS2020}. 
 We identify the following major difficulties in matching key points to arguments: semantically similar words and meaning 
 understanding.
-In example pair~A from Table~\ref{examples}, the key point can be matched with its argument. Both sentences discuss 
+In pair~A from Table~\ref{examples}, the argument matches the given key point. Both sentences discuss 
 children actors and their education. The word \textquote{actors} is not explicitly used in the key point but is 
 semantically similar to the word \textquote{performer}. 
-In our approach we oppose this challenge by using the well-known lexical database WordNet~\cite{Miller1995} in our 
+In our approach, we oppose this challenge by using the well-known lexical database WordNet~\cite{Miller1995} in our 
 baseline to find synonyms and antonyms.
-In example~B from Table~\ref{examples}, argument and key point are expressed differently. 
+In pair~B from Table~\ref{examples}, the argument matches the key point but are expressed differently. 
 The key point makes usage of \textquote{wrong hands} as figurative meaning for \textquote{nations} and \textquote{terrorists} from the argument. 
 To predict if a key point is aligned with some argument, we need to understand their meanings and compare them. 
 To better deal with this problem, we use two well-known language models in our second approach~(Section~\ref{approach}). 
 
 We further observe in Figure~\ref{arg-kp-length} that arguments from the \ArgKP dataset are longer than key points.
 In the training set, the average length of arguments is~109.4 characters. 
-Compared to that, key points are, on average, only half as long (~51.7 characters).
-An argument can be supported by several key points. 
-This set of all matching key points can be called the summary of the given argument.  
-In the validation set, the key points have an average length of~41.3 characters and therefore less than in the training set. 
+Compared to that, key points are on average only half as long (~51.7 characters). 
+In the validation set, the key points have an average length of~41.3 characters and therefore key points are shorter than those in the training set. 
 The average length of arguments remains almost the same at~107.7 characters. 
 The differences in length between arguments and key points from the training set and validation set are~57.8 characters and~66.3 characters respectively. 
-We conclude that long arguments in the validation set are summarised stronger than arguments from the training set. 
-The proportion of arguments that are more than~66.3 characters longer than key points is 39\,\%~of the training set 
+The proportion of arguments that are ~66.3 characters longer than key points constitute 39\,\%~of the training set 
 and 44\,\% of the validation set. 
 We can see that there are more short key points in the validation set. 
-This length difference can cause errors in key point matching~(Section~\ref{error-analysis}).
+This length difference might be a challenge for the models in key point matching~(Section~\ref{error-analysis}).

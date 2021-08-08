@@ -9,31 +9,27 @@ The organizers calculate the score by pairing each argument with the best matchi
 matching probabilities.
 Within each topic-stance combination, only 50\,\% of the arguments with the highest predicted matching score are then 
 considered for evaluation.
-The task organizers claim that this removal of 50\,\% of the pairs is sensible because some arguments do not match any 
+The task organizers claim that this removal of 50\,\% of the pairs is necessary because some arguments do not match any 
 of the key points, which would influence mean average precision negatively. % \todo{Overview paper.}
-For the remaining argument key point pairs in each topic-stance combination, average precision is calculated and the 
+For the remaining argument key point pairs in each topic-stance combination, the average precision is calculated and the 
 final score is computed as the mean of all average precision scores.
 
-The task organizers consider two variants of ground-truth labels: strict labels and relaxed labels.
-Both variants are based on the ground-truth labels from the \ArgKP dataset~\cite{Bar-HaimEFKLS2020}. But as the \ArgKP 
-dataset contains argument key point pairs with undecided labels~(i.e. not enough agreement between annotators), 
-the shared task organizers derive strict labels by considering those pairs as no match, and relaxed labels by 
-considering them as match. % \todo{Overview paper.}
-To compute each evaluation score, the strict score is calculated based on strict ground-truth labels and the relaxed 
-score is calculated based on relaxed ground-truth labels. % \todo{Overview paper.}
-
-We stress that in this complex evaluation setup, the mean average precision score in the relaxed label setting would 
+The task organizers consider two evaluation settings: strict and relaxed.
+Both settings are based on the ground-truth labels from the \ArgKP dataset~\cite{Bar-HaimEFKLS2020}. The two evaluation settings are created to account for argument key point pairs in the \ArgKP with undecided labels~(i.e. not enough agreement between annotators). In the strict setting,
+the shared task organizers consider those undecided pairs as no match. In the relaxed setting, however, the shared task organizers consider the undecided pairs as match. % \todo{Overview paper.}
+The mean average precision score is then calculated in the two settings based on the ground-truth labels and the derived labels for the undecided pairs. 
+We stress that in this complex evaluation setup, the mean average precision score in the relaxed setting would 
 favor assuming matches in case of model uncertainty.
-Contrary, in the strict setting mean average precision would favor assuming no match between an argument and key point.
+In comparison, in the strict setting mean average precision would favor assuming no match between an argument and key point.
 However, we find that because only the most probable matching key point is being considered for evaluation, this effect is minor.
 The evaluation score in general favors matchers that can match a single key point for each argument with high precision.
 It is however not important if a matcher does predict non-matches with high certainty.
 
 \subsection{Discussion}
-In Table~\ref{table-results}, we report mean average precision for strict and relaxed labels of the training, 
+In Table~\ref{table-results}, we report mean average precision in the strict and relaxed settings of the training, 
 validation, and test set in the \ArgKP dataset.
 We complement the mean average precision scores by adding precision, recall, and $F_1$~scores of the match label, 
-both in the strict and relaxed label setting.
+both in the strict and relaxed setting.
 To aggregate results of the strict and relaxed settings, we also report the average score of the two variants.
 The reported scores should allow for automated and unbiased evaluation of our models and easier comparison with competitive approaches.
 We report all 36~scores for the token overlap baseline model as well as for the fine-tuned \BertBase and \RobertaBase models.
@@ -43,10 +39,10 @@ That random baseline represents a worst-case matcher and any weak matcher should
 
 The token overlap baseline achieves a mean average precision of~0.483 in the strict setting and~0.575 in the relaxed 
 setting on the test set.
-Thus it is nearly twice as good as a random matcher with respect to mean average precision.
+Thus, it is nearly twice as good as a random matcher with respect to mean average precision.
 Even though this baseline has reasonably good scores on all datasets, we are concerned about the large discrepancies 
 between its scores on the validation set and the training and test dataset.
-Similarly, the rather simple baseline is not very robust and thus is prone to variation in performance based on how 
+Similarly, the rather simple baseline is not very robust and might be prone to variation in performance based on how 
 good the dataset is described by its tokens.
 
 Both fine-tuned matchers outperform the baselines by a large margin.

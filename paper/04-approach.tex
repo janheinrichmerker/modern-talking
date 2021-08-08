@@ -9,17 +9,17 @@ We fine-tune both language models in standard configuration with only minor chan
 To be able to compare more sophisticated matchers, we first propose a very simple token overlap baseline using preprocessed tokens 
 from each argument and key point, as parsed by the NLTK toolkit~\cite{BirdL2004}. 
 In general, key points summarize ideas of their matched arguments.
-Our intuition therefore is, that certain words or tokens from an argument are also likely to be present in its matched key points.
-Rather than using completly new words for summarization of arguments, a human would tend to reuse important words from the argument.
+Our intuition, therefore, is that certain words or tokens from an argument are also likely to be present in its matched key points.
+Rather than using completely new words for summarization of arguments, a human would tend to reuse important words from the argument.
 % \todo{Do they really? Maybe cite a source. - Tried but didn't find a proportion of abstractive vs. extractive summarazition by humans.}
 For example, in the argument and key point pair~C from Table~\ref{examples} both, the argument and key point, contain the token \textquote{suffering}.
 
-We can further increase the token overlap between arguments and key points by preprocessing their tokens:
+We can further increase the token overlap between arguments and key points by preprocessing their tokens as following:
 First, we remove stop words for reducing noise within all arguments.
-Initially this can seem counterproductive, because with less words the highest possible overlap would also decrease and 
+Initially, this can seem counterproductive because with fewer words the highest possible overlap would also decrease and 
 therefore could lead to worse performance.
-However, a lot of arguments and key points contain unnecessary words like \textquote{the}, \textquote{and}, \textquote{as} etc.
-Removing these, results in sentences that contain more specific information and thus leads to less confusion with the token overlap matcher.
+However, a lot of arguments and key points contain functional words like \textquote{the}, \textquote{and}, \textquote{as} etc.
+Removing these results in sentences that contain more specific information and thus leads to less confusion with the token overlap matcher.
 Furthermore, the redundancy of language makes it possible to contain key aspects in sentences, even without these mostly meaningless stop words.
 As a second preprocessing step, we reduce tokens to their corresponding stems by applying stemming using the Snowball stemmer~\cite{Porter1980}. 
 We expect the token overlap matcher to be able to generalize more when comparing tokens.
@@ -54,15 +54,14 @@ We tokenize both the arguments and the key points with \Bert's default WordPiece
 are trimmed to 512~tokens for both models.
 We then fine-tune the \BertBase and \RobertaBase variants in the standard sentence-pair regression setting using 
 the Simple Transformers library.\footnote{\url{https://simpletransformers.ai/}}
+The input to both models is formatted as following:  \texttt{argument [cls] keypoint}.
 For classification, we interpret the regression output value as the probability of an argument matching a key point.
 That is, the training labels are always 0~or~1, depending on whether the corresponding pair in the training set matches or not.
 Both model variants contain 12~hidden layers with a hidden size of~768 and 12~attention heads.
 We train each of the two models for one single epoch at a learning rate of~\( \eta = 2 \cdot 10^{-5} \).
 We use an AdamW optimizer with~\( \beta = (0.9, 0.999) \) and zero weight decay~\cite{LoshchilovH2019}.
-The optimizer is warmed up with a ratio of~6\,\% of the training data and we fine-tune both models on binary cross-entropy loss.
-We explore different ways of handling argument key point pairs in the training set with missing ground-truth label, i.e., 
-either removing those pairs, assuming the argument and key point to match~(1), or not to match~(0), but find that neither 
-of the last assumptions lead to improved scores on the validation set.
+The optimizer is warmed up with a ratio of~6\,\% of the training data, and we fine-tune both models with the binary cross-entropy loss.
+We explore three ways of handling argument key point pairs in the training set with missing ground-truth label. In the first way, we remove those pairs completely from the traning dataset. In the second and third ways, we assume all the arguments and key points with missing labels to be either a \texttt{match} or \texttt{no-match}. By comparing the effectiveness of the models, we find that the first way lead to the best effectiveness on the validation set.
 Similarly, we experiment with textual data augmentation\footnote{\url{https://github.com/makcedward/nlpaug}}~(swapping synonyms, 
 randomly omitting words) to increase the amount of training data, leading to no improvement on validation scores either.
 Thus, for the submitted model, we consider only training pairs that have an associated ground-truth label and do not oversample.

@@ -3,7 +3,7 @@
 \input{figures/table-errors.tex}
 \input{figures/figure-classification-error.tex}
 
-To find errors in the two trained matchers, \BertBase and \RobertaBase, in Figure~\ref{fig:frequency} we show 
+To find errors of the two trained matchers, \BertBase and \RobertaBase, in Figure~\ref{fig:frequency} we show 
 histograms of predicted match scores with respect to ground-truth labels.
 Both matchers classify most pairs correctly, which can be seen because the histogram spikes around~0 for the 
 true no-match label and around~1 for the true match label.
@@ -15,12 +15,11 @@ We notice that in Figures~\ref{subfig:bert_train} and~\ref{subfig:roberta_train}
 argument key point pairs better than matching key points.
 This effect is likely to occur because of the higher amount of non-matching pairs provided.
 Most arguments match with only a few or even just a single key point.
-But nonetheless each argument is compared to all other key points, hence the underlying data to learn from is 
+But nonetheless each argument is compared to all other key points; hence, the underlying data to learn from is 
 imbalanced~\cite{BarandelaVSF2004}.
-Though, experiments with using textual data augmentation or simple oversampling to balance the dataset were 
-unsuccessful~\cite{Dietterich1995}.
-More advanced oversampling or undersampling approaches could possibly resolve this issue.
-We further identify, that for matching arguments and key points, predicted scores from \BertBase are spread a 
+Even though experiments with using textual data augmentation or simple oversampling to balance the dataset were 
+unsuccessful~\cite{Dietterich1995}, more advanced oversampling or undersampling approaches could possibly resolve this issue.
+We further identify that the predicted matching scores of \BertBase are spread a 
 bit more than scores from \RobertaBase.
 
 In Figure~\ref{subfig:bert_dev}, we observe that the \BertBase matcher falsely predicts certain non-matching pairs with scores around~0.5.
@@ -31,7 +30,7 @@ argument, and therefore predicts a neutral score of~\(0.48\).
 The \RobertaBase matcher does not make that error, presumably because during pretraining \Roberta was given much 
 more general-purpose information to infer from.
 
-Both, the \BertBase matcher, but also \RobertaBase, falsely predict some argument key point pairs as non-matching that are in 
+Both, the \BertBase matcher and \RobertaBase falsely predict some argument key point pairs as non-matching that are in 
 fact labelled as a match.
 For example, it seems to be difficult to predict a match for the argument key point pair~E from Table~\ref{error-examples}.
 The argument from the example is longer than most arguments and especially much longer than the key point~(431\,\%~more characters).
