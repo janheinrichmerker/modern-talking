@@ -18,19 +18,19 @@ We can further increase the token overlap between arguments and key points by pr
 First, we remove stop words for reducing noise within all arguments.
 Initially, this can seem counterproductive because with fewer words the highest possible overlap would also decrease and 
 therefore could lead to worse performance.
-However, a lot of arguments and key points contain functional words like \textquote{the}, \textquote{and}, \textquote{as} etc.
+However, a lot of arguments and key points contain functional words like \textquote{the}, \textquote{and} or \textquote{as}.
 Removing these results in sentences that contain more specific information and thus leads to less confusion with the token overlap matcher.
-Furthermore, the redundancy of language makes it possible to contain key aspects in sentences, even without these mostly meaningless stop words.
+%Furthermore, the redundancy of language makes it possible to contain key aspects in sentences, even without these mostly meaningless stop words.
 As a second preprocessing step, we reduce tokens to their corresponding stems by applying stemming using the Snowball stemmer~\cite{Porter1980}. 
 We expect the token overlap matcher to be able to generalize more when comparing tokens.
 For example, the words \textquote{assistance} and \textquote{assisted} from the above example~(Table~\ref{examples},~C) 
-are both stemmed to \textquote{assist} with the Snowball Stemmer. 
+are both stemmed to \textquote{assist} with the Snowball stemmer. 
 Consequently, stemming creates an overlap between different forms of the same word and, for instance, increases the 
 probability that an argument containing \textquote{assistance} is associated with a key point containing \textquote{assisted}.
-Last, we increase generalization for token overlap even further by supplementing the set of tokens with synonyms and antonyms. 
+Last, we increase generalization for token overlap even further by supplementing the set of tokens with synonyms and antonyms~\cite{Miller1995}. 
 This step should also increase the chance of overlapping tokens.
 
-To compute the similarity between an argument and a key point, let~\(\text{tokens}_a\) be the set of tokens from an 
+To compute the similarity between an argument and a key point, let~\(\text{tokens}_a\) be the set of preprocessed tokens from an 
 argument~\(a\) and \(\text{tokens}_k\)~the set of tokens from a key point~\(k\).
 We calculate the set of overlapping tokens like this:
 \begin{equation}
@@ -54,7 +54,8 @@ We tokenize both the arguments and the key points with \Bert's default WordPiece
 are trimmed to 512~tokens for both models.
 We then fine-tune the \BertBase and \RobertaBase variants in the standard sentence-pair regression setting using 
 the Simple Transformers library.\footnote{\url{https://simpletransformers.ai/}}
-The input to both models is formatted as following:  \texttt{argument [cls] keypoint}.
+The input to the models is formatted as \texttt{[CLS] argument [SEP] key point [SEP]} for \Bert and \texttt{<s> argument </s></s> key point </s>} for \Roberta respectively.
+%\texttt{argument [cls] keypoint}.
 For classification, we interpret the regression output value as the probability of an argument matching a key point.
 That is, the training labels are always 0~or~1, depending on whether the corresponding pair in the training set matches or not.
 Both model variants contain 12~hidden layers with a hidden size of~768 and 12~attention heads.

@@ -4,16 +4,15 @@
 \input{figures/figure-classification-error.tex}
 
 To find errors of the two trained matchers, \BertBase and \RobertaBase, in Figure~\ref{fig:frequency} we show 
-histograms of predicted match scores with respect to ground-truth labels.
+histograms of predicted \texttt{match} scores with respect to ground-truth labels.
 Both matchers classify most pairs correctly, which can be seen because the histogram spikes around~0 for the 
-true no-match label and around~1 for the true match label.
-We also observe that predictions on the training set are closer to the true label than on the development set 
-for both \RobertaBase and \BertBase.
+true \texttt{no-match} label and around~1 for the true \texttt{match} label.
+We also observe that predictions on the training set are closer to the true label than on the development set for both \RobertaBase and \BertBase. 
 Even though we expect any machine-learned matcher to perform better on training data than on validation data, 
 we see this as a room for improvement with better generalization.
 We notice that in Figures~\ref{subfig:bert_train} and~\ref{subfig:roberta_train} both approaches predict non-matching 
 argument key point pairs better than matching key points.
-This effect is likely to occur because of the higher amount of non-matching pairs provided.
+This effect is likely to occur because of the higher amount of non-matching pairs provided in the training dataset.
 Most arguments match with only a few or even just a single key point.
 But nonetheless each argument is compared to all other key points; hence, the underlying data to learn from is 
 imbalanced~\cite{BarandelaVSF2004}.
@@ -25,19 +24,19 @@ bit more than scores from \RobertaBase.
 In Figure~\ref{subfig:bert_dev}, we observe that the \BertBase matcher falsely predicts certain non-matching pairs with scores around~0.5.
 An example of such uncertain pair is the argument key point pair~D from Table~\ref{error-examples}.
 One reason we identify is that this argument has no matching key points given in the training dataset.
-Hence, it is plausible that the \BertBase matcher has not learned well how to classify matches for that type of 
+Hence, it is plausible that the \mbox{\BertBase} matcher has not learned well how to classify matches for that type of 
 argument, and therefore predicts a neutral score of~\(0.48\).
 The \RobertaBase matcher does not make that error, presumably because during pretraining \Roberta was given much 
 more general-purpose information to infer from.
 
-Both, the \BertBase matcher and \RobertaBase falsely predict some argument key point pairs as non-matching that are in 
-fact labelled as a match.
-For example, it seems to be difficult to predict a match for the argument key point pair~E from Table~\ref{error-examples}.
+Both, the \BertBase matcher and \RobertaBase falsely predict some argument key point pairs as \texttt{no-match} that are in 
+fact labelled as a \texttt{match}.
+For example, it seems to be difficult to predict a \texttt{match} for the argument key point pair~E from Table~\ref{error-examples}.
 The argument from the example is longer than most arguments and especially much longer than the key point~(431\,\%~more characters).
 It might be more challenging to reduce such longer arguments, that contain more complex information, to very compact key points.
 We confirm that observation by comparing the squared classification error with respect to the absolute difference between 
 argument and key point lengths.
-Figure~\ref{classification-error-length} shows a tendency of higher error with the \BertBase when the length difference 
+Figure~\ref{classification-error-length} shows a tendency of higher error with the \BertBase matcher when the length difference 
 between the argument and key point is large.
 Comparable results can be observed for the \RobertaBase matcher.
 We therefore identify length difference as a second general problem for both approaches.
