@@ -2,15 +2,15 @@
 \input{figures/table-results.tex}
 
 Submissions to the ArgMining~2021 shared task on Quantitative Summarization and Key Point Analysis are evaluated with 
-respect to mean average precision~\cite{kpa-2021-overview}.%
+respect to mean average precision~\cite{kpa-2021-overview}. 
 %\footnote{\url{https://2021.argmining.org/shared_task_ibm.html}}
 %\todo{Overview paper.}
 The organizers calculate the score by pairing each argument with the best matching key point according to the predicted 
-matching probabilities.
+matching probabilities. 
 Within each topic-stance combination, only 50\,\% of the arguments with the highest predicted matching score are then 
-considered for evaluation.
+considered for evaluation. 
 The task organizers claim that this removal of 50\,\% of the pairs is necessary because some arguments do not match any 
-of the key points, which would influence mean average precision negatively~\cite{kpa-2021-overview}. % \todo{Overview paper.}
+of the key points, which would influence mean average precision negatively~\cite{kpa-2021-overview}. 
 For the remaining argument key point pairs in each topic-stance combination, the average precision is calculated and the 
 final score is computed as the mean of all average precision scores.
 
@@ -19,7 +19,7 @@ Both settings are based on the ground-truth labels from the \ArgKP dataset~\cite
 the shared task organizers consider those undecided pairs as \texttt{no-match}. In the relaxed setting, however, the shared task organizers consider the undecided pairs as \texttt{match}~\cite{kpa-2021-overview}. % \todo{Overview paper.}
 The mean average precision score is then calculated in the two settings based on the ground-truth labels and the derived labels for the undecided pairs. 
 We stress that in this complex evaluation setup, the mean average precision score in the relaxed setting would 
-favor assuming matches in case of model uncertainty.
+favor assuming matches in case of model uncertainty. 
 In comparison, in the strict setting mean average precision would favor assuming \texttt{no-match} between an argument and key point.
 However, we find that because only the most probable matching key point is being considered for evaluation, this effect is minor.
 The evaluation score in general favors matchers that can match a single key point for each argument with high precision.
