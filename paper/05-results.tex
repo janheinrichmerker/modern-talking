@@ -29,7 +29,7 @@ It is however not important if a matcher does predict non-matches with high cert
 In Table~\ref{table-results}, we report mean average precision in the strict and relaxed settings of the training, 
 validation, and test set in the \ArgKP dataset.
 We complement the mean average precision scores by adding precision and recall scores of the \texttt{match} label, 
-both in the strict and relaxed setting. To calculate precision and recall, we label an argument and key point pair as \texttt{match} if their score is higher than~0.5 and \texttt{no-match} otherwise.
+both in the strict and relaxed setting. To calculate precision and recall, we label an argument and key point pair as \texttt{match} if their score is higher than~0.5 and as \texttt{no-match} otherwise.
 To aggregate results of the strict and relaxed settings, we also report the average score of the two variants.
 The reported scores should allow for automated and unbiased evaluation of our models and easier comparison with competitive approaches.
 We report all 27~scores for the token overlap baseline model as well as for the fine-tuned \BertBase and \RobertaBase models.

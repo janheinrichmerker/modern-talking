@@ -16,28 +16,17 @@ The training split of the \ArgKP dataset has 5\,583~arguments belonging to 207~k
 
 \subsection{Characteristics}
 
-We analyze the \ArgKP dataset and observe that matched and unmatched key points of a given argument both contain very frequent words. 
-Many of these are stopwords such as \textquote{as}, \textquote{for}, and \textquote{not} and are very common in natural language.
-Because of their high frequency, stop words tend to be less distinctive in assessing the semantic similarity of two texts, especially while using bag-of-words to represent texts.
-We therefore remove stop words from our data during preprocessing arguments and key points for our baseline. 
-Furthermore, important words found in arguments are repeated with different tenses and parts of speech in key points, for example: 
-\textquote{legalize}, \textquote{legalized}, \textquote{legalizing}, and \textquote{legal}. 
-To resolve ambiguities in the vocabulary, such words are normalized with a stemming method in our approach.
-
-In Table~\ref{examples} we show examples of argument key point pairs from the \ArgKP dataset~\cite{Bar-HaimEFKLS2020}. 
-We identify the following major difficulties in matching key points to arguments: semantically similar words and meaning 
-understanding.
+Here, we do qualitative and quantative analyses of the \ArgKP dataset. Table~\ref{examples} shows examples of argument key point pairs from the \ArgKP dataset~\cite{Bar-HaimEFKLS2020}. 
 In pair~A from Table~\ref{examples}, the argument matches the given key point. Both sentences discuss 
 children actors and their education. The word \textquote{actors} is not explicitly used in the key point but is 
 semantically similar to the word \textquote{performer}. 
-In our baseline, we oppose this challenge by using the well-known lexical database WordNet~\cite{Miller1995} in our 
-baseline to find synonyms and antonyms.
-In pair~B from Table~\ref{examples}, the argument matches the key point but are expressed differently. 
-The key point makes usage of \textquote{wrong hands} as figurative meaning for \textquote{nations} and \textquote{terrorists} from the argument. 
-To predict if a key point is aligned with some argument, we need to understand their meanings and compare them. 
-To better deal with this problem, we use two well-known language models in our second approach~(Section~\ref{approach}). 
+Such lexical variation can be opposed by using WordNet~\cite{Miller1995} to find synonyms and antonyms.
 
-We further observe in Figure~\ref{arg-kp-length} that arguments from the \ArgKP dataset are longer than key points.
+Pair~B in Table~\ref{examples} is a harder example, since the argument matches the key point but are expressed differently. 
+The key point makes usage of \textquote{wrong hands} as figurative meaning for \textquote{nations} and \textquote{terrorists} from the argument.
+In comparison to pair~A, the linguistic variation in pair~B goes beyond finding synonyms and requires a deep understanding of the semantics of the argument and key point.
+
+Figure~\ref{arg-kp-length} shows the average length of the arguments and key points in the training and developments splits. As shown, the arguments in the \ArgKP dataset are substantially longer than key points.
 In the training set, the average length of arguments is 109~characters. 
 Compared to that, key points are on average only half as long (52~characters). 
 In the validation set, the key points have an average length of 41~characters and therefore key points are shorter than those in the training set. 
@@ -46,4 +35,6 @@ The average length of arguments remains almost the same at 108~characters.
 The proportion of arguments that are 67~characters longer than key points constitute 39\,\%~of the training set 
 and 44\,\% of the validation set. 
 We can see that there are more short key points in the validation set. 
-This length difference might be a challenge for the models in key point matching~(Section~\ref{error-analysis}).
+This length difference might be a challenge for the models in key point matching~(Section~\ref{error-analysis}). Pair~C is an example of an argument and key point pair with a large length difference.
+
+All in all, we identify the following major difficulties in matching key points to arguments: semantically similar words, meaning understanding, and the length difference between the arguments and key points. In the following section, we approach the first two problems while developing our baseline and approaches. In Section~\ref{error-analysis}, we analyze the errors made by our approaches with regard to the length difference between the arguments and key points.
