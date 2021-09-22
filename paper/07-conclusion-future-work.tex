@@ -13,12 +13,5 @@ This again shows the importance of architecture, training objectives, and hyperp
 
 \subsection{Future Work}
 
-We identify two main issues with the language model approach:
-First, both the \BertBase and \RobertaBase model cannot adequately match arguments that have no matching key point in the training set.
-This could maybe be improved by resampling data or transfer learning.
-Second, both models tend to classify argument key point pairs worse if the argument and key point largely differ in length.
-We see this as a potential to combine the transformer matchers with the token overlap baseline because for longer arguments 
-it can be more likely that all tokens from the key point occur in it.
-Another possible improvement are recent improvements in language models~\cite{Sun2021WFDPSLCZLLWGLSSLOYTWW}.
-If a language model is even more robust than, for example, \Roberta, we expect a fine-tuned matcher to outperform 
-the \RobertaBase matcher as well.
+In Section~\ref{error-examples}, we observed that transformer models tend to misclassify argument key point pairs if the argument and key point largely differ in length. As an extension to our approach, we propose to combine transformer models with the overlap baseline in an ensemble. Another possible improvement are recent improvements in language models~\cite{Sun2021WFDPSLCZLLWGLSSLOYTWW}.
+If a language model is even more robust than, for example, \Roberta, we expect a fine-tuned matcher to outperform the \RobertaBase matcher as well.

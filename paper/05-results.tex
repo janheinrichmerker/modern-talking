@@ -29,7 +29,7 @@ It is however not important if a matcher does predict non-matches with high cert
 In Table~\ref{table-results}, we report mean average precision in the strict and relaxed settings of the training, 
 validation, and test set in the \ArgKP dataset.
 We complement the mean average precision scores by adding precision and recall scores of the \texttt{match} label, 
-both in the strict and relaxed setting.
+both in the strict and relaxed setting. To calculate precision and recall, we label an argument and key point pair as \texttt{match} if their score is higher than~0.5 and \texttt{no-match} otherwise.
 To aggregate results of the strict and relaxed settings, we also report the average score of the two variants.
 The reported scores should allow for automated and unbiased evaluation of our models and easier comparison with competitive approaches.
 We report all 27~scores for the token overlap baseline model as well as for the fine-tuned \BertBase and \RobertaBase models.
@@ -42,8 +42,7 @@ setting on the test set.
 Thus, it is nearly twice as good as a random matcher with respect to mean average precision.
 Even though this baseline has reasonably good scores on all datasets, we are concerned about the large discrepancies 
 between its scores on the validation set and the training and test dataset. 
-The rather simple baseline is not very robust and might be prone to variation in performance based on how 
-good the dataset is described by its tokens.
+The rather simple baseline captures the similarity between an argument and a key point on the token level and might be sensative against more complicated parphrases.
 
 Both fine-tuned matchers outperform the baselines by a large margin.
 While the \BertBase matcher achieves higher relaxed mean average precision on the training set than the \RobertaBase 
@@ -52,5 +51,5 @@ The \RobertaBase matcher achieves a mean average precision of~0.913 in the stric
 in the relaxed setting.
 As these scores on the test set are nearly as high as on the training set, we argue that \Roberta is a more robust 
 language model and generalizes better than \Bert.
-Also the \RobertaBase matcher is trained more on precision, while the \BertBase matcher is better with respect to 
+Also the \RobertaBase matcher performs better in terms of precision, while the \BertBase matcher is better with respect to 
 recall for all dataset splits in both the strict and relaxed settings.

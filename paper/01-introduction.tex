@@ -6,12 +6,13 @@ and more effective argument mining, people often need to summarize arguments~\ci
 \citet{Bar-HaimEFKLS2020} see matching key points to arguments as an intermediate step towards automatically generating 
 argumentative summaries~(Section~\ref{related-work}).
 The ArgMining~2021 shared task on Quantitative Summarization and Key Point Analysis is the first task on key point matching, 
-which is an important step towards summarizing arguments.
+which is an important step towards summarizing arguments. By matching arguments with a pre-defined set of key points, an argumentative text can be summarized using the prevalence of the key points in it.
 Different approaches of matching argument key point pairs, here called matchers, should be proposed and discussed.%
+Given an argument and a key point, a matcher should return a real value between~0 and~1 which represents the extent to which the argument matches the key point.
 \footnote{\url{https://2021.argmining.org/shared_task_ibm.html}}
 %\todo{Cite the task overview paper once the citation is announced.}
-For evaluating different argument key point matchers, the shared task organizers introduce a customized mean average 
-precision evaluation metric~\cite{kpa-2021-overview} and publish the \ArgKP benchmark dataset~(Section~\ref{data}) to compare 
+For evaluating different argument key point matchers, the shared task organizers uses mean average 
+precision evaluation as a metric~\cite{kpa-2021-overview} to evaluate the approaches and publish the \ArgKP benchmark dataset~(Section~\ref{data}) to compare 
 matchers~\cite{Bar-HaimEFKLS2020}. % \todo{Overview paper}
 
 Pretrained language models like \Bert and \Roberta are nowadays becoming standard approaches to tackle various Natural 
