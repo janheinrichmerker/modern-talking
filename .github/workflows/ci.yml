@@ -4,7 +4,7 @@ on:
   push:
 
 jobs:
-  build-latex:
+  build-latex-paper:
     name: "🏗️ Build LaTeX paper"
     runs-on: ubuntu-20.04
     steps:
@@ -20,6 +20,38 @@ jobs:
         with:
           path: paper/emnlp2021.pdf
           name: Paper
+  build-latex-talk:
+    name: "🏗️ Build LaTeX talk"
+    runs-on: ubuntu-20.04
+    steps:
+      - name: "📥 Check-out"
+        uses: actions/checkout@v2
+      - name: "🏗️ Compile talk"
+        uses: xu-cheng/latex-action@v2
+        with:
+          working_directory: talk
+          root_file: talk.tex
+      - name: "📤 Upload talk"
+        uses: actions/upload-artifact@v2
+        with:
+          path: talk/talk.pdf
+          name: Talk
+  build-latex-short-ttalk:
+    name: "🏗️ Build LaTeX short talk"
+    runs-on: ubuntu-20.04
+    steps:
+      - name: "📥 Check-out"
+        uses: actions/checkout@v2
+      - name: "🏗️ Compile short talk"
+        uses: xu-cheng/latex-action@v2
+        with:
+          working_directory: talk
+          root_file: short-talk.tex
+      - name: "📤 Upload short talk"
+        uses: actions/upload-artifact@v2
+        with:
+          path: talk/short-talk.pdf
+          name: Short Talk
   test-python:
     name: "🧪 Test Python code"
     runs-on: ubuntu-20.04
