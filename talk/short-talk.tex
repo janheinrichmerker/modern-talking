@@ -1,0 +1,249 @@
+\documentclass[english,handout]{mlutalk}
+
+\title{%
+  Modern Talking in Key Point Analysis: \\
+  Key Point Matching using Pretrained Encoders%
+}
+\subtitle{Key Point Analysis Shared Task 2021}
+\author{\texorpdfstring{\smaller}{}Jan Heinrich Reimer \and Thi Kim Hanh Luu \and Max Henze \and Yamen Ajjour}
+\institute{Martin Luther University Halle-Wittenberg, Germany}
+\date{November 11, 2021}
+\titlegraphic{\includegraphics[width=3cm]{figures/mlu-halle}}
+
+\addbibresource{../literature/literature.bib}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usepackage{listings}
+\usepackage{xspace}
+\usepackage{biblatex}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{graphics,graphicx}
+
+
+\newcommand{\ArgKP}{\mbox{ArgKP-2021}\xspace}
+\newcommand{\ArgQ}{\mbox{IBM-ArgQ-Rank-30kArgs}\xspace}
+\newcommand{\Bert}{\textsc{Bert}\xspace}
+\newcommand{\BertBase}{\Bert-Base\xspace}
+\newcommand{\BertLarge}{\Bert-Large\xspace}
+\newcommand{\Roberta}{\mbox{Ro\textsc{Bert}a}\xspace}
+\newcommand{\RobertaBase}{\Roberta-Base\xspace}
+\newcommand{\TF}{\mbox{TF}\xspace}
+\newcommand{\TFIDF}{\mbox{TF/IDF}\xspace}
+\newcommand{\todocite}{{\smaller\color{red}[CITE]}\xspace}
+\newcommand{\todo}[1]{{\smaller\color{red}[#1]}}
+\renewcommand{\lg}{\color{lightgray}}
+
+\lstset{basicstyle=\ttfamily,breaklines=true}
+
+\pgfplotsset{
+	eval/.style={
+		ybar=5pt,
+		bar width=17.5pt,
+		enlarge x limits=0.3,
+		symbolic x coords={Training Data,Validation Data,Test Data},
+		xtick=data,nodes near coords,nodes near coords align={vertical},
+		width=0.95\textwidth,
+		height=0.65\textheight,
+		ymin=0,
+    ymax=1.1,
+		font=\sffamily\footnotesize,
+		legend style={at={(0.5,-0.25)},anchor=north,legend columns=-1,/tikz/every even column/.append style={column sep=5pt},},
+	},
+}
+
+\begin{document}
+
+\titleframe
+
+\begin{frame}{Key Point Matching}
+  \begin{itemize}
+    \item Arguments influence daily decisions~\cite{Bar-HaimEFKLS2020}
+    \item Large amount of information on the Web
+    \item Need to summarize \(\to\) key points
+    \item Find matching key points for arguments
+  \end{itemize}
+  \begin{example}
+    \smaller\renewcommand{\arraystretch}{1.15}
+    \begin{tabularx}{0.855\linewidth}{@{}lXl@{}}
+      Argument: & Sex selection can lead to gender imbalance by distorting the natural male-female sex ratio. \\
+      Key Point: & Sex selection can lead to gender imbalance & \textcolor{Green4}{\(\to\) \emph{match}} \\
+      Key Point: & It is unethical/unhealthy for parents to intervene & \textcolor{OrangeRed2}{\(\to\) \emph{no match}}
+    \end{tabularx}
+  \end{example}
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Baseline: Token Overlap}
+  \begin{example}
+    \smaller\renewcommand{\arraystretch}{1.15}
+    \begin{tabularx}{0.65\linewidth}{@{}lX@{}}
+      Argument: & \textcolor{Magenta4}{Sex} \textcolor{OliveDrab4}{selection} can lead to \textcolor{Orange2}{gender} \textcolor{DodgerBlue3}{imbalance} by distorting the natural male-female \textcolor{Magenta4}{sex} ratio. \\
+      Key Point: & \textcolor{Magenta4}{Sex} \textcolor{OliveDrab4}{selection} can lead to \textcolor{Orange2}{gender} \textcolor{DodgerBlue3}{imbalance}
+    \end{tabularx}
+  \end{example}
+  
+  \begin{block}{Approach}
+    \begin{itemize}
+      \item Key points are sampled from arguments \(\to\) similar vocabulary
+      \item Count tokens that appear in argument and key point
+      {\smaller\begin{equation*}
+        \text{score}_{\text{arg},\text{kp}} = \frac{ | \{ t : t \in \text{tokens}_\text{arg} \land t \in \text{tokens}_\text{kp} \} | }{ \min\{ |\text{tokens}_\text{arg}|, |\text{tokens}_\text{kp}| \} }
+      \end{equation*}}
+      \item Rule-based, no training
+    \end{itemize}
+  \end{block}
+
+  \begin{block}{Preprocessing}
+    \begin{itemize}
+      \item Stemming, synonyms, antonyms\footnote{Using NLTK~\cite{Bird2006} and WordNet~\cite{Miller1995}} \(\leadsto\) generalization
+      \item Stop words (without \query{not}) \(\leadsto\) less noise/confusion
+    \end{itemize}
+  \end{block}
+
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Transformers: \Bert and \Roberta}
+
+  \begin{itemize}
+    \item Pretrained encoder models:
+    \begin{itemize}
+      \item \Bert~\cite{DevlinCLT2018}
+      \item \Roberta~\cite{LiuOGDJCLLZS2019}
+    \end{itemize}
+    \item Train for sentence pair regression:
+    \begin{tabular}{@{}ll@{}}
+      \Bert &    {\smaller\texttt{\textcolor{Goldenrod4}{[CLS]}~argument~\textcolor{Goldenrod4}{[SEP]}~~~~~key~point~\textcolor{Goldenrod4}{[SEP]}}} \\
+      \Roberta & {\smaller\texttt{\textcolor{Goldenrod4}{<s>}~~~argument~\textcolor{Goldenrod4}{</s>}~~\textcolor{Goldenrod4}{<s>}~key~point~\textcolor{Goldenrod4}{</s>}}}
+    \end{tabular}
+    \item Fine-tune pretrained model with \ArgKP training data
+  \end{itemize}
+
+  \begin{block}{Why \Roberta?}
+    \begin{itemize}
+      \item Trained on \(10\times\) more data than \Bert
+      \item Larger batches, learning rates, step sizes \(\to\) longer training
+      \item Often outperforms \Bert~\cite{LiuOGDJCLLZS2019}
+    \end{itemize}
+  \end{block}
+
+  \framebreak
+
+  \begin{block}{Parameters and Implementation}
+    \begin{itemize}
+      \item Simple Transformers library\footnote{\url{https://simpletransformers.ai/}} \\ {\smaller\texttt{ClassificationModel(\textellipsis,~args=\{"regression":~True\})}}
+      \item Pretrained models
+      \begin{itemize}
+        \item \BertBase and \RobertaBase
+        \item 12~hidden layers of size~768, 12~attention heads with dropout~0.1
+      \end{itemize}
+      \item Fine-tuning
+      \begin{itemize}
+        \item Batch size~32, 1~epoch
+        \item Learning rate~\(2 \cdot 10^{-5}\), warmup proportion~6\,\%
+        \item No weight decay, no early stopping, no oversampling, \\ skip missing labels
+      \end{itemize}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Evaluation: Mean Average Precision}
+  \framesubtitle{Strict Labels}
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[eval,ylabel={Strict mAP}]
+
+        \addplot coordinates {(Training Data,0.541) (Validation Data,0.643) (Test Data,0.483)}; % Token Overlap
+        \addplot coordinates {(Training Data,0.889) (Validation Data,0.717) (Test Data,0.827)}; % \BertBase
+        \addplot coordinates {(Training Data,0.915) (Validation Data,0.879) (Test Data,0.913)}; % \RobertaBase
+
+        \draw [opacity=0.65,thick] ({rel axis cs:0.025,0}|-{axis cs:Training Data,0.260}) -- (axis cs:Training Data,0.260);
+        \addplot[opacity=0.65,jump mark mid,thick] coordinates {(Training Data,0.260) (Validation Data,0.232) (Test Data,0.237)}; % Random
+        \draw [opacity=0.65,thick] (axis cs:Test Data,0.237) -- ({rel axis cs:0.975,0}|-{axis cs:Test Data,0.237});
+
+        \legend{Token Overlap,\BertBase,\RobertaBase,Random}
+
+      \end{axis}
+    \end{tikzpicture}
+    \caption{Mean average precision of the match label for different approaches and baselines under the strict label setting.}
+  \end{figure}
+\end{frame}
+\begin{frame}{Evaluation: Mean Average Precision}
+  \framesubtitle{Relaxed Labels}
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[eval,ylabel={Relaxed mAP}]
+
+        \addplot coordinates {(Training Data,0.653) (Validation Data,0.802) (Test Data,0.575)}; % Token Overlap
+        \addplot coordinates {(Training Data,0.981) (Validation Data,0.928) (Test Data,0.940)}; % \BertBase
+        \addplot coordinates {(Training Data,0.979) (Validation Data,0.984) (Test Data,0.967)}; % \RobertaBase
+
+        \draw [opacity=0.65,thick] ({rel axis cs:0.025,0}|-{axis cs:Training Data,0.409}) -- (axis cs:Training Data,0.409);
+        \addplot[opacity=0.65,jump mark mid,thick] coordinates {(Training Data,0.409) (Validation Data,0.430) (Test Data,0.355)}; % Random
+        \draw [opacity=0.65,thick] (axis cs:Test Data,0.355) -- ({rel axis cs:0.975,0}|-{axis cs:Test Data,0.355});
+
+        \legend{Token Overlap,\BertBase,\RobertaBase,Random}
+
+      \end{axis}
+    \end{tikzpicture}
+    \caption{Mean average precision of the match label for different approaches and baselines under the relaxed label setting.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Error Analysis}
+  \begin{itemize}
+    \item \Roberta generalizes better than \Bert
+    \item \Bert: some uncertain pairs (prediction around~0.5) \\ \(\to\) Example from training set without matching key points \\ \Roberta does predict correctly
+    \item Difficulties wih very long arguments \\ \(\to\) Example from training set with \(6.5\times\) more tokens than key point
+    \item Both predict non-matching pairs better than matching pairs \\ (likely because of imbalanced training data)
+  \end{itemize}
+  \begin{table}
+    \smaller\smaller\renewcommand{\arraystretch}{1.35}
+    \caption{Falsely predicted pairs from the \ArgKP dataset.}
+    \begin{tabularx}{\linewidth}{Xp{2.15cm}ccc}
+      \toprule
+      \textbf{Argument} & \textbf{Key point} & \textbf{True} & \textbf{\Bert} & \textbf{\Roberta} \\
+      \midrule
+      School uniforms can be less comfortable than students' regular clothes. & % arg_4_162
+      School uniforms are expensive & % kp_4_6
+      0 & \phantom{-}0.48 & 0.03 \\
+      affirmative action discriminates the majority, preventing skilled workers from gaining employment over someone less qualified but considered to be a member of a protected minority group. & % arg_15_113
+      Affirmative action reduces quality & % kp_15_7
+      1 & -0.05 & 0.03 \\
+      \bottomrule
+    \end{tabularx}
+  \end{table}
+  
+
+\end{frame}
+
+\begin{frame}{Conclusion}
+  \begin{itemize}
+    \item Strong, rule-based baseline (twice as good as random)
+    \item \Bert an \Roberta models better for context understanding
+    \item Scores on test set \\[0.75ex]
+    \begin{tabular}{@{}lc@{}}
+      mAP strict: & \textbf{0.913} \\
+      mAP relaxed: & \textbf{0.967}
+    \end{tabular}
+    \item Hyperparameter tuning is important
+  \end{itemize}
+
+  \begin{block}{Future Work}
+    \begin{itemize}
+      \item Ensemble with \Roberta and overlap baseline
+      \item Improved, more robust language models~\cite{Sun2021WFDPSLCZLLWGLSSLOYTWW}
+    \item Avanced textual oversampling to balance training data
+    \end{itemize}
+  \end{block}
+  \thankyou
+\end{frame}
+
+\appendix
+\section{\appendixname}
+
+\bibliographyframe
+
+\end{document}
