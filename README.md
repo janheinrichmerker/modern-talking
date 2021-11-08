@@ -26,34 +26,42 @@ pipenv install
 Run a pipeline to train and evaluate a matcher with respect to a given metric:
 
 ```shell script
-pipenv run python traineval.py [MATCHER] [MATCHER_OPTIONS] [METRIC]
+pipenv run python -m modern_talking [MATCHER] [MATCHER_OPTIONS] [METRIC]
 ```
 
 This will automatically download all datasets, train the matcher on the train set and evaluate the metric for predicted labels on the dev and test set (test evaluation will be skipped if test labels are unknown).
 Predicted labels are also saved to `data/out/predictions-[MATCHER].json` in JSON format as described in the [shared task documentation](https://github.com/ibm/KPA_2021_shared_task#track-1---key-point-matching).
 
 List available matchers with:
+
 ```shell script
-pipenv run python traineval.py --help
+pipenv run python -m modern_talking --help
 ```
+
 List individual matcher's options with:
+
 ```shell script
-pipenv run python traineval.py [MATCHER] --help
+pipenv run python -m modern_talking [MATCHER] --help
 ```
 
 #### Examples
 
 Term overlap baseline:
+
 ```shell script
-pipenv run python traineval.py term-overlap map
+pipenv run python -m modern_talking term-overlap map
 ```
+
 Term overlap baseline (with preprocessing):
+
 ```shell script
-pipenv run python traineval.py term-overlap --stemming --stop-words --custom-stop-words --synonyms map
+pipenv run python -m modern_talking term-overlap --stemming --stop-words --custom-stop-words --synonyms map
 ```
+
 BERT classifier:
+
 ```shell script
-pipenv run python traineval.py transformers --type bert --name bert-base-uncased map
+pipenv run python -m modern_talking transformers --type bert --name bert-base-uncased map
 ```
 
 ### Manual evaluation
@@ -76,5 +84,4 @@ pipenv run pytest
 
 ## License
 
-This repository is licensed under the [MIT License](LICENSE).
-It includes [evaluation code](https://github.com/IBM/KPA_2021_shared_task/blob/771caa1519df4e26127ad37cffe8d5940af3b2da/code/track_1_kp_matching.py) from the shared tasks organizers, licensed under the [Apache License 2.0](https://github.com/IBM/KPA_2021_shared_task/blob/771caa1519df4e26127ad37cffe8d5940af3b2da/LICENSE).
+This repository is licensed under the [MIT License](LICENSE) except for the [evaluation script](https://github.com/IBM/KPA_2021_shared_task/blob/771caa1519df4e26127ad37cffe8d5940af3b2da/code/track_1_kp_matching.py) from the shared tasks organizers, licensed under the [Apache License 2.0](https://github.com/IBM/KPA_2021_shared_task/blob/771caa1519df4e26127ad37cffe8d5940af3b2da/LICENSE).
