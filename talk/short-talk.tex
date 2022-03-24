@@ -90,13 +90,13 @@
       {\smaller\begin{equation*}
         \text{score}_{\text{arg},\text{kp}} = \frac{ | \{ t : t \in \text{tokens}_\text{arg} \land t \in \text{tokens}_\text{kp} \} | }{ \min\{ |\text{tokens}_\text{arg}|, |\text{tokens}_\text{kp}| \} }
       \end{equation*}}
-      \item Rule-based, no training
+      \item Rule-based, \textcolor{Green4}{no training needed}
     \end{itemize}
   \end{block}
 
   \begin{block}{Preprocessing}
     \begin{itemize}
-      \item Stemming, synonyms, antonyms\footnote{Using NLTK~\cite{Bird2006} and WordNet~\cite{Miller1995}} \(\leadsto\) generalization
+      \item Stemming, synonyms, antonyms \(\leadsto\) generalization
       \item Stop words (without \query{not}) \(\leadsto\) less noise/confusion
     \end{itemize}
   \end{block}
@@ -106,7 +106,7 @@
 \begin{frame}[allowframebreaks]{Transformers: \Bert and \Roberta}
 
   \begin{itemize}
-    \item Pretrained encoder models:
+    \item Pretrained encoders:
     \begin{itemize}
       \item \Bert~\cite{DevlinCLT2018}
       \item \Roberta~\cite{LiuOGDJCLLZS2019}
@@ -131,7 +131,7 @@
 
   \begin{block}{Parameters and Implementation}
     \begin{itemize}
-      \item Simple Transformers library\footnote{\url{https://simpletransformers.ai/}} \\ {\smaller\texttt{ClassificationModel(\textellipsis,~args=\{"regression":~True\})}}
+      \item Simple Transformers library \\ {\smaller\texttt{ClassificationModel(\textellipsis,~args=\{"regression":~True\})}}
       \item Pretrained models
       \begin{itemize}
         \item \BertBase and \RobertaBase
@@ -145,10 +145,14 @@
       \end{itemize}
     \end{itemize}
   \end{block}
+  \begin{block}{Source code}
+    \smaller
+    \url{https://github.com/heinrichreimer/modern-talking}
+  \end{block}
 \end{frame}
 
-\begin{frame}{Evaluation: Mean Average Precision}
-  \framesubtitle{Strict Labels}
+\begin{frame}{Evaluation: Mean Average Precision~\cite{kpa-2021-overview}}
+  \framesubtitle{Strict Labels {\smaller (before evaluation update)}}
   \begin{figure}
     \centering
     \begin{tikzpicture}
@@ -169,7 +173,7 @@
     \caption{Mean average precision of the match label for different approaches and baselines under the strict label setting.}
   \end{figure}
 \end{frame}
-\begin{frame}{Evaluation: Mean Average Precision}
+\begin{frame}{Evaluation: Mean Average Precision~\cite{kpa-2021-overview}}
   \framesubtitle{Relaxed Labels}
   \begin{figure}
     \centering
@@ -195,8 +199,8 @@
 \begin{frame}{Error Analysis}
   \begin{itemize}
     \item \Roberta generalizes better than \Bert
-    \item \Bert: some uncertain pairs (prediction around~0.5) \\ \(\to\) Example from training set without matching key points \\ \Roberta does predict correctly
-    \item Difficulties wih very long arguments \\ \(\to\) Example from training set with \(6.5\times\) more tokens than key point
+    \item \Bert: some uncertain pairs (prediction around~0.5) \\ \(\to\) Example from training set without matching key points \\ \phantom{\(\to\)} \Roberta does predict correctly
+    \item Difficulties with very long arguments \\ \(\to\) Example from training set with \(6.5\times\) more tokens than key point
     \item Both predict non-matching pairs better than matching pairs \\ (likely because of imbalanced training data)
   \end{itemize}
   \begin{table}
@@ -222,7 +226,7 @@
 \begin{frame}{Conclusion}
   \begin{itemize}
     \item Strong, rule-based baseline (twice as good as random)
-    \item \Bert an \Roberta models better for context understanding
+    \item \Bert and \Roberta models better for context understanding
     \item Scores on test set \\[0.75ex]
     \begin{tabular}{@{}lc@{}}
       mAP strict: & \textbf{0.913} \\
@@ -235,7 +239,7 @@
     \begin{itemize}
       \item Ensemble with \Roberta and overlap baseline
       \item Improved, more robust language models~\cite{Sun2021WFDPSLCZLLWGLSSLOYTWW}
-    \item Avanced textual oversampling to balance training data
+    \item Advanced textual oversampling to balance training data
     \end{itemize}
   \end{block}
   \thankyou
