@@ -16,7 +16,7 @@ jobs:
       - name: "📥 Check-out"
         uses: actions/checkout@v4
       - name: "🏗️ Compile paper"
-        uses: xu-cheng/latex-action@v2
+        uses: xu-cheng/latex-action@v3
         with:
           working_directory: paper
           root_file: paper.tex
