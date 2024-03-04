@@ -1,6 +1,48 @@
-[build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
+[project]
+name = "modern-talking"
+description = "Key-Point Analysis using Modern Natural Language Processing."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+	"Programming Language :: Python :: 3",
+	"License :: OSI Approved :: MIT License",
+	"Operating System :: OS Independent",
 ]
+dependencies = [
+    "jupyter~=1.0",
+    "matplotlib~=3.4",
+    "nltk~=3.6",
+    "pandas~=1.2",
+    "scikit-learn~=0.24.2",
+    "autopep8~=1.5",
+    "pylint~=2.8",
+    "pytest~=6.2",
+    "pytest-cov~=2.12",
+    "rope~=0.19.0",
+    "flake8~=3.9",
+    "spacy~=3.0",
+    "transformers~=4.8",
+    "numpy~=1.19",
+    "scipy~=1.7",
+    "seaborn~=0.11.1",
+    "keras~=2.4",
+    "tensorflow~=2.5",
+    "tensorflow-addons~=0.13.0",
+    "pydot~=1.4",
+    "nlpaug~=1.1",
+    "torch~=1.9",
+    "simpletransformers~=0.61.9",
+    "imbalanced-learn~=0.8.0",
+    "pyarrow~=3.0",
+]
+dynamic = ["version"]
+
+[project.urls]
+"Homepage" = "https://github.com/heinrichreimer/modern-talking"
+"Bug Tracker" = "https://github.com/heinrichreimer/modern-talking/issues"
+
+[build-system]
+requires = ["setuptools>=50", "setuptools_scm[toml]>=6.2", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]

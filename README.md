@@ -14,19 +14,26 @@ Participation at the [Quantitative Summarization – Key Point Analysis Shared T
 
 ### Installation
 
-First, install [Python 3](https://python.org/downloads/), [pipx](https://pipxproject.github.io/pipx/installation/#install-pipx), and [Pipenv](https://pipenv.pypa.io/en/latest/install/#isolated-installation-of-pipenv-with-pipx).
-Then install dependencies (may take a while):
+First, install [Python 3.9](https://python.org/downloads/) or higher and then clone this repository.
+From inside the repository directory, create a virtual environment and activate it:
 
-```shell script
-pipenv install
+```shell
+python3.9 -m venv venv/
+source venv/bin/activate
+```
+
+Then, install the test dependencies:
+
+```shell
+pip install -e .[tests]
 ```
 
 ### Run a matcher pipeline
 
 Run a pipeline to train and evaluate a matcher with respect to a given metric:
 
-```shell script
-pipenv run python -m modern_talking [MATCHER] [MATCHER_OPTIONS] [METRIC]
+```shell
+python -m modern_talking [MATCHER] [MATCHER_OPTIONS] [METRIC]
 ```
 
 This will automatically download all datasets, train the matcher on the train set and evaluate the metric for predicted labels on the dev and test set (test evaluation will be skipped if test labels are unknown).
@@ -34,42 +41,42 @@ Predicted labels are also saved to `data/out/predictions-[MATCHER].json` in JSON
 
 List available matchers with:
 
-```shell script
-pipenv run python -m modern_talking --help
+```shell
+python -m modern_talking --help
 ```
 
 List individual matcher's options with:
 
-```shell script
-pipenv run python -m modern_talking [MATCHER] --help
+```shell
+python -m modern_talking [MATCHER] --help
 ```
 
 #### Examples
 
 Term overlap baseline:
 
-```shell script
-pipenv run python -m modern_talking term-overlap map
+```shell
+python -m modern_talking term-overlap map
 ```
 
 Term overlap baseline (with preprocessing):
 
-```shell script
-pipenv run python -m modern_talking term-overlap --stemming --stop-words --custom-stop-words --synonyms map
+```shell
+python -m modern_talking term-overlap --stemming --stop-words --custom-stop-words --synonyms map
 ```
 
 BERT classifier:
 
-```shell script
-pipenv run python -m modern_talking transformers --type bert --name bert-base-uncased map
+```shell
+python -m modern_talking transformers --type bert --name bert-base-uncased map
 ```
 
 ### Manual evaluation
 
 Evaluate predicted matches in JSON format:
 
-```shell script
-pipenv run python modern_talking/evaluation/track_1_kp_matching.py data/ data/out/predictions-[METRIC]-[MATCHER].json
+```shell
+python modern_talking/evaluation/track_1_kp_matching.py data/ data/out/predictions-[METRIC]-[MATCHER].json
 ```
 
 Replace `data/out/predictions-[METRIC]-[MATCHER].json` with the path to a file containing predicted matches in JSON format as described in the [shared task documentation](https://github.com/ibm/KPA_2021_shared_task#track-1---key-point-matching).
@@ -78,8 +85,8 @@ Replace `data/out/predictions-[METRIC]-[MATCHER].json` with the path to a file c
 
 Run all unit tests:
 
-```shell script
-pipenv run pytest
+```shell
+pytest
 ```
 
 ## License
