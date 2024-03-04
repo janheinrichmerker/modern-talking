@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "📥 Check-out"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: "🏗️ Compile paper"
         uses: xu-cheng/latex-action@v2
         with:
@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "📥 Check-out"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: "🏗️ Compile talk"
         uses: xu-cheng/latex-action@v2
         with:
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "📥 Check-out"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: "🏗️ Compile short talk"
         uses: xu-cheng/latex-action@v2
         with:
