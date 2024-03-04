@@ -21,7 +21,7 @@ jobs:
           working_directory: paper
           root_file: paper.tex
       - name: "📤 Upload paper"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           path: paper/emnlp2021.pdf
           name: Paper
