@@ -16,7 +16,7 @@ jobs:
           working_directory: paper
           root_file: emnlp2021.tex
       - name: "📤 Upload paper"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           path: paper/emnlp2021.pdf
           name: Paper
@@ -32,7 +32,7 @@ jobs:
           working_directory: talk
           root_file: talk.tex
       - name: "📤 Upload talk"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           path: talk/talk.pdf
           name: Talk
@@ -48,7 +48,7 @@ jobs:
           working_directory: talk
           root_file: short-talk.tex
       - name: "📤 Upload short talk"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           path: talk/short-talk.pdf
           name: Short Talk
