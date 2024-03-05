@@ -6,15 +6,23 @@ from typing import Tuple, List
 
 from numpy import ndarray
 from tensorflow import data, int32, config
+# pylint: disable=import-error
 from tensorflow.keras import Model, Input
+# pylint: disable=import-error
 from tensorflow.keras.activations import sigmoid
+# pylint: disable=import-error
 from tensorflow.keras.callbacks import ModelCheckpoint
+# pylint: disable=import-error
 from tensorflow.keras.layers import Dense, Concatenate, Layer, \
     Subtract, GlobalMaxPooling1D, GlobalAveragePooling1D, Bidirectional, \
     LSTM, SpatialDropout1D
+# pylint: disable=import-error
 from tensorflow.keras.losses import BinaryCrossentropy
+# pylint: disable=import-error
 from tensorflow.keras.metrics import Precision, Recall
+# pylint: disable=import-error
 from tensorflow.keras.models import load_model
+# pylint: disable=import-error
 from tensorflow.keras.optimizers import Adam
 from transformers import TFDistilBertModel, DistilBertConfig, \
     DistilBertTokenizerFast, BatchEncoding

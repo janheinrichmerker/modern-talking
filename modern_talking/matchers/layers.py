@@ -2,8 +2,11 @@
 
 from typing import List
 
+# pylint: disable=import-error
 from tensorflow.keras.initializers import Constant
+# pylint: disable=import-error
 from tensorflow.keras.layers import Embedding
+# pylint: disable=import-error
 from tensorflow.keras.layers.experimental.preprocessing import \
     TextVectorization
 from tensorflow import data

@@ -49,3 +49,9 @@ build-backend = "setuptools.build_meta"
 include = ["modern_talking"]
 
 [tool.setuptools_scm]
+
+[tool.flake8]
+exclude = [
+    "modern_talking/evaluation/track_1_kp_matching.py",
+    "build",
+]

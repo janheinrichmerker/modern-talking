@@ -6,15 +6,23 @@ from nlpaug.augmenter.word import WordAugmenter, SynonymAug
 from nltk.downloader import Downloader
 from numpy import ndarray, array
 from tensorflow import string, data, config
+# pylint: disable=import-error
 from tensorflow.keras import Model, Input
+# pylint: disable=import-error
 from tensorflow.keras.activations import sigmoid
+# pylint: disable=import-error
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
+# pylint: disable=import-error
 from tensorflow.keras.layers import Bidirectional, LSTM, Dense, Subtract, \
     Dropout, GlobalAveragePooling1D, GlobalMaxPooling1D, Concatenate
+# pylint: disable=import-error
 from tensorflow.keras.losses import BinaryCrossentropy
+# pylint: disable=import-error
 from tensorflow.keras.metrics import BinaryAccuracy, AUC, \
     MeanSquaredError
+# pylint: disable=import-error
 from tensorflow.keras.models import load_model
+# pylint: disable=import-error
 from tensorflow.keras.optimizers import Adam, Optimizer
 from tensorflow_addons.optimizers import AdamW
 

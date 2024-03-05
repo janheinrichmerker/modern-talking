@@ -90,7 +90,7 @@ jobs:
     - name: "🧰 Install dependencies"
       run: pip install .[tests]
     - name: "🔍 Check Python code format"
-      run: flake8 --exclude=./modern_talking/evaluation/track_1_kp_matching.py
+      run: flake8
   python-lint:
     name: "🔍 Lint Python code"
     runs-on: ubuntu-latest
