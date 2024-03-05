@@ -71,7 +71,7 @@ jobs:
     - name: "🧰 Install dependencies"
       run: pip install .[tests]
     - name: "🔍 Check Python code format"
-      run: flake8 --exclude build/lib/modern_talking/evaluation/track_1_kp_matching.py --exclude modern_talking/evaluation/track_1_kp_matching.py
+      run: flake8 --exclude modern_talking/evaluation/track_1_kp_matching.py modern_talking
   python-lint:
     name: "🔍 Lint Python code"
     runs-on: ubuntu-latest
