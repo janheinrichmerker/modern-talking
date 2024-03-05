@@ -25,7 +25,7 @@ source venv/bin/activate
 Then, install the test dependencies:
 
 ```shell
-pip install -e .[tests]
+pip install -e .
 ```
 
 ### Run a matcher pipeline
