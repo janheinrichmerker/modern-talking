@@ -15,10 +15,6 @@ jobs:
         with:
           working_directory: paper
           root_file: emnlp2021.tex
-      - name: "📤 Upload paper"
-        uses: actions/upload-artifact@v4
-        with:
-          path: paper/emnlp2021.pdf
           name: Paper
   build-latex-talk:
     name: "🏗️ Build LaTeX talk"
@@ -31,11 +27,6 @@ jobs:
         with:
           working_directory: talk
           root_file: talk.tex
-      - name: "📤 Upload talk"
-        uses: actions/upload-artifact@v4
-        with:
-          path: talk/talk.pdf
-          name: Talk
   build-latex-short-talk:
     name: "🏗️ Build LaTeX short talk"
     runs-on: ubuntu-latest
@@ -47,11 +38,6 @@ jobs:
         with:
           working_directory: talk
           root_file: short-talk.tex
-      - name: "📤 Upload short talk"
-        uses: actions/upload-artifact@v4
-        with:
-          path: talk/short-talk.pdf
-          name: Short Talk
   python-build:
     name: "🏗️ Build Python wheels"
     runs-on: ubuntu-latest
@@ -70,11 +56,6 @@ jobs:
       run: python -m build
     - name: "🧪 Check package bundles"
       run: twine check dist/*
-    - name: "📤 Upload Python wheels"
-      uses: actions/upload-artifact@v4
-      with:
-        name: wheels
-        path: dist
   python-code-format:
     name: "🔍 Check Python code format"
     runs-on: ubuntu-latest
@@ -144,3 +125,5 @@ jobs:
       with:
         context: .
         push: false
+        cache-from: type=gha
+        cache-to: type=gha,mode=max

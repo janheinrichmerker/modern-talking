@@ -1,11 +1,12 @@
 FROM python:3.9-slim
 
 # Install Git.
-RUN apt-get -y update && apt-get -y install git
+RUN --mount=type=cache,target=/var/cache/apt \
+    apt-get update -y && \
+    apt-get install -y git
 
 # Install Pip.
-RUN \
-    --mount=type=cache,target=/root/.cache/pip \
+RUN --mount=type=cache,target=/root/.cache/pip \
     ([ -d /venv ] || python3.9 -m venv /venv) && \
     /venv/bin/pip install --upgrade pip
 
