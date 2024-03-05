@@ -1,5 +1,8 @@
 FROM python:3.9-slim
 
+# Install Git.
+RUN apt-get -y update && apt-get -y install git
+
 # Install Pip.
 RUN \
     --mount=type=cache,target=/root/.cache/pip \
