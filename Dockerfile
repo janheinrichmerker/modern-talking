@@ -7,7 +7,7 @@ RUN --mount=type=cache,target=/var/cache/apt \
 
 # Install Pip.
 RUN --mount=type=cache,target=/root/.cache/pip \
-    ([ -d /venv ] || python3.9 -m venv /venv) && \
+    ([ -d /venv ] || python -m venv /venv) && \
     /venv/bin/pip install --upgrade pip
 
 # Set working directory.
