@@ -167,7 +167,7 @@ class Pipeline:
             metric_name: str = "mAP",
             team_name: str = "Modern Talking",
             project_url: Optional[str] = "https://github.com/"
-                                         "heinrichreimer/modern-talking",
+                                         "janheinrichmerker/modern-talking",
             publication_url: Optional[str] = None,
             bibtex: Optional[str] = None,
             affiliation: Optional[

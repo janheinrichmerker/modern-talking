@@ -38,8 +38,8 @@ dependencies = [
 dynamic = ["version"]
 
 [project.urls]
-"Homepage" = "https://github.com/heinrichreimer/modern-talking"
-"Bug Tracker" = "https://github.com/heinrichreimer/modern-talking/issues"
+"Homepage" = "https://github.com/janheinrichmerker/modern-talking"
+"Bug Tracker" = "https://github.com/janheinrichmerker/modern-talking/issues"
 
 [build-system]
 requires = ["setuptools>=50", "setuptools_scm[toml]>=6.2", "wheel"]

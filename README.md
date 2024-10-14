@@ -1,8 +1,8 @@
-[![CI](https://img.shields.io/github/actions/workflow/status/heinrichreimer/modern-talking/ci.yml?branch=main&style=flat-square)](https://github.com/heinrichreimer/modern-talking/actions/workflows/ci.yml)
-[![Code coverage](https://img.shields.io/codecov/c/github/heinrichreimer/modern-talking?style=flat-square)](https://codecov.io/github/heinrichreimer/modern-talking/)
-[![Issues](https://img.shields.io/github/issues/heinrichreimer/modern-talking?style=flat-square)](https://github.com/heinrichreimer/modern-talking/issues)
-[![Commit activity](https://img.shields.io/github/commit-activity/m/heinrichreimer/modern-talking?style=flat-square)](https://github.com/heinrichreimer/modern-talking/commits)
-[![License](https://img.shields.io/github/license/heinrichreimer/modern-talking?style=flat-square)](LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/janheinrichmerker/modern-talking/ci.yml?branch=main&style=flat-square)](https://github.com/janheinrichmerker/modern-talking/actions/workflows/ci.yml)
+[![Code coverage](https://img.shields.io/codecov/c/github/janheinrichmerker/modern-talking?style=flat-square)](https://codecov.io/github/janheinrichmerker/modern-talking/)
+[![Issues](https://img.shields.io/github/issues/janheinrichmerker/modern-talking?style=flat-square)](https://github.com/janheinrichmerker/modern-talking/issues)
+[![Commit activity](https://img.shields.io/github/commit-activity/m/janheinrichmerker/modern-talking?style=flat-square)](https://github.com/janheinrichmerker/modern-talking/commits)
+[![License](https://img.shields.io/github/license/janheinrichmerker/modern-talking?style=flat-square)](LICENSE)
 
 # 🗣️ modern-talking
 
