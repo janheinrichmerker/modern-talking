@@ -33,7 +33,7 @@ dependencies = [
     "torch~=2.2",
     "simpletransformers~=0.70.1",
     "imbalanced-learn~=0.8.0",
-    "pyarrow~=17.0",
+    "pyarrow~=18.0",
 ]
 dynamic = ["version"]
 
